@@ -7,7 +7,7 @@ import PostHeader from 'components/PostHeader'
 import PostTitle from 'components/PostTitle'
 import SectionSeparator from 'components/SectionSeparator'
 import { urlForImage } from 'lib/sanity.image'
-import type { Post, Settings } from 'lib/sanity.queries'
+import type { Post, Settings, fileQuery } from 'lib/sanity.queries'
 import ErrorPage from 'next/error'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -60,6 +60,7 @@ export default function PostPage(props: {
                 auteur={post.auteur}
               />
               <PostBody content={post.content} />
+              <a href={`${manuscriptURL}?dl=`}>WOW</a>
             </article>
             <SectionSeparator />
             {morePosts.length > 0 && <MoreStories posts={morePosts} />}
