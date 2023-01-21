@@ -42,6 +42,12 @@ export const postBySlugQuery = groq`
   ${postFields}
 }
 `
+export const fileQuery = groq`
+*[_type == 'file'] {
+  title,
+  "manuscriptURL": manuscript.asset->url
+}
+`
 
 export interface auteur {
   name?: string
