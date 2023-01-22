@@ -59,8 +59,9 @@ export default function PostPage(props: {
                 date={post.date}
                 auteur={post.auteur}
               />
-              <PostBody content={post.content} />
-              <a href={`${manuscriptURL}?dl=`}>WOW</a>
+              <PostBody content={post.content} >
+              <a href={`${file}?dl=`}>WOW</a>
+              </PostBody>
             </article>
             <SectionSeparator />
             {morePosts.length > 0 && <MoreStories posts={morePosts} />}
