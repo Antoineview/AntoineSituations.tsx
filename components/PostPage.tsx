@@ -60,7 +60,7 @@ export default function PostPage(props: {
                 auteur={post.auteur}
               />
               <PostBody content={post.content} >
-              <a href={`${file}?dl=`}>WOW</a>
+              <a href={`${post.file}?dl=`}>WOW</a>
               </PostBody>
             </article>
             <SectionSeparator />
