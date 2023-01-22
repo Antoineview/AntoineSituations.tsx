@@ -45,7 +45,7 @@ export const postBySlugQuery = groq`
 export const fileQuery = groq`
 *[_type == 'file'] {
   title,
-  "manuscriptURL": manuscript.asset->url
+  "file": file.asset->url
 }
 `
 
