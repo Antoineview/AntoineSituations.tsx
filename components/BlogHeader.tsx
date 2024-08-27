@@ -7,24 +7,35 @@ export default function BlogHeader({
   title,
   level,
   lilparagraph,
+  bigparapraph,
 }: {
   lilparagraph: string
+  bigparapraph: string
   title: string
   level: 1 | 2 
+  
 }) {
   
   
   switch (level) {
     case 1:
       return (
-        <header className="mt-16 mb-10 flex flex-col items-center md:mb-12 md:flex-row md:justify-between">
-          <h1 className="text-6xl font-bold leading-tight tracking-tighter md:pr-8 md:text-8xl">
-            {title}
-          </h1>
-          <h4 className="mt-5 text-center text-lg md:pl-8 md:text-left">
-            {lilparagraph}
-          </h4>
-        </header>
+        <>
+          <header className="mt-16 mb-10 flex flex-col items-center md:mb-12 md:flex-row md:justify-between">
+        <h1 className="text-6xl font-bold leading-tight tracking-tighter md:pr-8 md:text-8xl">
+          {title}
+        </h1>
+        <h4 className="mt-5 text-center text-lg md:pl-8 md:text-left">
+          {lilparagraph}
+        </h4>
+        <p className="mt-5 text-center text-lg md:pl-8 md:text-left">
+          {bigparapraph}
+        </p>
+          </header>
+          <p className="mt-8 text-center text-lg">
+        This is a horizontal paragraph below the title.
+          </p>
+        </>
       )
 
     case 2:

@@ -69,4 +69,5 @@ export interface Post {
 export interface Settings {
   title?: string
   lilparagraph?: string
+  bigparagraph?: string
 }
