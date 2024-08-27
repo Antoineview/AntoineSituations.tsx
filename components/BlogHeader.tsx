@@ -28,12 +28,9 @@ export default function BlogHeader({
         <h4 className="mt-5 text-center text-lg md:pl-8 md:text-left">
           {lilparagraph}
         </h4>
-        <p className="mt-5 text-center text-lg md:pl-8 md:text-left">
-          {bigparapraph}
-        </p>
           </header>
-          <p className="mt-8 text-center text-lg">
-        This is a horizontal paragraph below the title.
+          <p className="mt-8 text-center text-lg md:text-left">
+          {bigparapraph}
           </p>
         </>
       )
