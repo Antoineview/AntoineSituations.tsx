@@ -10,7 +10,7 @@ export default function PostHeader(
   const { title, coverImage, file, date, auteur, slug } = props
 
   const handleDownload = () => {
-    window.open(file, '_blank')
+    window.open(`${file}?dl=`, '_blank')
   }
 
   return (
