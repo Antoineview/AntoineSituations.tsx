@@ -71,3 +71,4 @@ export interface Settings {
   lilparagraph?: string
   bigparagraph?: string
 }
+

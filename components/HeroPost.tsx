@@ -14,7 +14,7 @@ export default function HeroPost(
   return (
     <section className="herocard">
       <h2 className="mb-2 ml-1 text-6xl font-bold leading-tight tracking-tighter md:text-7xl">
-        Latest 🔥 &rarr; <Date dateString={date} />
+        Latest news 🔥 &rarr; <Date dateString={date} />
       </h2>
       <div className="heropostimage">
         <CoverImage slug={slug} title={title} image={coverImage} priority />

@@ -8,6 +8,11 @@ export default function PostHeader(
   props: Pick<Post, 'title' | 'coverImage' | 'file' | 'date' | 'auteur' | 'slug'>
 ) {
   const { title, coverImage, file, date, auteur, slug } = props
+
+  const handleDownload = () => {
+    window.open(file, '_blank')
+  }
+
   return (
     <>
       <PostTitle>{title}</PostTitle>
@@ -24,6 +29,16 @@ export default function PostHeader(
         <div className="mb-6 text-lg">
           <Date dateString={date} />
         </div>
+        {file && (
+          <div className="mb-6">
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={handleDownload}
+            >
+              Download File
+            </button>
+          </div>
+        )}
       </div>
     </>
   )
