@@ -33,7 +33,12 @@ export default function PostPage(props: {
   return (
     <Layout preview={preview} loading={loading}>
       <Container>
-        <BlogHeader title={title} level={2} />
+        <BlogHeader
+          lilparagraph={''}
+          bigparapraph={''}
+          title={title}
+          level={2}
+        />
         {router.isFallback || (preview && !post) ? (
           <PostTitle>chargement...</PostTitle>
         ) : (
@@ -59,9 +64,7 @@ export default function PostPage(props: {
                 date={post.date}
                 auteur={post.auteur}
               />
-              <PostBody content={post.content} >
-              <a href={`${post.file}?dl=`}>Download the associated file</a>
-              </PostBody>
+              <PostBody content={post.content}></PostBody>
             </article>
             <SectionSeparator />
             {morePosts.length > 0 && <MoreStories posts={morePosts} />}

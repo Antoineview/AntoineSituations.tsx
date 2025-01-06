@@ -1,12 +1,26 @@
-import { Head, Html, Main, NextScript } from 'next/document'
-import { ServerStyleSheetDocument } from 'next-sanity/studio'
+import Document, {
+  Html,
+  Head,
+  Main,
+  NextScript,
+  DocumentContext,
+  DocumentInitialProps,
+} from 'next/document'
 
-export default class Document extends ServerStyleSheetDocument {
+class MyDocument extends Document {
+  // If you need to add custom logic to getInitialProps, you can override it here
+  static async getInitialProps(
+    ctx: DocumentContext,
+  ): Promise<DocumentInitialProps> {
+    const initialProps = await Document.getInitialProps(ctx)
+    return { ...initialProps }
+  }
+
   render() {
     return (
-      <Html lang="en">
-        <Head />
-        <body className="bg-white">
+      <Html>
+        <Head></Head>
+        <body>
           <Main />
           <NextScript />
         </body>
@@ -14,3 +28,5 @@ export default class Document extends ServerStyleSheetDocument {
     )
   }
 }
+
+export default MyDocument
