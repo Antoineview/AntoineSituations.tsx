@@ -104,10 +104,37 @@ export default function PostPage(props: {
             >
               <Head>
                 <title>{`${post.title} | ${title}`}</title>
+                <meta name="description" content={post.excerpt || `Article by Antoine RICHARD-CAPPONI`} />
+                <meta name="author" content={post.auteur?.name || "Antoine RICHARD-CAPPONI"} />
+                
+                {/* Open Graph / Facebook */}
+                <meta property="og:type" content="article" />
+                <meta property="og:title" content={post.title} />
+                <meta property="og:description" content={post.excerpt || `Article by Antoine RICHARD-CAPPONI`} />
+                <meta property="og:site_name" content={title} />
+                <meta property="article:published_time" content={post.date} />
+                {post.auteur?.name && (
+                  <meta property="article:author" content={post.auteur.name} />
+                )}
                 {post.coverImage?.asset?._ref && (
                   <meta
                     key="ogImage"
                     property="og:image"
+                    content={urlForImage(post.coverImage)
+                      .width(1200)
+                      .height(627)
+                      .fit('crop')
+                      .url()}
+                  />
+                )}
+                
+                {/* Twitter */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={post.title} />
+                <meta name="twitter:description" content={post.excerpt || `Article by Antoine RICHARD-CAPPONI`} />
+                {post.coverImage?.asset?._ref && (
+                  <meta
+                    name="twitter:image"
                     content={urlForImage(post.coverImage)
                       .width(1200)
                       .height(627)
