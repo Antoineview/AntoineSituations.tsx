@@ -13,7 +13,7 @@ export default function HeroPost(
   const { title, coverImage, date, excerpt, auteur, slug } = props
   return (
     <section className="herocard">
-      <h2 className="mb-2 ml-1 text-6xl font-bold leading-tight tracking-tighter md:text-7xl">
+      <h2 className="mb-2 ml-1 text-6xl font-bold leading-tight tracking-tighter md:text-7xl hero-date">
         <Date dateString={date} />
       </h2>
       <div className="heropostimage">
@@ -28,7 +28,7 @@ export default function HeroPost(
           </h3>
         </div>
         <div>
-          {excerpt && <p className="mb-4 text-lg leading-relaxed">{excerpt}</p>}
+          {excerpt && <p className="mb-4 text-lg leading-relaxed hero-excerpt">{excerpt}</p>}
           {auteur && (
             <AuthorAvatar name={auteur.name} picture={auteur.picture} />
           )}

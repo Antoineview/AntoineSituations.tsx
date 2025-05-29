@@ -22,15 +22,15 @@ export default function PostPreview({
           priority={false}
         />
       </div>
-      <h3 className="mb-3 text-3xl leading-snug">
+      <h3 className="mb-3 text-3xl leading-snug preview-title">
         <Link href={`/posts/${slug}`} className="hover:underline">
           {title}
         </Link>
       </h3>
-      <div className="mb-4 text-lg">
+      <div className="mb-4 text-lg preview-date">
         <Date dateString={date} />
       </div>
-      {excerpt && <p className="mb-4 text-lg leading-relaxed">{excerpt}</p>}
+      {excerpt && <p className="mb-4 text-lg leading-relaxed preview-excerpt">{excerpt}</p>}
       {auteur && <Avatar name={auteur.name} picture={auteur.picture} />}
     </div>
   )

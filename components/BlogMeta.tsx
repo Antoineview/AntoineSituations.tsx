@@ -29,7 +29,7 @@ export default function BlogMeta() {
       <meta name="msapplication-config" content="/favicon/browserconfig.xml" />
       <meta name="theme-color" content="#000" />
       <meta
-        name="AdaptativeDesigns"
+        name="AntoineView"
         content={`Blog de R&D développement web et apps crée par Antoine RICHARD-CAPPONI à la quête du less is more. `}
       />
     </>

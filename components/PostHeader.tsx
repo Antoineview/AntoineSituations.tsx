@@ -3,11 +3,12 @@ import CoverImage from 'components/CoverImage'
 import Date from 'components/PostDate'
 import PostTitle from 'components/PostTitle'
 import type { Post } from 'lib/sanity.queries'
+import Link from 'next/link'
 
 export default function PostHeader(
-  props: Pick<Post, 'title' | 'coverImage' | 'file' | 'date' | 'auteur' | 'slug'>
+  props: Pick<Post, 'title' | 'coverImage' | 'file' | 'date' | 'auteur' | 'slug' | 'category'>
 ) {
-  const { title, coverImage, file, date, auteur, slug } = props
+  const { title, coverImage, file, date, auteur, slug, category } = props
 
   const handleDownload = () => {
     window.open(`${file}?dl=`, '_blank')
@@ -26,8 +27,21 @@ export default function PostHeader(
         <div className="mb-6 block md:hidden">
           {auteur && <Avatar name={auteur.name} picture={auteur.picture} />}
         </div>
-        <div className="mb-6 text-lg">
+        <div className="mb-6 flex items-center gap-4 text-lg">
           <Date dateString={date} />
+          {category && (
+            <Link
+              href={`/categories/${category.slug}`}
+              className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm transition-colors hover:bg-gray-100"
+              style={{ color: category.color }}
+            >
+              <div
+                className="h-2 w-2 rounded-full"
+                style={{ backgroundColor: category.color }}
+              />
+              {category.title}
+            </Link>
+          )}
         </div>
         {file && (
           <div className="mb-6">

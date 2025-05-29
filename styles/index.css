@@ -2,63 +2,257 @@
 @tailwind components;
 @tailwind utilities;
 
-.blogimages{
-	border-radius: 15px;
+@font-face {
+  font-family: 'Crozet-Regular';
+  src:
+    url('/fonts/Crozet-Regular.woff2') format('woff2'),
+    url('/fonts/Crozet-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Poppins Display Fonts */
+@font-face {
+  font-family: 'Poppins-Display';
+  src:
+    url('/fonts/poppins/BBBPoppinsTN-DisplayRegular.woff2') format('woff2'),
+    url('/fonts/poppins/BBBPoppinsTN-DisplayRegular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins-Display';
+  src:
+    url('/fonts/poppins/BBBPoppinsTN-DisplaySemiBold.woff2') format('woff2'),
+    url('/fonts/poppins/BBBPoppinsTN-DisplaySemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins-Display';
+  src:
+    url('/fonts/poppins/BBBPoppinsTN-DisplayBold.woff2') format('woff2'),
+    url('/fonts/poppins/BBBPoppinsTN-DisplayBold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins-Display';
+  src:
+    url('/fonts/poppins/BBBPoppinsTN-DisplayBlack.woff2') format('woff2'),
+    url('/fonts/poppins/BBBPoppinsTN-DisplayBlack.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Poppins Text Fonts */
+@font-face {
+  font-family: 'Poppins-Text';
+  src:
+    url('/fonts/poppins/BBBPoppinsTN-TextRegular.woff2') format('woff2'),
+    url('/fonts/poppins/BBBPoppinsTN-TextRegular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins-Text';
+  src:
+    url('/fonts/poppins/BBBPoppinsTN-TextSemiBold.woff2') format('woff2'),
+    url('/fonts/poppins/BBBPoppinsTN-TextSemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins-Text';
+  src:
+    url('/fonts/poppins/BBBPoppinsTN-TextBold.woff2') format('woff2'),
+    url('/fonts/poppins/BBBPoppinsTN-TextBold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.main-title {
+  font-family: 'Crozet-Regular', serif;
+}
+
+.blogimages {
+  border-radius: 15px;
 }
 
 html,
 body,
-main{
-	background-color: black;
-	color: white;
+main {
+  background-color: black;
+  color: white;
+  font-family: 'Poppins-Text', sans-serif;
+  font-weight: 400;
 }
 
-.image{
-	transform: scale(1) ;
-	transition: all 700ms ease;
+.image {
+  transform: scale(1);
+  transition: all 700ms ease;
 }
 
-.image:hover{
-	transform: scale(1.01) ;
-	transition: all 700ms ease;
+.image:hover {
+  transform: scale(1.01);
+  transition: all 700ms ease;
 }
 
-.heropostimage{
-	border-radius: 10px;
-	border: 1px solid rgba( 255, 255, 255, 0.18 );
+.heropostimage {
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-.heroposttext{
-	font-size: 44px;
+.heroposttext {
+  font-size: 44px;
+  font-family: 'Poppins-Display', sans-serif;
+  font-weight: 700;
 }
 
-.herocard{
-	-webkit-backdrop-filter: blur( 4px );
-	border: 1px solid rgba( 255, 255, 255, 0.18 );
-	backdrop-filter: blur( 4px );
-	background-color: rgba(142, 197, 252, 0.25);
-	background-image: linear-gradient(62deg, rgba(142, 197, 252, 0.25) 0%, rgba(224, 195, 252, 0.25) 100%);
-	padding: 10px;
-	border-radius: 15px;
-	margin-bottom: 60px;
-
+.herocard {
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(4px);
+  background-color: rgba(142, 197, 252, 0.25);
+  background-image: linear-gradient(
+    62deg,
+    rgba(142, 197, 252, 0.25) 0%,
+    rgba(224, 195, 252, 0.25) 100%
+  );
+  padding: 10px;
+  border-radius: 15px;
+  margin-bottom: 60px;
 }
 
-.morecardcontainer{
-	-webkit-backdrop-filter: blur( 4px );
-	border: 1px solid rgba( 255, 255, 255, 0.18 );
-	backdrop-filter: blur( 4px );
-	background-color: rgba(40, 39, 39, 0.25);
-	padding: 15px;
-	border-radius: 15px;
-	margin-bottom: 30px;
-
+.morecardcontainer {
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(4px);
+  background-color: rgba(40, 39, 39, 0.25);
+  padding: 15px;
+  border-radius: 15px;
+  margin-bottom: 30px;
 }
 
-.separator{
-	background-color: rgba(58, 58, 58, 1)
+.separator {
+  background-color: rgba(58, 58, 58, 1);
 }
-.morecardh1{
-	
+.morecardh1 {
+  font-family: 'Poppins-Display', sans-serif;
+  font-weight: 600;
+}
 
+/* Typography System */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Poppins-Display', sans-serif;
+}
+
+h1 {
+  font-weight: 700;
+}
+
+h2 {
+  font-weight: 600;
+}
+
+h3,
+h4 {
+  font-weight: 600;
+}
+
+h5,
+h6 {
+  font-weight: 500;
+}
+
+p,
+span,
+div,
+a,
+li,
+td,
+th {
+  font-family: 'Poppins-Text', sans-serif;
+  font-weight: 400;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+/* Specific typography classes for components */
+.post-title {
+  font-family: 'Poppins-Display', sans-serif;
+  font-weight: 700;
+}
+
+.hero-date {
+  font-family: 'Poppins-Display', sans-serif;
+  font-weight: 700;
+}
+
+.hero-excerpt {
+  font-family: 'Poppins-Text', sans-serif;
+  font-weight: 400;
+}
+
+.preview-title {
+  font-family: 'Poppins-Display', sans-serif;
+  font-weight: 600;
+}
+
+.preview-date {
+  font-family: 'Poppins-Text', sans-serif;
+  font-weight: 500;
+}
+
+.preview-excerpt {
+  font-family: 'Poppins-Text', sans-serif;
+  font-weight: 400;
+}
+
+.author-name {
+  font-family: 'Poppins-Text', sans-serif;
+  font-weight: 600;
+}
+
+.blog-subtitle {
+  font-family: 'Poppins-Text', sans-serif;
+  font-weight: 400;
+}
+
+.blog-description {
+  font-family: 'Poppins-Text', sans-serif;
+  font-weight: 400;
+}
+
+.back-link {
+  font-family: 'Poppins-Display', sans-serif;
+  font-weight: 600;
 }

@@ -3,7 +3,8 @@ import BlogHeader from 'components/BlogHeader'
 import Layout from 'components/BlogLayout'
 import HeroPost from 'components/HeroPost'
 import MoreStories from 'components/MoreStories'
-import type { Post, Settings } from 'lib/sanity.queries'
+import Categories from 'components/Categories'
+import type { Post, Settings, Category } from 'lib/sanity.queries'
 import Head from 'next/head'
 
 export default function IndexPage(props: {
@@ -11,8 +12,9 @@ export default function IndexPage(props: {
   loading?: boolean
   posts: Post[]
   settings: Settings
+  categories?: Category[]
 }) {
-  const { preview, loading, posts, settings } = props
+  const { preview, loading, posts, settings, categories = [] } = props
   const [heroPost, ...morePosts] = posts
   const { title = 'titre' } = settings
   const { lilparagraph = 'description' } = settings
@@ -24,7 +26,12 @@ export default function IndexPage(props: {
           <title>{title}</title>
         </Head>
         <Container>
-          <BlogHeader title={title} lilparagraph={lilparagraph} level={1} />
+          <BlogHeader 
+            title={title} 
+            lilparagraph={lilparagraph} 
+            bigparapraph=""
+            level={1} 
+          />
           {heroPost && (
             <HeroPost
               title={heroPost.title}
@@ -36,6 +43,7 @@ export default function IndexPage(props: {
             />
           )}
           {morePosts.length > 0 && <MoreStories posts={morePosts} />}
+          {categories && categories.length > 0 && <Categories categories={categories} />}
         </Container>
       </Layout>
     </>

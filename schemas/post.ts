@@ -72,6 +72,12 @@ export default defineType({
       type: 'reference',
       to: [{ type: authorType.name }],
     },
+    {
+      name: 'category',
+      title: 'Catégorie',
+      type: 'reference',
+      to: [{ type: 'category' }],
+    },
   ],
   preview: {
     select: {
