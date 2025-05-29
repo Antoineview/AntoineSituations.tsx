@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import PostPreview from 'components/PostPreview'
 import type { Post } from 'lib/sanity.queries'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -19,8 +19,22 @@ const groupPostsBySemester = (posts: Post[]) => {
   }, {} as Record<string, Post[]>)
 }
 
+// Debounce function to limit how often a function can be called
+const debounce = (func: Function, wait: number) => {
+  let timeout: NodeJS.Timeout
+  return function executedFunction(...args: any[]) {
+    const later = () => {
+      clearTimeout(timeout)
+      func(...args)
+    }
+    clearTimeout(timeout)
+    timeout = setTimeout(later, wait)
+  }
+}
+
 export default function MoreStories({ posts, hideTitle }: { posts: Post[], hideTitle?: boolean }) {
   const [visiblePosts, setVisiblePosts] = useState(2)
+  const [isLoading, setIsLoading] = useState(false)
   const hasMorePosts = posts.length > visiblePosts
   const observerRef = useRef<IntersectionObserver | null>(null)
   const loadMoreRef = useRef<HTMLDivElement>(null)
@@ -34,17 +48,32 @@ export default function MoreStories({ posts, hideTitle }: { posts: Post[], hideT
     [groupedPosts, visiblePosts]
   )
 
+  const loadMore = useCallback(() => {
+    if (hasMorePosts && !isLoading) {
+      setIsLoading(true)
+      setVisiblePosts(prev => prev + 2)
+      // Reset loading state after animation completes
+      setTimeout(() => setIsLoading(false), 500)
+    }
+  }, [hasMorePosts, isLoading])
+
+  // Debounced load more function
+  const debouncedLoadMore = useMemo(
+    () => debounce(loadMore, 100),
+    [loadMore]
+  )
+
   useEffect(() => {
     const options = {
       root: null,
-      rootMargin: '0px',
+      rootMargin: '200px 0px', // Increased margin for earlier loading
       threshold: 0.1,
     }
 
     observerRef.current = new IntersectionObserver((entries) => {
       const [entry] = entries
-      if (entry.isIntersecting && hasMorePosts) {
-        setVisiblePosts(prev => prev + 2)
+      if (entry.isIntersecting) {
+        debouncedLoadMore()
       }
     }, options)
 
@@ -57,14 +86,14 @@ export default function MoreStories({ posts, hideTitle }: { posts: Post[], hideT
         observerRef.current.disconnect()
       }
     }
-  }, [hasMorePosts])
+  }, [debouncedLoadMore])
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15
+        staggerChildren: 0.1 // Reduced stagger time for faster loading
       }
     }
   }
@@ -78,18 +107,18 @@ export default function MoreStories({ posts, hideTitle }: { posts: Post[], hideT
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.7,
-        delay: index * 0.1,
-        ease: [0.6, -0.05, 0.01, 0.99]
+        duration: 0.5, // Reduced duration for faster animations
+        delay: index * 0.05, // Reduced delay between items
+        ease: [0.4, 0, 0.2, 1] // Smoother easing curve
       }
     }),
     exit: (index: number) => ({
       opacity: 0,
       y: -20,
       transition: {
-        duration: 0.5,
-        delay: index * 0.05,
-        ease: [0.6, -0.05, 0.01, 0.99]
+        duration: 0.3,
+        delay: index * 0.02,
+        ease: [0.4, 0, 0.2, 1]
       }
     })
   }
@@ -100,7 +129,7 @@ export default function MoreStories({ posts, hideTitle }: { posts: Post[], hideT
         <motion.h1 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: [0.6, -0.05, 0.01, 0.99] }}
+          transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
           className="mb-8 text-6xl font-bold leading-tight tracking-tighter md:text-7xl morecardh1"
         >
           plus.
@@ -132,7 +161,7 @@ export default function MoreStories({ posts, hideTitle }: { posts: Post[], hideT
                   variants={itemVariants}
                   initial="hidden"
                   whileInView="visible"
-                  viewport={{ once: false, margin: "-100px" }}
+                  viewport={{ once: false, margin: "-50px" }}
                   exit="exit"
                   layout
                 >
@@ -150,7 +179,18 @@ export default function MoreStories({ posts, hideTitle }: { posts: Post[], hideT
         </motion.div>
       ))}
       {hasMorePosts && (
-        <div ref={loadMoreRef} className="h-10" />
+        <div ref={loadMoreRef} className="h-10">
+          {isLoading && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="flex justify-center"
+            >
+              <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
+            </motion.div>
+          )}
+        </div>
       )}
     </section>
   )
