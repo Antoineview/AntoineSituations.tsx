@@ -4,14 +4,21 @@ import Link from 'next/link'
 export default function Categories({ categories }: { categories: Category[] }) {
   return (
     <section className="morecardcontainer">
-      <h2 className="mb-8 text-6xl font-bold leading-tight tracking-tighter md:text-7xl morecardh1">
+      <h1 className="mb-8 text-6xl font-bold leading-tight tracking-tighter md:text-7xl morecardh1">
         catégories.
-      </h2>
+      </h1>
       <div className="mb-6 grid grid-cols-1 gap-y-4 md:grid-cols-2 md:gap-x-5 md:gap-y-5 lg:gap-x-3">
         {categories.map((category) => (
           <div key={category._id} className="category-card">
             <Link href={`/categories/${category.slug}`} className="block group">
-              <div className="flex items-center space-x-3 p-4 rounded-lg border border-white/20 backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all duration-300">
+              <div 
+                className="flex items-center space-x-3 p-4 rounded-lg border border-white/20 backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all duration-300 relative overflow-hidden"
+                style={{
+                  background: category.color?.hex ? 
+                    `linear-gradient(135deg, transparent 0%, ${category.color.hex}30 50%, ${category.color.hex}40 100%)` : 
+                    'transparent'
+                }}
+              >
                 {category.color?.hex && (
                   <div 
                     className="w-4 h-4 rounded-full flex-shrink-0"

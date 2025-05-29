@@ -21,11 +21,11 @@ export default function PostPreview({
           priority={false}
         />
       </div>
-      <h3 className="mb-3 text-3xl leading-snug preview-title">
+      <h1 className="mb-3 text-3xl leading-snug preview-title">
         <Link href={`/posts/${slug}`} className="hover:underline">
           {title}
         </Link>
-      </h3>
+      </h1>
       <div className="mb-4 text-lg preview-date">
         <Date dateString={date} />
       </div>

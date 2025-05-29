@@ -30,14 +30,13 @@ export default function IndexPage(props: {
             title={title} 
             lilparagraph={lilparagraph} 
             bigparapraph=""
-            level={1} 
           />
           {heroPost && (
             <HeroPost
               title={heroPost.title}
               coverImage={heroPost.coverImage}
               date={heroPost.date}
-              auteur={heroPost.auteur}
+              
               slug={heroPost.slug}
               excerpt={heroPost.excerpt}
             />

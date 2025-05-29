@@ -13,10 +13,10 @@ export default function HeroPost(
   const { title, coverImage, date, excerpt, slug, videoUrl } = props
   return (
     <section className="herocard">
-      <h2 className="mb-2 ml-1 text-6xl font-bold leading-tight tracking-tighter md:text-7xl hero-date">
+      <h1 className="mb-2 ml-1 text-6xl font-bold leading-tight tracking-tighter md:text-7xl hero-date">
         <Date dateString={date} />
-      </h2>
-      <div className="heropostimage">
+      </h1>
+      <div className="heropostimage mb-8">
         {videoUrl ? (
           <VideoPlayer url={videoUrl} title={title} />
         ) : (
@@ -25,11 +25,11 @@ export default function HeroPost(
       </div>
       <div className="">
         <div>
-          <h2 className="heroposttext">
+          <h1 className="heroposttext">
             <Link href={`/posts/${slug}`} className="hover:underline font-semibold">
               {title || 'Untitled'}
             </Link>
-          </h2>
+          </h1>
         </div>
         <div>
           {excerpt && <p className="mb-4 text-lg leading-relaxed hero-excerpt">{excerpt}</p>}

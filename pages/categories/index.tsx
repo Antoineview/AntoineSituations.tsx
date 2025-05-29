@@ -23,7 +23,7 @@ export default function CategoriesPage({ categories }: { categories: Category[] 
         <title>Catégories | antoine.tsx</title>
       </Head>
       <Container>
-        <BlogHeader title="Catégories" lilparagraph="" bigparapraph="" level={1} />
+        <BlogHeader title="Catégories" lilparagraph="" bigparapraph="" />
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {categories.map((category) => (
             <Link

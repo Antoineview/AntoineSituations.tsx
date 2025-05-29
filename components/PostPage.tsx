@@ -11,6 +11,7 @@ import type { Post, Settings, fileQuery } from 'lib/sanity.queries'
 import ErrorPage from 'next/error'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 export default function PostPage(props: {
   preview?: boolean
@@ -37,8 +38,12 @@ export default function PostPage(props: {
           lilparagraph={''}
           bigparapraph={''}
           title={title}
-          level={2}
         />
+        <div className="mb-8">
+          <Link href="/" className="text-lg font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">
+            ← Return Home
+          </Link>
+        </div>
         {router.isFallback || (preview && !post) ? (
           <PostTitle>chargement...</PostTitle>
         ) : (

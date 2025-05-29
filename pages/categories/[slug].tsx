@@ -4,10 +4,11 @@ import Layout from 'components/BlogLayout'
 import MoreStories from 'components/MoreStories'
 import { apiVersion, dataset, projectId } from 'lib/sanity.api'
 import { postsByCategoryQuery, categoriesQuery } from 'lib/sanity.queries'
-import type { GetStaticPaths, GetStaticProps } from 'next'
+import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
 import { createClient } from 'next-sanity'
 import Head from 'next/head'
 import type { Post } from 'lib/sanity.queries'
+import Link from 'next/link'
 
 interface Category {
   _id: string
@@ -18,25 +19,26 @@ interface Category {
 }
 
 export default function CategoryPage({
-  category,
-  posts,
-}: {
-  category: Category
-  posts: Post[]
-}) {
+  data: { posts, category },
+  preview,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
-    <Layout preview={false}>
+    <Layout preview={preview}>
       <Head>
         <title>{`${category.title} | antoine.tsx`}</title>
       </Head>
       <Container>
         <BlogHeader
           title={category.title}
-          lilparagraph={category.description}
+          lilparagraph=""
           bigparapraph=""
-          level={1}
         />
-        {posts.length > 0 && <MoreStories posts={posts} />}
+        <div className="mb-8">
+          <Link href="/" className="text-lg font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">
+            ← Return Home
+          </Link>
+        </div>
+        {posts.length > 0 && <MoreStories posts={posts} hideTitle />}
       </Container>
     </Layout>
   )
@@ -90,8 +92,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
     return {
       props: {
-        category,
-        posts,
+        data: {
+          category,
+          posts,
+        },
+        preview: false,
       },
       revalidate: 60,
     }
@@ -99,8 +104,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   return {
     props: {
-      category: null,
-      posts: [],
+      data: {
+        category: null,
+        posts: [],
+      },
+      preview: false,
     },
   }
 } 

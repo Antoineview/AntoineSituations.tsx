@@ -10,8 +10,7 @@ import {
 } from 'lib/sanity.queries'
 import type { GetStaticProps, InferGetStaticPropsType } from 'next'
 import { createClient } from 'next-sanity'
-import PreviewSuspense from 'next-sanity/preview'
-import { lazy } from 'react'
+import { lazy, Suspense } from 'react'
 
 const PreviewIndexPage = lazy(() => import('components/PreviewIndexPage'))
 
@@ -62,13 +61,13 @@ export default function IndexRoute({
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   if (preview) {
     return (
-      <PreviewSuspense
+      <Suspense
         fallback={
           <IndexPage preview loading posts={posts} settings={settings} categories={categories || []} />
         }
       >
         <PreviewIndexPage token={token} />
-      </PreviewSuspense>
+      </Suspense>
     )
   }
 
