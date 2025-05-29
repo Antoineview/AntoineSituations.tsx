@@ -74,7 +74,9 @@ export interface Category {
   title?: string
   slug?: string
   description?: string
-  color?: string
+  color?: {
+    hex: string
+  }
 }
 
 export interface Post {

@@ -46,11 +46,11 @@ export default function PostHeader(
             <Link
               href={`/categories/${category.slug}`}
               className="inline-flex items-center gap-2 rounded-full px-3 py-1 text-sm transition-colors hover:bg-gray-100"
-              style={{ color: category.color }}
+              style={{ color: category.color?.hex }}
             >
               <div
                 className="h-2 w-2 rounded-full"
-                style={{ backgroundColor: category.color }}
+                style={{ backgroundColor: category.color?.hex }}
               />
               {category.title}
             </Link>
