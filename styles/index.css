@@ -5,8 +5,8 @@
 @font-face {
   font-family: 'Homoneta';
   src:
-    url('/fonts/Homoneta-Italic.woff2') format('woff2'),
-    url('/fonts/Homoneta-Italic.woff') format('woff');
+    url('/fonts/homoneta/Homoneta-Italic.woff2') format('woff2'),
+    url('/fonts/homoneta/Homoneta-Italic.woff') format('woff');
   font-weight: normal;
   font-style: italic;
   font-display: swap;
@@ -170,9 +170,10 @@ p, span, div, a, li, td, th {
 }
 
 .heroposttext {
-  font-size: 44px;
-  font-family: 'Homoneta', serif;
-  font-weight: 900;
+  font-size: 44px !important;
+  font-family: 'Homoneta', serif !important;
+  font-style: italic !important;
+  font-weight: normal !important;
 }
 
 .herocard {

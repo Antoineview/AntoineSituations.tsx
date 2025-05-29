@@ -53,7 +53,7 @@ export default function HeroPost(
       </motion.h1>
       <motion.div 
         variants={itemVariants}
-        className="heropostimage mb-6 sm:mb-8"
+        className="heropostimage mb-4 sm:mb-1"
       >
         {videoUrl ? (
           <VideoPlayer url={videoUrl} title={title} />
@@ -68,9 +68,12 @@ export default function HeroPost(
         <div>
           <motion.h1 
             variants={itemVariants}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tighter heroposttext mb-4 sm:mb-6"
+            className="text-4xl sm:text-6xl md:text-6xl lg:text-7xl leading-tight tracking-tighter mb-4 sm:mb-1"
           >
-            <Link href={`/posts/${slug}`} className="hover:underline font-semibold">
+            <Link 
+              href={`/posts/${slug}`} 
+              className="hover:underline font-['Homoneta'] italic"
+            >
               {title || 'Untitled'}
             </Link>
           </motion.h1>

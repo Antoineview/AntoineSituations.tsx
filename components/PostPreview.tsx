@@ -21,8 +21,11 @@ export default function PostPreview({
           priority={false}
         />
       </div>
-      <h1 className="mb-3 text-3xl leading-snug preview-title">
-        <Link href={`/posts/${slug}`} className="hover:underline">
+      <h1 className="mb-7 text-4xl leading-tight">
+        <Link 
+          href={`/posts/${slug}`} 
+          className="hover:underline font-['Homoneta'] italic"
+        >
           {title}
         </Link>
       </h1>
