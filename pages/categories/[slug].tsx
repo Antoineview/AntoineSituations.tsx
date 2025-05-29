@@ -77,18 +77,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       useCdn: false,
     })
 
-    console.log('Fetching category with slug:', params?.slug)
     const category = await client.fetch<Category>(
       `*[_type == "category" && slug.current == $slug][0]`,
       { slug: params?.slug }
     )
-    console.log('Category found:', category)
-
-    console.log('Fetching posts for category:', params?.slug)
     const posts = await client.fetch<Post[]>(postsByCategoryQuery, {
       categorySlug: params?.slug,
     })
-    console.log('Posts found:', posts)
 
     return {
       props: {

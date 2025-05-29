@@ -11,14 +11,6 @@ export default function PostHeader(
 ) {
   const { title, coverImage, file, date, auteur, slug, category, videoUrl } = props
 
-  console.log('PostHeader received props:', {
-    title,
-    videoUrl,
-    slug,
-    hasCoverImage: !!coverImage,
-    hasFile: !!file
-  })
-
   const handleDownload = () => {
     window.open(`${file}?dl=`, '_blank')
   }

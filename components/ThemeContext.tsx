@@ -52,10 +52,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     document.documentElement.classList.remove('dark');
     // Then add the new theme class
     document.documentElement.classList.add(newTheme);
-    
-    // Log for debugging
-    console.log('Theme switched to:', newTheme);
-    console.log('Current classes:', document.documentElement.classList.toString());
   };
 
   const value = {
