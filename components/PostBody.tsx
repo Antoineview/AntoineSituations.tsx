@@ -14,6 +14,9 @@ import { urlForImage } from 'lib/sanity.image'
 import Image from 'next/image'
 import { useState } from 'react'
 import styles from './PostBody.module.css'
+import { motion, useInView } from 'framer-motion'
+import { useRef } from 'react'
+import React, { ReactNode } from 'react'
 
 // Dynamically import ReactPlayer with no SSR
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false })
@@ -26,6 +29,57 @@ interface YouTubeNode {
       _ref: string
     }
   }
+}
+
+const textVariants = {
+  hidden: { 
+    opacity: 0,
+    y: 50
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: [0.6, -0.05, 0.01, 0.99]
+    }
+  }
+}
+
+const AnimatedText = ({ children, as: Component = 'p' }: { children: ReactNode, as?: keyof JSX.IntrinsicElements }) => {
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true, amount: 0.1 })
+  
+  // Convert React children to string
+  const textContent = React.Children.map(children, child => {
+    if (typeof child === 'string') return child
+    if (React.isValidElement(child)) {
+      return child.props.children
+    }
+    return ''
+  }).join('')
+
+  const lines = textContent.split('\n').filter(line => line.trim() !== '')
+  
+  return (
+    <Component ref={ref} className={styles.portableText}>
+      {lines.map((line, index) => (
+        <motion.span
+          key={index}
+          initial="hidden"
+          animate={isInView ? "visible" : "hidden"}
+          variants={textVariants}
+          className="block"
+          custom={index}
+          transition={{
+            delay: index * 0.1
+          }}
+        >
+          {line}
+        </motion.span>
+      ))}
+    </Component>
+  )
 }
 
 const serializers = {
@@ -81,7 +135,40 @@ const serializers = {
 export default function PostBody({ content }) {
   return (
     <div className={`mx-auto max-w-2xl ${styles.portableText}`}>
-      <PortableText value={content} components={serializers} />
+      <PortableText 
+        value={content} 
+        components={{
+          ...serializers,
+          marks: {
+            strong: ({ children }) => <strong>{children}</strong>,
+            em: ({ children }) => <em>{children}</em>,
+            code: ({ children }) => <code>{children}</code>,
+            link: ({ children, value }) => {
+              const target = (value?.href || '').startsWith('http') ? '_blank' : undefined
+              return (
+                <a
+                  href={value?.href}
+                  target={target}
+                  rel={target === '_blank' ? 'noindex nofollow' : undefined}
+                >
+                  {children}
+                </a>
+              )
+            }
+          },
+          block: {
+            normal: ({ children }) => (
+              <AnimatedText as="p">{children}</AnimatedText>
+            ),
+            h2: ({ children }) => (
+              <AnimatedText as="h2">{children}</AnimatedText>
+            ),
+            h3: ({ children }) => (
+              <AnimatedText as="h3">{children}</AnimatedText>
+            )
+          }
+        }} 
+      />
     </div>
   )
 }

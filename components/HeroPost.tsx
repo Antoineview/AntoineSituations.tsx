@@ -3,6 +3,7 @@ import Date from 'components/PostDate'
 import VideoPlayer from 'components/VideoPlayer'
 import type { Post } from 'lib/sanity.queries'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 
 export default function HeroPost(
   props: Pick<
@@ -11,30 +12,80 @@ export default function HeroPost(
   >,
 ) {
   const { title, coverImage, date, excerpt, slug, videoUrl } = props
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15
+      }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { 
+      opacity: 0,
+      y: 20
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.7,
+        ease: [0.6, -0.05, 0.01, 0.99]
+      }
+    }
+  }
+
   return (
-    <section className="herocard">
-      <h1 className="mb-2 ml-1 text-6xl font-bold leading-tight tracking-tighter md:text-7xl hero-date">
+    <motion.section 
+      className="herocard"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.h1 
+        variants={itemVariants}
+        className="mb-2 ml-1 text-6xl font-bold leading-tight tracking-tighter md:text-7xl hero-date"
+      >
         <Date dateString={date} />
-      </h1>
-      <div className="heropostimage mb-8">
+      </motion.h1>
+      <motion.div 
+        variants={itemVariants}
+        className="heropostimage mb-8"
+      >
         {videoUrl ? (
           <VideoPlayer url={videoUrl} title={title} />
         ) : (
           <CoverImage slug={slug} title={title} image={coverImage} priority />
         )}
-      </div>
-      <div className="">
+      </motion.div>
+      <motion.div 
+        variants={itemVariants}
+        className=""
+      >
         <div>
-          <h1 className="heroposttext">
+          <motion.h1 
+            variants={itemVariants}
+            className="heroposttext"
+          >
             <Link href={`/posts/${slug}`} className="hover:underline font-semibold">
               {title || 'Untitled'}
             </Link>
-          </h1>
+          </motion.h1>
         </div>
         <div>
-          {excerpt && <p className="mb-4 text-lg leading-relaxed hero-excerpt">{excerpt}</p>}
+          {excerpt && (
+            <motion.p 
+              variants={itemVariants}
+              className="mb-4 text-lg leading-relaxed hero-excerpt"
+            >
+              {excerpt}
+            </motion.p>
+          )}
         </div>
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   )
 }

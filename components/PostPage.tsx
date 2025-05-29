@@ -7,11 +7,12 @@ import PostHeader from 'components/PostHeader'
 import PostTitle from 'components/PostTitle'
 import SectionSeparator from 'components/SectionSeparator'
 import { urlForImage } from 'lib/sanity.image'
-import type { Post, Settings, fileQuery } from 'lib/sanity.queries'
+import type { Post, Settings } from 'lib/sanity.queries'
 import ErrorPage from 'next/error'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 
 export default function PostPage(props: {
   preview?: boolean
@@ -31,6 +32,48 @@ export default function PostPage(props: {
     return <ErrorPage statusCode={404} />
   }
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.1
+      }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { 
+      opacity: 0,
+      y: 30
+    },
+    visible: (index: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        delay: index * 0.1,
+        ease: [0.6, -0.05, 0.01, 0.99]
+      }
+    })
+  }
+
+  const textVariants = {
+    hidden: { 
+      opacity: 0,
+      y: 20
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.6, -0.05, 0.01, 0.99]
+      }
+    }
+  }
+
   return (
     <Layout preview={preview} loading={loading}>
       <Container>
@@ -39,16 +82,26 @@ export default function PostPage(props: {
           bigparapraph={''}
           title={title}
         />
-        <div className="mb-8">
+        <motion.div 
+          className="mb-8"
+          variants={itemVariants}
+          initial="hidden"
+          animate="visible"
+          custom={0}
+        >
           <Link href="/" className="text-lg font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">
             ← Return Home
           </Link>
-        </div>
+        </motion.div>
         {router.isFallback || (preview && !post) ? (
           <PostTitle>chargement...</PostTitle>
         ) : (
           <>
-            <article>
+            <motion.article
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
               <Head>
                 <title>{`${post.title} | ${title}`}</title>
                 {post.coverImage?.asset?._ref && (
@@ -63,16 +116,40 @@ export default function PostPage(props: {
                   />
                 )}
               </Head>
-              <PostHeader
-                title={post.title}
-                coverImage={post.coverImage}
-                date={post.date}
-                auteur={post.auteur}
-              />
-              <PostBody content={post.content}></PostBody>
-            </article>
-            <SectionSeparator />
-            {morePosts.length > 0 && <MoreStories posts={morePosts} />}
+              <motion.div 
+                variants={itemVariants}
+                custom={1}
+              >
+                <PostHeader
+                  title={post.title}
+                  coverImage={post.coverImage}
+                  date={post.date}
+                  auteur={post.auteur}
+                />
+              </motion.div>
+              <motion.div 
+                variants={textVariants}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: false, margin: "-100px" }}
+              >
+                <PostBody content={post.content} />
+              </motion.div>
+            </motion.article>
+            <motion.div 
+              variants={itemVariants}
+              custom={2}
+            >
+              <SectionSeparator />
+            </motion.div>
+            {morePosts.length > 0 && (
+              <motion.div 
+                variants={itemVariants}
+                custom={3}
+              >
+                <MoreStories posts={morePosts} />
+              </motion.div>
+            )}
           </>
         )}
       </Container>
