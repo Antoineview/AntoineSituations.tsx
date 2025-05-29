@@ -15,6 +15,7 @@ import authorType from 'schemas/author'
 import categoryType from 'schemas/category'
 import postType from 'schemas/post'
 import settingsType from 'schemas/settings'
+import { youtube } from 'schemas/youtube'
 
 const title = process.env.NEXT_PUBLIC_SANITY_PROJECT_TITLE || 'antoine.tsx'
 
@@ -26,7 +27,7 @@ export default defineConfig({
   title,
   schema: {
     // If you want more content types, you can add them to this array
-    types: [settingsType, postType, authorType, categoryType],
+    types: [settingsType, postType, authorType, categoryType, youtube],
   },
   plugins: [
     deskTool({

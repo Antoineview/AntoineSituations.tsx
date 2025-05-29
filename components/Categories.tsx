@@ -19,7 +19,7 @@ export default function Categories({ categories }: { categories: Category[] }) {
                   />
                 )}
                 <div className="flex-1">
-                  <h3 className="text-xl font-semibold preview-title group-hover:underline">
+                  <h3 className="text-xl font-bold preview-title group-hover:underline">
                     {category.title}
                   </h3>
                   {category.description && (

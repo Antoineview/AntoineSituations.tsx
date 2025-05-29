@@ -119,7 +119,7 @@ main {
 .heroposttext {
   font-size: 44px;
   font-family: 'Poppins-Display', sans-serif;
-  font-weight: 700;
+  font-weight: 900;
 }
 
 .herocard {
@@ -152,7 +152,7 @@ main {
 }
 .morecardh1 {
   font-family: 'Poppins-Display', sans-serif;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 /* Typography System */
@@ -173,7 +173,10 @@ h2 {
   font-weight: 600;
 }
 
-h3,
+h3 {
+  font-weight: 700;
+}
+
 h4 {
   font-weight: 600;
 }
@@ -224,7 +227,7 @@ th {
 
 .preview-title {
   font-family: 'Poppins-Display', sans-serif;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .preview-date {

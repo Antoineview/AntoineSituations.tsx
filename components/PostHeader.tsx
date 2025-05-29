@@ -2,13 +2,22 @@ import Avatar from 'components/AuthorAvatar'
 import CoverImage from 'components/CoverImage'
 import Date from 'components/PostDate'
 import PostTitle from 'components/PostTitle'
+import VideoPlayer from 'components/VideoPlayer'
 import type { Post } from 'lib/sanity.queries'
 import Link from 'next/link'
 
 export default function PostHeader(
-  props: Pick<Post, 'title' | 'coverImage' | 'file' | 'date' | 'auteur' | 'slug' | 'category'>
+  props: Pick<Post, 'title' | 'coverImage' | 'file' | 'date' | 'auteur' | 'slug' | 'category' | 'videoUrl'>
 ) {
-  const { title, coverImage, file, date, auteur, slug, category } = props
+  const { title, coverImage, file, date, auteur, slug, category, videoUrl } = props
+
+  console.log('PostHeader received props:', {
+    title,
+    videoUrl,
+    slug,
+    hasCoverImage: !!coverImage,
+    hasFile: !!file
+  })
 
   const handleDownload = () => {
     window.open(`${file}?dl=`, '_blank')
@@ -21,7 +30,11 @@ export default function PostHeader(
         {auteur && <Avatar name={auteur.name} picture={auteur.picture} />}
       </div>
       <div className="mb-8 sm:mx-0 md:mb-16">
-        <CoverImage title={title} image={coverImage} priority slug={slug} />
+        {videoUrl ? (
+          <VideoPlayer url={videoUrl} title={title} />
+        ) : (
+          <CoverImage title={title} image={coverImage} priority slug={slug} />
+        )}
       </div>
       <div className="mx-auto max-w-2xl">
         <div className="mb-6 block md:hidden">

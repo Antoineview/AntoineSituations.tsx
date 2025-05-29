@@ -7,9 +7,10 @@ const postFields = groq`
   excerpt,
   file,
   coverImage,
+  videoUrl,
   "slug": slug.current,
   "auteur": auteur->{name, picture},
-  "category": category->{title, "slug": slug.current, description, "color": color.hex},
+  "category": category->{title, "slug": slug.current, description, "color": color.hex}
 `
 
 export const settingsQuery = groq`*[_type == "settings"][0]{title,lilparagraph}`
@@ -86,6 +87,7 @@ export interface Post {
   slug?: string
   content?: any
   file?: any
+  videoUrl?: string
   category?: Category
 }
 
