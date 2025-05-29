@@ -26,11 +26,13 @@ export default function IndexPage(props: {
           <title>{title}</title>
         </Head>
         <Container>
-          <BlogHeader 
-            title={title} 
-            lilparagraph={lilparagraph} 
-            bigparapraph=""
-          />
+          <div className="w-full">
+            <BlogHeader 
+              title={title} 
+              lilparagraph={lilparagraph} 
+              bigparapraph=""
+            />
+          </div>
           {heroPost && (
             <HeroPost
               title={heroPost.title}

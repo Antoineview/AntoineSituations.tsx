@@ -1,4 +1,5 @@
 import IndexPage from 'components/IndexPage'
+import PreviewIndexPage from 'components/PreviewIndexPage'
 import { apiVersion, dataset, projectId } from 'lib/sanity.api'
 import {
   type Post,
@@ -10,9 +11,7 @@ import {
 } from 'lib/sanity.queries'
 import type { GetStaticProps, InferGetStaticPropsType } from 'next'
 import { createClient } from 'next-sanity'
-import { lazy, Suspense } from 'react'
-
-const PreviewIndexPage = lazy(() => import('components/PreviewIndexPage'))
+import { Suspense } from 'react'
 
 export const getStaticProps: GetStaticProps<
   { preview: boolean; token: string | null; posts: Post[]; settings: Settings; categories: Category[] },

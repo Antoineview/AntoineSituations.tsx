@@ -324,3 +324,19 @@ html.dark {
   --background-color: #111827; /* gray-900 */
   --viewport-bg-color: #111827; /* gray-900 */
 }
+
+/* Remove the old animation keyframes and class since we're using Framer Motion */
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.7s ease-out forwards;
+}

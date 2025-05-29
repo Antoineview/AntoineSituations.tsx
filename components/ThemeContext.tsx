@@ -4,12 +4,10 @@ type Theme = 'light' | 'dark';
 
 interface ThemeContextType {
   theme: Theme;
-  toggleTheme: () => void;
 }
 
 const defaultContext: ThemeContextType = {
   theme: 'light',
-  toggleTheme: () => {},
 };
 
 const ThemeContext = createContext<ThemeContextType>(defaultContext);
@@ -19,44 +17,26 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   // Initialize theme and handle system preference changes
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as Theme;
     const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    const initialTheme = savedTheme || systemTheme;
-    
-    setTheme(initialTheme);
+    setTheme(systemTheme);
     document.documentElement.classList.remove('light', 'dark');
-    document.documentElement.classList.add(initialTheme);
+    document.documentElement.classList.add(systemTheme);
 
     // Listen for system theme changes
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e: MediaQueryListEvent) => {
-      if (!localStorage.getItem('theme')) {
-        const newTheme = e.matches ? 'dark' : 'light';
-        setTheme(newTheme);
-        document.documentElement.classList.remove('light', 'dark');
-        document.documentElement.classList.add(newTheme);
-      }
+      const newTheme = e.matches ? 'dark' : 'light';
+      setTheme(newTheme);
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(newTheme);
     };
 
     mediaQuery.addEventListener('change', handleChange);
     return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    
-    // Force remove both classes first
-    document.documentElement.classList.remove('light');
-    document.documentElement.classList.remove('dark');
-    // Then add the new theme class
-    document.documentElement.classList.add(newTheme);
-  };
-
   const value = {
     theme,
-    toggleTheme,
   };
 
   return (
