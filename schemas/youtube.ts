@@ -12,11 +12,22 @@ export const youtube = defineType({
       name: 'url',
       type: 'url',
       title: 'YouTube video URL',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'coverImage',
+      type: 'image',
+      title: 'Cover Image',
+      description: 'Optional custom cover image for the video',
+      options: {
+        hotspot: true,
+      },
     }),
   ],
   preview: {
     select: {
-      title: 'url'
+      title: 'url',
+      media: 'coverImage'
     }
   },
   components: {
