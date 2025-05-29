@@ -42,8 +42,9 @@ export default function IndexPage(props: {
               excerpt={heroPost.excerpt}
             />
           )}
+           {categories && categories.length > 0 && <Categories categories={categories} />}
           {morePosts.length > 0 && <MoreStories posts={morePosts} />}
-          {categories && categories.length > 0 && <Categories categories={categories} />}
+         
         </Container>
       </Layout>
     </>
