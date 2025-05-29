@@ -21,9 +21,9 @@ export default function BlogLayout({
           key="ogImage"
         />
       </Head>
-      <div className="min-h-screen">
+      <div className="min-h-screen relative">
         <AlertBanner preview={preview} loading={loading} />
-        <main>{children}</main>
+        <main className="relative z-10">{children}</main>
       </div>
     </>
   )
