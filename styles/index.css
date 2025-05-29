@@ -3,6 +3,16 @@
 @tailwind utilities;
 
 @font-face {
+  font-family: 'Homoneta';
+  src:
+    url('/fonts/Homoneta-Italic.woff2') format('woff2'),
+    url('/fonts/Homoneta-Italic.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'Crozet-Regular';
   src:
     url('/fonts/Crozet-Regular.woff2') format('woff2'),
@@ -161,7 +171,7 @@ p, span, div, a, li, td, th {
 
 .heroposttext {
   font-size: 44px;
-  font-family: 'Poppins-Display', sans-serif;
+  font-family: 'Homoneta', serif;
   font-weight: 900;
 }
 

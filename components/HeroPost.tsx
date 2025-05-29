@@ -68,7 +68,7 @@ export default function HeroPost(
         <div>
           <motion.h1 
             variants={itemVariants}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tighter heroposttext"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tighter heroposttext mb-4 sm:mb-6"
           >
             <Link href={`/posts/${slug}`} className="hover:underline font-semibold">
               {title || 'Untitled'}
