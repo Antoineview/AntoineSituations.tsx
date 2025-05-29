@@ -38,15 +38,15 @@ export default function PostPage(props: {
       opacity: 1,
       transition: {
         staggerChildren: 0.2,
-        delayChildren: 0.1
-      }
-    }
+        delayChildren: 0.1,
+      },
+    },
   }
 
   const itemVariants = {
-    hidden: { 
+    hidden: {
       opacity: 0,
-      y: 30
+      y: 30,
     },
     visible: (index: number) => ({
       opacity: 1,
@@ -54,42 +54,41 @@ export default function PostPage(props: {
       transition: {
         duration: 0.8,
         delay: index * 0.1,
-        ease: [0.6, -0.05, 0.01, 0.99]
-      }
-    })
+        ease: [0.6, -0.05, 0.01, 0.99],
+      },
+    }),
   }
 
   const textVariants = {
-    hidden: { 
+    hidden: {
       opacity: 0,
-      y: 20
+      y: 20,
     },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.6,
-        ease: [0.6, -0.05, 0.01, 0.99]
-      }
-    }
+        ease: [0.6, -0.05, 0.01, 0.99],
+      },
+    },
   }
 
   return (
     <Layout preview={preview} loading={loading}>
       <Container>
-        <BlogHeader
-          lilparagraph={''}
-          bigparapraph={''}
-          title={title}
-        />
-        <motion.div 
+        <BlogHeader lilparagraph={''} bigparapraph={''} title={title} />
+        <motion.div
           className="mb-8"
           variants={itemVariants}
           initial="hidden"
           animate="visible"
           custom={0}
         >
-          <Link href="/" className="text-lg font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">
+          <Link
+            href="/"
+            className="text-lg font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+          >
             ← Return Home
           </Link>
         </motion.div>
@@ -104,13 +103,22 @@ export default function PostPage(props: {
             >
               <Head>
                 <title>{`${post.title} | ${title}`}</title>
-                <meta name="description" content={post.excerpt || `Article by Antoine RICHARD-CAPPONI`} />
-                <meta name="author" content={post.auteur?.name || "Antoine RICHARD-CAPPONI"} />
-                
+                <meta
+                  name="description"
+                  content={post.excerpt || `Article by Antoine RICHARD-CAPPONI`}
+                />
+                <meta
+                  name="author"
+                  content={post.auteur?.name || 'Antoine RICHARD-CAPPONI'}
+                />
+
                 {/* Open Graph / Facebook */}
                 <meta property="og:type" content="article" />
                 <meta property="og:title" content={post.title} />
-                <meta property="og:description" content={post.excerpt || `Article by Antoine RICHARD-CAPPONI`} />
+                <meta
+                  property="og:description"
+                  content={post.excerpt || `Article by Antoine RICHARD-CAPPONI`}
+                />
                 <meta property="og:site_name" content={title} />
                 <meta property="article:published_time" content={post.date} />
                 {post.auteur?.name && (
@@ -127,11 +135,14 @@ export default function PostPage(props: {
                       .url()}
                   />
                 )}
-                
+
                 {/* Twitter */}
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={post.title} />
-                <meta name="twitter:description" content={post.excerpt || `Article by Antoine RICHARD-CAPPONI`} />
+                <meta
+                  name="twitter:description"
+                  content={post.excerpt || `Article by Antoine RICHARD-CAPPONI`}
+                />
                 {post.coverImage?.asset?._ref && (
                   <meta
                     name="twitter:image"
@@ -143,10 +154,7 @@ export default function PostPage(props: {
                   />
                 )}
               </Head>
-              <motion.div 
-                variants={itemVariants}
-                custom={1}
-              >
+              <motion.div variants={itemVariants} custom={1}>
                 <PostHeader
                   title={post.title}
                   coverImage={post.coverImage}
@@ -154,26 +162,20 @@ export default function PostPage(props: {
                   auteur={post.auteur}
                 />
               </motion.div>
-              <motion.div 
+              <motion.div
                 variants={textVariants}
                 initial="hidden"
                 whileInView="visible"
-                viewport={{ once: false, margin: "-100px" }}
+                viewport={{ once: false, margin: '-100px' }}
               >
                 <PostBody content={post.content} />
               </motion.div>
             </motion.article>
-            <motion.div 
-              variants={itemVariants}
-              custom={2}
-            >
+            <motion.div variants={itemVariants} custom={2}>
               <SectionSeparator />
             </motion.div>
             {morePosts.length > 0 && (
-              <motion.div 
-                variants={itemVariants}
-                custom={3}
-              >
+              <motion.div variants={itemVariants} custom={3}>
                 <MoreStories posts={morePosts} />
               </motion.div>
             )}
