@@ -18,7 +18,7 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html>
+      <Html lang="en">
         <Head>
           <style>{`
             @font-face {
@@ -31,7 +31,7 @@ class MyDocument extends Document {
             }
           `}</style>
         </Head>
-        <body>
+        <body className="bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
           <Main />
           <NextScript />
         </body>

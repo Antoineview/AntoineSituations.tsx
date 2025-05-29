@@ -21,7 +21,7 @@ export default function BlogLayout({
           key="ogImage"
         />
       </Head>
-      <div className="min-h-screen relative">
+      <div className="min-h-screen relative bg-white dark:bg-gray-900 text-black dark:text-white transition-colors duration-200">
         <AlertBanner preview={preview} loading={loading} />
         <main className="relative z-10">{children}</main>
       </div>

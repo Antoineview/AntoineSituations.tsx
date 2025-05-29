@@ -86,19 +86,62 @@
 
 .main-title {
   font-family: 'Crozet-Regular', serif;
+  color: var(--main-title-color);
+  transition: color 0.3s ease;
 }
 
 .blogimages {
   border-radius: 15px;
 }
 
+/* Base styles for html and body */
 html,
-body,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  @apply bg-white dark:bg-gray-900 text-black dark:text-white;
+  transition: none;
+}
+
+/* Ensure #__next takes full height and inherits background */
+#__next {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  @apply bg-white dark:bg-gray-900 text-black dark:text-white;
+  transition: none;
+}
+
+/* Ensure main content area takes full height */
 main {
-  background-color: black;
-  color: white;
-  font-family: 'Poppins-Text', sans-serif;
-  font-weight: 400;
+  flex: 1;
+  @apply bg-white dark:bg-gray-900 text-black dark:text-white;
+  transition: none;
+}
+
+/* Specific text color transitions */
+.main-title,
+.blog-subtitle,
+.blog-description,
+.back-link,
+.preview-title,
+.preview-date,
+.preview-excerpt,
+.author-name,
+h1, h2, h3, h4, h5, h6,
+p, span, div, a, li, td, th {
+  @apply text-black dark:text-white;
+  transition: none;
+}
+
+/* Override Tailwind's transition classes */
+.transition-colors {
+  transition: none !important;
+}
+
+.duration-200 {
+  transition-duration: 0s !important;
 }
 
 .image {
@@ -126,7 +169,7 @@ main {
   -webkit-backdrop-filter: blur(4px);
   border: 1px solid rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(4px);
-  background-color: rgba(142, 197, 252, 0.25);
+  background-color: var(--background-color);
   background-image: linear-gradient(
     62deg,
     rgba(142, 197, 252, 0.25) 0%,
@@ -135,6 +178,8 @@ main {
   padding: 10px;
   border-radius: 15px;
   margin-bottom: 60px;
+  @apply dark:bg-gray-800 dark:bg-opacity-50;
+  transition: background-color 0.3s ease;
 }
 
 .morecardcontainer {
@@ -248,6 +293,8 @@ th {
 .blog-subtitle {
   font-family: 'Poppins-Text', sans-serif;
   font-weight: 400;
+  color: var(--blog-subtitle-color);
+  transition: color 0.3s ease;
 }
 
 .blog-description {
@@ -258,4 +305,22 @@ th {
 .back-link {
   font-family: 'Poppins-Display', sans-serif;
   font-weight: 600;
+  color: var(--back-link-color);
+  transition: color 0.3s ease;
+}
+
+:root {
+  --main-title-color: #000;
+  --blog-subtitle-color: #000;
+  --back-link-color: #4b5563; /* gray-600 */
+  --background-color: #f3f4f6; /* gray-100 */
+  --viewport-bg-color: #f3f4f6; /* gray-100 */
+}
+
+html.dark {
+  --main-title-color: #fff;
+  --blog-subtitle-color: #fff;
+  --back-link-color: #9ca3af; /* gray-400 */
+  --background-color: #111827; /* gray-900 */
+  --viewport-bg-color: #111827; /* gray-900 */
 }
