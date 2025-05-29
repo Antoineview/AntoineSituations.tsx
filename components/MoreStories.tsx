@@ -130,7 +130,7 @@ export default function MoreStories({ posts, hideTitle }: { posts: Post[], hideT
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
-          className="mb-8 text-6xl font-bold leading-tight tracking-tighter md:text-7xl morecardh1"
+          className="mb-6 sm:mb-8 text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tighter morecardh1"
         >
           plus.
         </motion.h1>
@@ -138,19 +138,19 @@ export default function MoreStories({ posts, hideTitle }: { posts: Post[], hideT
       {visibleSemesters.map((semesterYear) => (
         <motion.div 
           key={semesterYear}
-          className="mb-12"
+          className="mb-8 sm:mb-12"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
         >
           <motion.h2 
-            className="mb-6 text-3xl font-bold tracking-tight"
+            className="mb-4 sm:mb-6 text-2xl sm:text-3xl font-bold tracking-tight"
             variants={itemVariants}
           >
             {semesterYear}
           </motion.h2>
           <motion.div 
-            className="mb-6 grid grid-cols-1 gap-y-1 md:grid-cols-2 md:gap-x-5 md:gap-y-5 lg:gap-x-3"
+            className="mb-6 grid grid-cols-1 gap-y-4 sm:gap-y-6 md:grid-cols-2 md:gap-x-5 lg:gap-x-3"
             variants={containerVariants}
           >
             <AnimatePresence mode="popLayout">

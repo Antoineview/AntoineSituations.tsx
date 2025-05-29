@@ -47,13 +47,13 @@ export default function HeroPost(
     >
       <motion.h1 
         variants={itemVariants}
-        className="mb-2 ml-1 text-6xl font-bold leading-tight tracking-tighter md:text-7xl hero-date"
+        className="mb-2 ml-1 text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tighter hero-date"
       >
         <Date dateString={date} />
       </motion.h1>
       <motion.div 
         variants={itemVariants}
-        className="heropostimage mb-8"
+        className="heropostimage mb-6 sm:mb-8"
       >
         {videoUrl ? (
           <VideoPlayer url={videoUrl} title={title} />
@@ -68,7 +68,7 @@ export default function HeroPost(
         <div>
           <motion.h1 
             variants={itemVariants}
-            className="heroposttext"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tighter heroposttext"
           >
             <Link href={`/posts/${slug}`} className="hover:underline font-semibold">
               {title || 'Untitled'}
@@ -79,7 +79,7 @@ export default function HeroPost(
           {excerpt && (
             <motion.p 
               variants={itemVariants}
-              className="mb-4 text-lg leading-relaxed hero-excerpt"
+              className="mb-4 text-base sm:text-lg leading-relaxed hero-excerpt"
             >
               {excerpt}
             </motion.p>
