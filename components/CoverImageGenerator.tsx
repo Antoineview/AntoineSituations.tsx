@@ -1,20 +1,19 @@
-import { useState, useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { createClient } from 'next-sanity'
+import { projectId, dataset, apiVersion } from 'lib/sanity.api'
 
 interface CoverImageGeneratorProps {
-  onImageGenerated?: (imageUrl: string) => void
+  onImageGenerated?: (imageUrl: string | { _type: string; asset: { _type: string; _ref: string } }) => void
   initialTitle?: string
-  initialSubtitle?: string
+  postId?: string
 }
 
 const CoverImageGenerator = ({ 
   onImageGenerated, 
-  initialTitle = '', 
-  initialSubtitle = '' 
+  initialTitle = '',
+  postId = ''
 }: CoverImageGeneratorProps) => {
-  const [title, setTitle] = useState(initialTitle)
-  const [subtitle, setSubtitle] = useState(initialSubtitle)
-  const [gradient, setGradient] = useState('linear-gradient(45deg, #ff6b6b, #4ecdc4)')
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   const getRandomColor = () => {
@@ -39,10 +38,10 @@ const CoverImageGenerator = ({
   }
 
   useEffect(() => {
-    if (initialTitle || initialSubtitle) {
+    if (initialTitle) {
       generateImage()
     }
-  }, [initialTitle, initialSubtitle])
+  }, [initialTitle])
 
   const getOptimalFontSize = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number, maxHeight: number, minSize: number, maxSize: number) => {
     let fontSize = maxSize
@@ -60,7 +59,44 @@ const CoverImageGenerator = ({
     return fontSize
   }
 
-  const generateImage = () => {
+  const uploadImageToSanity = async (imageDataUrl: string) => {
+    try {
+      const client = createClient({
+        projectId,
+        dataset,
+        apiVersion,
+        useCdn: false,
+      })
+
+      // Convert base64 to blob
+      const response = await fetch(imageDataUrl)
+      const blob = await response.blob()
+
+      // Create a file object
+      const file = new File([blob], `${postId || 'generated'}-cover.png`, { type: 'image/png' })
+
+      // Upload to Sanity
+      const result = await client.assets.upload('image', file, {
+        filename: `${postId || 'generated'}-cover.png`,
+      })
+
+      // Create a proper Sanity image reference
+      const imageReference = {
+        _type: 'image',
+        asset: {
+          _type: 'reference',
+          _ref: result._id
+        }
+      }
+
+      return imageReference
+    } catch (error) {
+      console.error('Error uploading image to Sanity:', error)
+      return null
+    }
+  }
+
+  const generateImage = async () => {
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -90,62 +126,34 @@ const CoverImageGenerator = ({
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
 
-    // Calculate optimal font sizes
-    const formattedTitle = title.replace(/\s+/g, '')
-    const titleFontSize = getOptimalFontSize(ctx, formattedTitle, canvas.width * 6, canvas.height * 4, 32, 800)
-    const subtitleFontSize = getOptimalFontSize(ctx, subtitle, canvas.width * 1.2, canvas.height * 1.2, 24, 600)
+    // Calculate optimal font size for title
+    const formattedTitle = initialTitle.replace(/\s+/g, '')
+    const titleFontSize = getOptimalFontSize(ctx, formattedTitle, canvas.width * 10, canvas.height * 8, 32, 2000)
 
     // Title
     ctx.font = `${titleFontSize}px Crozet-Regular, serif`
     ctx.save()
-    ctx.translate(canvas.width / 2, canvas.height * 0.4)
+    ctx.translate(canvas.width / 2, canvas.height * 0.6)
     ctx.rotate((Math.random() - 0.5) * Math.PI / 4) // Random rotation between -22.5 and 22.5 degrees
     ctx.fillText(formattedTitle, 0, 0)
     ctx.restore()
 
-    // Subtitle
-    ctx.font = `${subtitleFontSize}px Crozet-Regular, serif`
-    ctx.fillText(subtitle, canvas.width / 2, canvas.height * 0.7)
-
     // Convert to image URL
     const imageUrl = canvas.toDataURL('image/png')
-    if (onImageGenerated) {
+    
+    // Upload to Sanity if postId is provided
+    if (postId) {
+      const uploadedImage = await uploadImageToSanity(imageUrl)
+      if (uploadedImage && onImageGenerated) {
+        onImageGenerated(uploadedImage)
+      }
+    } else if (onImageGenerated) {
       onImageGenerated(imageUrl)
     }
   }
 
   return (
     <div className="w-full max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-6">Cover Image Generator</h2>
-      
-      <div className="space-y-4 mb-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Title
-          </label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Enter title"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Subtitle
-          </label>
-          <input
-            type="text"
-            value={subtitle}
-            onChange={(e) => setSubtitle(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            placeholder="Enter subtitle"
-          />
-        </div>
-      </div>
-
       <motion.button
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}

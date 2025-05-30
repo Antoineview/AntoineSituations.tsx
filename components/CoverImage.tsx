@@ -12,11 +12,12 @@ interface CoverImageProps {
   image: any
   priority?: boolean
   description?: string
+  postId?: string
 }
 
 const CoverImage = (props: CoverImageProps) => {
-  const { title, slug, image: source, priority, description } = props
-  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null)
+  const { title, slug, image: source, priority, description, postId } = props
+  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | { _type: string; asset: { _type: string; _ref: string } } | null>(null)
   
   const imageContent = source?.asset?._ref ? (
     <Image
@@ -36,7 +37,9 @@ const CoverImage = (props: CoverImageProps) => {
       width={2000}
       height={1000}
       alt={`Generated Cover Image for ${title}`}
-      src={generatedImageUrl}
+      src={typeof generatedImageUrl === 'string' 
+        ? generatedImageUrl 
+        : urlForImage(generatedImageUrl).height(1000).width(2000).url()}
       sizes="100vw"
       priority={priority}
     />
@@ -44,7 +47,7 @@ const CoverImage = (props: CoverImageProps) => {
     <CoverImageGenerator
       onImageGenerated={(imageUrl) => setGeneratedImageUrl(imageUrl)}
       initialTitle={title}
-      initialSubtitle={description || ''}
+      postId={postId}
     />
   )
 

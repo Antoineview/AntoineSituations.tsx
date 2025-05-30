@@ -1,5 +1,6 @@
 import { BookIcon } from '@sanity/icons'
 import { defineType, defineArrayMember } from 'sanity'
+import CoverImageInput from './post/CoverImageInput'
 
 import authorType from './author'
 import { youtube } from './youtube'
@@ -63,6 +64,9 @@ export default defineType({
       options: {
         hotspot: true,
       },
+      components: {
+        input: CoverImageInput
+      }
     },
     {
       name: 'file',

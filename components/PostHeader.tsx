@@ -7,9 +7,9 @@ import type { Post } from 'lib/sanity.queries'
 import Link from 'next/link'
 
 export default function PostHeader(
-  props: Pick<Post, 'title' | 'coverImage' | 'file' | 'date' | 'auteur' | 'slug' | 'category' | 'videoUrl'>
+  props: Pick<Post, 'title' | 'coverImage' | 'file' | 'date' | 'auteur' | 'slug' | 'category' | 'videoUrl' | '_id'>
 ) {
-  const { title, coverImage, file, date, auteur, slug, category, videoUrl } = props
+  const { title, coverImage, file, date, auteur, slug, category, videoUrl, _id } = props
 
   const handleDownload = () => {
     window.open(`${file}?dl=`, '_blank')
@@ -25,7 +25,7 @@ export default function PostHeader(
         {videoUrl ? (
           <VideoPlayer url={videoUrl} title={title} />
         ) : (
-          <CoverImage title={title} image={coverImage} priority slug={slug} />
+          <CoverImage title={title} image={coverImage} priority slug={slug} postId={_id} />
         )}
       </div>
       <div className="mx-auto max-w-2xl">
