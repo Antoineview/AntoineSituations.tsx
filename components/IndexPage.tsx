@@ -6,6 +6,7 @@ import MoreStories from 'components/MoreStories'
 import Categories from 'components/Categories'
 import type { Post, Settings, Category } from 'lib/sanity.queries'
 import Head from 'next/head'
+import SectionSeparator from 'components/SectionSeparator'
 
 export default function IndexPage(props: {
   preview?: boolean
@@ -25,11 +26,12 @@ export default function IndexPage(props: {
         <Head>
           <title>{title}</title>
         </Head>
+
         <Container>
           <div className="w-full">
-            <BlogHeader 
-              title={title} 
-              lilparagraph={lilparagraph} 
+            <BlogHeader
+              title={title}
+              lilparagraph={lilparagraph}
               bigparapraph=""
             />
           </div>
@@ -38,15 +40,18 @@ export default function IndexPage(props: {
               title={heroPost.title}
               coverImage={heroPost.coverImage}
               date={heroPost.date}
-              
               slug={heroPost.slug}
               excerpt={heroPost.excerpt}
             />
           )}
-           {categories && categories.length > 0 && <Categories categories={categories} />}
+
+          {categories && categories.length > 0 && (
+            <Categories categories={categories} />
+          )}
+
           {morePosts.length > 0 && <MoreStories posts={morePosts} />}
-         
         </Container>
+        <SectionSeparator />
       </Layout>
     </>
   )
