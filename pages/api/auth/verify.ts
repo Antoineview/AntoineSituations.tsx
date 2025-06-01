@@ -83,10 +83,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Get the credential from the database
     console.log('Verify API: Looking up credential in DB with ID:', credential.id);
     
-    // Convert Base64URL to standard Base64
+    // Convert Base64URL to standard Base64 and add padding
     const standardBase64 = credential.id
         .replace(/-/g, '+')
-        .replace(/_/g, '/');
+        .replace(/_/g, '/')
+        .padEnd(Math.ceil(credential.id.length / 4) * 4, '=');
+    
+    console.log('Verify API: Converted to standard Base64 with padding:', standardBase64);
     
     const storedCredential = await sql`
         SELECT pc.*, u.id as user_id 
