@@ -4,6 +4,12 @@ import type { IronSessionData } from 'iron-session'
 import { createClient } from 'next-sanity'
 import { apiVersion, dataset, projectId } from 'lib/sanity.api'
 import { neon } from '@neondatabase/serverless';
+import { 
+  verifyRegistrationResponse,
+  VerifiedRegistrationResponse,
+  RegistrationResponseJSON
+} from '@simplewebauthn/server';
+import { isoBase64URL } from '@simplewebauthn/server/helpers';
 
 const sessionOptions = {
   password: process.env.SESSION_PASSWORD || 'complex_password_at_least_32_characters_long',
@@ -45,6 +51,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('Register API: received credential object keys:', Object.keys(credential));
     console.log('Register API: received credential.response object keys:', Object.keys(credential.response));
 
+    // Get the session to retrieve the challenge
+    const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
+    const challengeFromSession = session.challenge; // Retrieve the stored challenge (as Buffer)
+
+    // Clear the challenge from the session after retrieval (important for security)
+    session.challenge = undefined;
+    await session.save();
+    
+    if (!challengeFromSession) {
+        console.error('Register API: Challenge not found in session.');
+        return res.status(400).json({ message: 'Authentication ceremony timed out or challenge is missing.' });
+    }
+    console.log('Register API: Retrieved challenge from session.');
+
+    // Convert the challenge Buffer to Base64URL string for verification
+    const expectedChallenge = isoBase64URL.fromBuffer(challengeFromSession);
+    console.log('Register API: Converted challenge to Base64URL string.', expectedChallenge);
+
     // Connect to Sanity to check invitation status
     console.log('Register API: Connecting to Sanity...');
     const sanityClient = createClient({
@@ -85,7 +109,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (invitation.used) {
           console.log('Register API: User already exists and invitation already used. Registration previously completed.');
           // Re-set the session and return success
-          const session = await getIronSession<IronSessionData>(req, res, sessionOptions)
+          // const session = await getIronSession<IronSessionData>(req, res, sessionOptions) // Session already retrieved above
           session.user = {
               id: userId,
               authenticated: true,
@@ -103,45 +127,70 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.log('Register API: New user created with ID:', userId);
     }
 
-    // 2. Store the passkey credential
-    console.log('Register API: Storing passkey credential...');
-    // Ensure rawId and authenticatorData are available before converting
-    const credentialId = credential.rawId ? arrayNumToBuffer(credential.rawId) : undefined;
-    // Authenticator data is crucial for public key and signature verification
-    const authenticatorData = credential.response?.authenticatorData;
-    const publicKey = authenticatorData ? arrayNumToBuffer(authenticatorData) : undefined;
-    // Sign counter is also part of authenticator data
-    // In a real implementation, you would parse authenticatorData to get the sign counter and public key
-    const signCounter = 0; // Placeholder - needs to be extracted from authenticatorData
-    const transports = credential.response?.transports; // Transports might be optional
+    // 2. Process and store the passkey credential using @simplewebauthn/server
+    console.log('Register API: Processing passkey credential with @simplewebauthn/server...');
 
-    console.log('Register API: Prepared credential data for DB insert:', {
-        credentialId: credentialId ? 'Buffer' : credentialId, // Log type/status instead of full Buffer
-        userId,
-        publicKey: publicKey ? 'Buffer' : publicKey, // Log type/status instead of full Buffer
-        signCounter,
-        transports
+    // Configure verifyRegistrationResponse options
+    const verificationOptions = {
+        response: credential.response as RegistrationResponseJSON, // Cast to expected type
+        expectedChallenge: expectedChallenge, // Use the challenge string from session
+        expectedOrigin: process.env.NEXT_PUBLIC_WEB_ORIGIN as string, // Your website's origin
+        expectedRPID: process.env.NEXT_PUBLIC_WEB_ORIGIN?.replace(/^https?:\/\//, '') as string, // Your RP ID
+        requireUserVerification: true, // Or false, depending on your requirement
+    };
+
+    let verification;
+    try {
+        verification = await verifyRegistrationResponse(verificationOptions);
+        console.log('Register API: Passkey verification successful.', verification);
+    } catch (verificationError) {
+        console.error('Register API: Passkey verification failed:', verificationError);
+        return res.status(400).json({ message: 'Passkey verification failed' });
+    }
+
+    const { verified, registrationInfo } = verification;
+
+    if (!verified || !registrationInfo) {
+        console.error('Register API: Verification result not as expected.', verification);
+        return res.status(400).json({ message: 'Passkey verification failed' });
+    }
+
+    const { 
+        credentialPublicKey,
+        credentialID,
+        counter,
+        // transports, // Transports are also available here if needed
+    } = registrationInfo;
+
+    console.log('Register API: Extracted registration info:', { 
+        credentialID: isoBase64URL.fromBuffer(credentialID), // Log as string for readability
+        counter,
+        // transports, // Log transports if needed
     });
 
-    // Check if critical data is missing before attempting DB insert
-    if (!credentialId || !userId || !publicKey) {
-        console.error('Register API: Missing critical data for DB insert.', {
-            credentialId: credentialId ? 'Present' : 'Missing',
-            userId: userId ? 'Present' : 'Missing',
-            publicKey: publicKey ? 'Present' : 'Missing',
-            transports: transports ? 'Present' : 'Missing'
-        });
-        // Throw a specific error or return a 400 response
-        return res.status(400).json({ message: 'Missing essential passkey data for registration' });
-    }
+    // Convert binary data to Buffer for storage in Neon BYTEA columns
+    const credentialIdBuffer = arrayBufferToBuffer(credentialID);
+    const publicKeyBuffer = arrayBufferToBuffer(credentialPublicKey);
+    const signCounter = counter; // Use the counter from verification
+    // Use transports directly from the client credential object as it seems more reliably provided there
+    const transportsToStore = credential.response?.transports; 
+
+    console.log('Register API: Prepared credential data for DB insert:', {
+        credentialId: credentialIdBuffer ? 'Buffer' : credentialIdBuffer, 
+        userId,
+        publicKey: publicKeyBuffer ? 'Buffer' : publicKeyBuffer, 
+        signCounter,
+        transports: transportsToStore
+    });
 
     // Check if this credential ID already exists for this user to prevent duplicates
     console.log('Register API: Checking for existing credential for this user...');
-    const existingCredential = await sql`SELECT id FROM passkey_credentials WHERE id = ${credentialId} AND user_id = ${userId}`;
+    // Need to query using the Buffer credentialIdBuffer
+    const existingCredential = await sql`SELECT id FROM passkey_credentials WHERE id = ${credentialIdBuffer} AND user_id = ${userId}`;
 
     if (existingCredential.length === 0) {
          // Only insert if the credential doesn't already exist for this user
-         await sql`INSERT INTO passkey_credentials (id, user_id, public_key, sign_counter, transports) VALUES (${credentialId}, ${userId}, ${publicKey}, ${signCounter}, ${transports})`;
+         await sql`INSERT INTO passkey_credentials (id, user_id, public_key, sign_counter, transports) VALUES (${credentialIdBuffer}, ${userId}, ${publicKeyBuffer}, ${signCounter}, ${transportsToStore})`;
          console.log('Register API: Passkey credential stored in DB.');
     } else {
         console.log('Register API: Passkey credential already exists for this user.');
@@ -164,7 +213,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // 4. Set the user session
     console.log('Register API: Setting user session...', { userId });
-    const session = await getIronSession<IronSessionData>(req, res, sessionOptions)
+    // const session = await getIronSession<IronSessionData>(req, res, sessionOptions) // Session already retrieved above
     session.user = {
       id: userId,
       authenticated: true,
