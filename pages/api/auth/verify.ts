@@ -92,7 +92,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         SELECT pc.*, u.id as user_id 
         FROM passkey_credentials pc 
         JOIN users u ON pc.user_id = u.id 
-        WHERE pc.id = decode('\\x' || ${hexString}, 'hex')
+        WHERE encode(pc.id, 'hex') = ${hexString}
     `;
 
     if (storedCredential.length === 0) {
