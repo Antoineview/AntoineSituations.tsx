@@ -132,7 +132,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Configure verifyRegistrationResponse options
     const verificationOptions = {
-        response: credential.response as RegistrationResponseJSON, // Cast to expected type
+        response: credential as RegistrationResponseJSON, // Pass the entire credential object and cast it
         expectedChallenge: expectedChallenge, // Use the challenge string from session
         expectedOrigin: process.env.NEXT_PUBLIC_WEB_ORIGIN as string, // Your website's origin
         expectedRPID: process.env.NEXT_PUBLIC_WEB_ORIGIN?.replace(/^https?:\/\//, '') as string, // Your RP ID
