@@ -51,16 +51,13 @@ export default function HeroPost(
       >
         <Date dateString={date} />
       </motion.h1>
-      <motion.div 
-        variants={itemVariants}
-        className="heropostimage mb-4 sm:mb-1"
-      >
+      <div className="heropostimage mb-4 sm:mb-1">
         {videoUrl ? (
           <VideoPlayer url={videoUrl} title={title} />
         ) : (
           <CoverImage slug={slug} title={title} image={coverImage} priority />
         )}
-      </motion.div>
+      </div>
       <motion.div 
         variants={itemVariants}
         className=""

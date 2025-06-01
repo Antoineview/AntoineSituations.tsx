@@ -26,7 +26,7 @@ const CoverImage = (props: CoverImageProps) => {
       width={2000}
       height={1000}
       alt={`Cover Image for ${title}`}
-      src={urlForImage(source).height(1000).width(2000).url()}
+      src={urlForImage(source).height(1000).width(2000).auto('format').quality(75).url()}
       sizes="100vw"
       priority={priority}
     />
@@ -39,7 +39,7 @@ const CoverImage = (props: CoverImageProps) => {
       alt={`Generated Cover Image for ${title}`}
       src={typeof generatedImageUrl === 'string' 
         ? generatedImageUrl 
-        : urlForImage(generatedImageUrl).height(1000).width(2000).url()}
+        : urlForImage(generatedImageUrl).height(1000).width(2000).auto('format').quality(75).url()}
       sizes="100vw"
       priority={priority}
     />
