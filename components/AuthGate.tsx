@@ -11,22 +11,20 @@ export default function AuthGate({ children, onAuthenticated }: AuthGateProps) {
   const [isAuthenticating, setIsAuthenticating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [showRegistration, setShowRegistration] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
 
   const handleAuthenticate = async () => {
     try {
       setIsAuthenticating(true)
       setError(null)
 
-      // Check if WebAuthn is supported
       if (!window.PublicKeyCredential) {
-        throw new Error('WebAuthn is not supported in this browser')
+        throw new Error("WebAuthn n'est pas supporté par ce navigateur")
       }
 
-      // Get the challenge from your server
       const response = await fetch('/api/auth/challenge')
       const { challenge } = await response.json()
 
-      // Get the credentials
       const credential = await navigator.credentials.get({
         publicKey: {
           challenge: new Uint8Array(challenge),
@@ -37,12 +35,11 @@ export default function AuthGate({ children, onAuthenticated }: AuthGateProps) {
       }) as PublicKeyCredential
 
       if (!credential) {
-        throw new Error('No credential received')
+        throw new Error("Aucune information d'identification reçue")
       }
 
       const assertionResponse = credential.response as AuthenticatorAssertionResponse
 
-      // Send the credential to your server
       const verifyResponse = await fetch('/api/auth/verify', {
         method: 'POST',
         headers: {
@@ -64,7 +61,7 @@ export default function AuthGate({ children, onAuthenticated }: AuthGateProps) {
       })
 
       if (!verifyResponse.ok) {
-        throw new Error('Authentication failed')
+        throw new Error("L'authentification a échoué")
       }
 
       onAuthenticated()
@@ -72,7 +69,11 @@ export default function AuthGate({ children, onAuthenticated }: AuthGateProps) {
       if (err instanceof Error && err.message.includes('No credentials found')) {
         setShowRegistration(true)
       } else {
-        setError(err instanceof Error ? err.message : 'Authentication failed')
+        if (err instanceof Error) {
+          setError(err.message)
+        } else {
+          setError("L'authentification a échoué")
+        }
       }
     } finally {
       setIsAuthenticating(false)
@@ -95,21 +96,39 @@ export default function AuthGate({ children, onAuthenticated }: AuthGateProps) {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center"
+        className="flex flex-col items-center text-center"
       >
-        <h2 className="text-2xl font-bold mb-4">This content requires authentication</h2>
-        <p className="mb-8 text-gray-600 dark:text-gray-400">
-          Please authenticate using your passkey to view this content
-        </p>
-        <button
+        <div
+          className={`relative cursor-pointer transition-all duration-300 p-8 ${
+            isHovered ? 'drop-shadow-[0_0_15px_rgba(255,255,150,0.8)]' : ''
+          }`}
           onClick={handleAuthenticate}
-          disabled={isAuthenticating}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
-          {isAuthenticating ? 'Authenticating...' : 'Authenticate with Passkey'}
-        </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 49 100"
+            fill="currentColor"
+            className={`w-32 h-32 text-gray-700 dark:text-gray-300 ${
+              isAuthenticating ? 'animate-pulse' : ''
+            }`}
+          >
+            <path
+              id="Trac"
+              d="M 48.318001 24.158997 C 48.318001 10.816002 37.502998 0 24.159 0 C 10.816 0 0 10.816002 0 24.158997 C 0 34.373001 6.349 43.089005 15.309 46.622002 L 1.282 100 L 21.209999 100 L 27.108 100 L 47.037998 100 L 33.011002 46.622002 C 41.971001 43.089005 48.318001 34.374001 48.318001 24.158997 Z"
+            />
+          </svg>
+        </div>
+
+        {isAuthenticating && <p className="mt-4 text-lg">Authentification en cours...</p>}
         {error && (
           <p className="mt-4 text-red-500">{error}</p>
+        )}
+        {!isAuthenticating && !error && (
+           <p className="mt-4 text-gray-600 dark:text-gray-400">
+            Utilisez la clé vers votre coeur.
+          </p>
         )}
       </motion.div>
     </div>
