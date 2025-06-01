@@ -5,7 +5,9 @@ import type { IronSessionData } from 'iron-session'
 import { isoBase64URL } from '@simplewebauthn/server/helpers'
 
 interface CustomSessionData extends IronSessionData {
-  challenge?: Uint8Array;
+  challengeData?: {
+    buffer: number[];
+  };
   user?: {
     id: string;
     authenticated: boolean;
@@ -28,15 +30,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // Generate a random challenge
   const challenge = crypto.randomBytes(32)
   
-  // Store the challenge in the session as a Uint8Array
+  // Store the challenge in the session as an array of numbers
   const session = await getIronSession<CustomSessionData>(req, res, sessionOptions)
-  session.challenge = new Uint8Array(challenge)
+  session.challengeData = {
+    buffer: Array.from(challenge)
+  }
   await session.save()
 
   // Convert challenge to Base64URL for the client
   const challengeString = isoBase64URL.fromBuffer(challenge)
   console.log('Challenge API: Generated challenge:', challengeString)
 
-  // Send the challenge as a Uint8Array to the client
-  res.status(200).json({ challenge: new Uint8Array(challenge) })
+  // Send the challenge as an array of numbers to the client
+  res.status(200).json({ challenge: Array.from(challenge) })
 } 
