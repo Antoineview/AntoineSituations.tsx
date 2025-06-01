@@ -129,7 +129,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         credentialID,
         counter,
         // transports, // Transports are also available here if needed
-    } = registrationInfo;
+    } = registrationInfo.credential;
 
     console.log('Register API: Extracted registration info:', { 
         credentialID: isoBase64URL.fromBuffer(credentialID), // Log as string for readability
