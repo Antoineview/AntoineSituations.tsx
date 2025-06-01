@@ -220,7 +220,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('Register API: Storing passkey credential in DB (after verification)...');
 
     // Convert binary data to Buffer for storage in Neon BYTEA columns
-    const credentialIdBuffer = Buffer.from(credentialID);
+    const credentialIdBuffer = isoBase64URL.toBuffer(credentialID);
     const publicKeyBuffer = Buffer.from(credentialPublicKey);
     const signCounter = counter; // Use the counter from verification
     // Use transports directly from the client credential object as it seems more reliably provided there

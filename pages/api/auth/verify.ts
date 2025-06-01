@@ -84,14 +84,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('Verify API: Looking up credential in DB with ID:', credential.id);
     
     // Convert Base64URL to binary for comparison
-    const credentialBuffer = Buffer.from(credential.id, 'base64url');
-    console.log('Verify API: Converted to Buffer');
+    const credentialBuffer = isoBase64URL.toBuffer(credential.id);
+    console.log('Verify API: Converted credential.id to Buffer for DB lookup');
     
     const storedCredential = await sql`
         SELECT pc.*, u.id as user_id 
         FROM passkey_credentials pc 
         JOIN users u ON pc.user_id = u.id 
-        WHERE pc.id = decode(${credential.id}, 'base64')
+        WHERE pc.id = ${credentialBuffer}
     `;
 
     if (storedCredential.length === 0) {
@@ -158,7 +158,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await sql`
         UPDATE passkey_credentials 
         SET sign_counter = ${authenticationInfo.newCounter} 
-        WHERE id = ${credential.id}
+        WHERE id = ${credentialBuffer}
     `;
     console.log('Verify API: Updated credential counter in DB');
 
