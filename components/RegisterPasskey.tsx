@@ -38,7 +38,7 @@ export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) 
           },
           user: {
             id: new Uint8Array(16), // Generate a random user ID
-            name: 'key to you hartt',
+            name: 'key to your hartt',
             displayName: 'key',
           },
           pubKeyCredParams: [

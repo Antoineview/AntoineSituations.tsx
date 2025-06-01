@@ -81,13 +81,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('Verify API: Connected to Neon DB.');
 
     // Get the credential from the database
-    const credentialIdBuffer = Buffer.from(credential.rawId);
-    console.log('Verify API: Looking up credential in DB with raw ID:', credential.rawId);
+    console.log('Verify API: Looking up credential in DB with ID:', credential.id);
     const storedCredential = await sql`
         SELECT pc.*, u.id as user_id 
         FROM passkey_credentials pc 
         JOIN users u ON pc.user_id = u.id 
-        WHERE pc.id = ${credentialIdBuffer}
+        WHERE pc.id = decode(${credential.id}, 'base64url')
     `;
 
     if (storedCredential.length === 0) {
@@ -106,7 +105,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         expectedRPID: process.env.NEXT_PUBLIC_WEB_ORIGIN?.replace(/^https?:\/\//, '') as string,
         authenticator: {
             credentialPublicKey: credentialRecord.public_key,
-            credentialID: credentialIdBuffer,
+            credentialID: credential.id,
             counter: credentialRecord.sign_counter,
         },
         requireUserVerification: true,
@@ -150,7 +149,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await sql`
         UPDATE passkey_credentials 
         SET sign_counter = ${authenticationInfo.newCounter} 
-        WHERE id = ${credentialIdBuffer}
+        WHERE id = ${credential.id}
     `;
     console.log('Verify API: Updated credential counter in DB');
 
