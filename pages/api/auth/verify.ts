@@ -88,13 +88,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         .replace(/-/g, '+')
         .replace(/_/g, '/');
     
-    console.log('Verify API: Converted to standard Base64:', standardBase64);
+    // Add padding if needed (length should be multiple of 4)
+    const paddingLength = (4 - (standardBase64.length % 4)) % 4;
+    const paddedBase64 = standardBase64 + '='.repeat(paddingLength);
+    
+    console.log('Verify API: Converted to standard Base64 with padding:', paddedBase64);
     
     const storedCredential = await sql`
         SELECT pc.*, u.id as user_id 
         FROM passkey_credentials pc 
         JOIN users u ON pc.user_id = u.id 
-        WHERE pc.id = decode(${standardBase64}, 'base64')
+        WHERE pc.id = decode(${paddedBase64}, 'base64')
     `;
 
     if (storedCredential.length === 0) {
