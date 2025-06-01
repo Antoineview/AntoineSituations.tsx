@@ -83,20 +83,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Get the credential from the database
     console.log('Verify API: Looking up credential in DB with ID:', credential.id);
     
-    // Convert Base64URL to hex string for comparison
+    // Convert Base64URL to Buffer for direct comparison
     const credentialBuffer = Buffer.from(credential.id, 'base64url');
-    const hexString = credentialBuffer.toString('hex');
-    console.log('Verify API: Converted to hex:', hexString);
+    console.log('Verify API: Converted to Buffer');
     
     const storedCredential = await sql`
         SELECT pc.*, u.id as user_id 
         FROM passkey_credentials pc 
         JOIN users u ON pc.user_id = u.id 
-        WHERE pc.id = decode(${hexString}, 'hex')
+        WHERE pc.id = ${credentialBuffer}
     `;
 
     if (storedCredential.length === 0) {
-        console.error('Verify API: Credential not found in database. Searched for hex:', hexString);
+        console.error('Verify API: Credential not found in database. Searched with Buffer');
         return res.status(401).json({ message: 'Invalid credential' });
     }
 
