@@ -55,7 +55,6 @@ export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) 
       const attestationResponse = credential.response as AuthenticatorAttestationResponse
 
       // Get the invitation ID from the invitation code
-      // We need the invitation ID to send to the register endpoint
       const validateResponse = await fetch('/api/auth/validate-invitation', {
         method: 'POST',
         headers: {
@@ -68,12 +67,15 @@ export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) 
         throw new Error('Invalid invitation code')
       }
 
-      // Assuming validate-invitation returns the invitationId now
-      const { invitationId } = await validateResponse.json(); // <--- Get invitationId
+      const { invitationId } = await validateResponse.json();
 
       if (!invitationId) {
           throw new Error('Could not retrieve invitation ID from validation');
       }
+
+      // Use .toJSON() to serialize the credential response correctly for the backend
+      // Cast to any to avoid TypeScript error since .toJSON() is available at runtime
+      const credentialResponseJSON = (attestationResponse as any).toJSON();
 
       // Send the credential and invitation ID to your server
       const registerResponse = await fetch('/api/auth/register', {
@@ -82,16 +84,14 @@ export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) 
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          credential: {
-            id: credential.id,
-            rawId: Array.from(new Uint8Array(credential.rawId)),
-            response: {
-              clientDataJSON: Array.from(new Uint8Array(attestationResponse.clientDataJSON)),
-              attestationObject: Array.from(new Uint8Array(attestationResponse.attestationObject)),
-            },
-            type: credential.type,
+          // Pass the serialized credential response
+          credential: { 
+             id: credential.id, // credential.id is usually already base64url
+             rawId: credentialResponseJSON.rawId, // Use rawId from serialized response
+             response: credentialResponseJSON,
+             type: credential.type,
           },
-          invitationId, // <--- Send invitationId instead of authorId
+          invitationId,
         }),
       })
 
