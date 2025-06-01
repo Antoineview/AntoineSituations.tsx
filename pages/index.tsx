@@ -25,7 +25,7 @@ export const getStaticProps: GetStaticProps<
       projectId,
       dataset,
       apiVersion,
-      useCdn: preview,
+      useCdn: !preview,
     })
     const postsPromise = client.fetch<Post[]>(indexQuery)
     const settingsPromise = client.fetch<Settings>(settingsQuery)
