@@ -8,6 +8,7 @@ const postFields = groq`
   file,
   coverImage,
   videoUrl,
+  requiresAuth,
   "slug": slug.current,
   "auteur": auteur->{name, picture},
   "category": category->{title, "slug": slug.current, description, "color": color.hex}
@@ -91,6 +92,7 @@ export interface Post {
   file?: any
   videoUrl?: string
   category?: Category
+  requiresAuth?: boolean
 }
 
 export interface Settings {

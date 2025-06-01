@@ -13,6 +13,8 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { useState } from 'react'
+import AuthGate from './AuthGate'
 
 export default function PostPage(props: {
   preview?: boolean
@@ -23,6 +25,7 @@ export default function PostPage(props: {
   const { preview, loading, data, settings } = props
   const { post = {} as any, morePosts = [] } = data || {}
   const { title = 'antoine.tsx' } = settings || {}
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   const router = useRouter()
 
@@ -74,6 +77,95 @@ export default function PostPage(props: {
     },
   }
 
+  const content = (
+    <>
+      <motion.article
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+      >
+        <Head>
+          <title>{`${post.title} | ${title}`}</title>
+          <meta
+            name="description"
+            content={post.excerpt || `Article by Antoine RICHARD-CAPPONI`}
+          />
+          <meta
+            name="author"
+            content={post.auteur?.name || 'Antoine RICHARD-CAPPONI'}
+          />
+
+          {/* Open Graph / Facebook */}
+          <meta property="og:type" content="article" />
+          <meta property="og:title" content={post.title} />
+          <meta
+            property="og:description"
+            content={post.excerpt || `Article by Antoine RICHARD-CAPPONI`}
+          />
+          <meta property="og:site_name" content={title} />
+          <meta property="article:published_time" content={post.date} />
+          {post.auteur?.name && (
+            <meta property="article:author" content={post.auteur.name} />
+          )}
+          {post.coverImage?.asset?._ref && (
+            <meta
+              key="ogImage"
+              property="og:image"
+              content={urlForImage(post.coverImage)
+                .width(1200)
+                .height(627)
+                .fit('crop')
+                .url()}
+            />
+          )}
+
+          {/* Twitter */}
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:title" content={post.title} />
+          <meta
+            name="twitter:description"
+            content={post.excerpt || `Article by Antoine RICHARD-CAPPONI`}
+          />
+          {post.coverImage?.asset?._ref && (
+            <meta
+              name="twitter:image"
+              content={urlForImage(post.coverImage)
+                .width(1200)
+                .height(627)
+                .fit('crop')
+                .url()}
+            />
+          )}
+        </Head>
+        <motion.div variants={itemVariants} custom={1}>
+          <PostHeader
+            title={post.title}
+            coverImage={post.coverImage}
+            date={post.date}
+            auteur={post.auteur}
+            _id={post._id}
+          />
+        </motion.div>
+        <motion.div
+          variants={textVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: false, margin: '-100px' }}
+        >
+          <PostBody content={post.content} />
+        </motion.div>
+      </motion.article>
+      <motion.div variants={itemVariants} custom={2}>
+        <SectionSeparator />
+      </motion.div>
+      {morePosts.length > 0 && (
+        <motion.div variants={itemVariants} custom={3}>
+          <MoreStories posts={morePosts} />
+        </motion.div>
+      )}
+    </>
+  )
+
   return (
     <Layout preview={preview} loading={loading}>
       <Container>
@@ -94,92 +186,12 @@ export default function PostPage(props: {
         </motion.div>
         {router.isFallback || (preview && !post) ? (
           <PostTitle>chargement...</PostTitle>
+        ) : post.requiresAuth && !isAuthenticated ? (
+          <AuthGate onAuthenticated={() => setIsAuthenticated(true)}>
+            {content}
+          </AuthGate>
         ) : (
-          <>
-            <motion.article
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <Head>
-                <title>{`${post.title} | ${title}`}</title>
-                <meta
-                  name="description"
-                  content={post.excerpt || `Article by Antoine RICHARD-CAPPONI`}
-                />
-                <meta
-                  name="author"
-                  content={post.auteur?.name || 'Antoine RICHARD-CAPPONI'}
-                />
-
-                {/* Open Graph / Facebook */}
-                <meta property="og:type" content="article" />
-                <meta property="og:title" content={post.title} />
-                <meta
-                  property="og:description"
-                  content={post.excerpt || `Article by Antoine RICHARD-CAPPONI`}
-                />
-                <meta property="og:site_name" content={title} />
-                <meta property="article:published_time" content={post.date} />
-                {post.auteur?.name && (
-                  <meta property="article:author" content={post.auteur.name} />
-                )}
-                {post.coverImage?.asset?._ref && (
-                  <meta
-                    key="ogImage"
-                    property="og:image"
-                    content={urlForImage(post.coverImage)
-                      .width(1200)
-                      .height(627)
-                      .fit('crop')
-                      .url()}
-                  />
-                )}
-
-                {/* Twitter */}
-                <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content={post.title} />
-                <meta
-                  name="twitter:description"
-                  content={post.excerpt || `Article by Antoine RICHARD-CAPPONI`}
-                />
-                {post.coverImage?.asset?._ref && (
-                  <meta
-                    name="twitter:image"
-                    content={urlForImage(post.coverImage)
-                      .width(1200)
-                      .height(627)
-                      .fit('crop')
-                      .url()}
-                  />
-                )}
-              </Head>
-              <motion.div variants={itemVariants} custom={1}>
-                <PostHeader
-                  title={post.title}
-                  coverImage={post.coverImage}
-                  date={post.date}
-                  auteur={post.auteur}
-                />
-              </motion.div>
-              <motion.div
-                variants={textVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: false, margin: '-100px' }}
-              >
-                <PostBody content={post.content} />
-              </motion.div>
-            </motion.article>
-            <motion.div variants={itemVariants} custom={2}>
-              <SectionSeparator />
-            </motion.div>
-            {morePosts.length > 0 && (
-              <motion.div variants={itemVariants} custom={3}>
-                <MoreStories posts={morePosts} />
-              </motion.div>
-            )}
-          </>
+          content
         )}
       </Container>
     </Layout>

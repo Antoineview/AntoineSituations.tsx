@@ -96,6 +96,13 @@ export default defineType({
       type: 'reference',
       to: [{ type: 'category' }],
     },
+    {
+      name: 'requiresAuth',
+      title: 'Requiert une authentification',
+      type: 'boolean',
+      description: 'Si coché, ce post ne sera accessible qu\'après authentification',
+      initialValue: false,
+    },
   ],
   preview: {
     select: {
