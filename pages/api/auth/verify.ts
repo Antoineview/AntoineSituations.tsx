@@ -81,8 +81,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('Verify API: Connected to Neon DB.');
 
     // Get the credential from the database
-    const credentialIdBuffer = Buffer.from(credential.id, 'base64url');
-    console.log('Verify API: Looking up credential in DB:', credential.id);
+    const credentialIdBuffer = Buffer.from(credential.rawId);
+    console.log('Verify API: Looking up credential in DB with raw ID:', credential.rawId);
     const storedCredential = await sql`
         SELECT pc.*, u.id as user_id 
         FROM passkey_credentials pc 
