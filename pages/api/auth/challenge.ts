@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // Generate a random challenge
   const challenge = crypto.randomBytes(32)
   
-  // Store the challenge in the session as a Buffer
+  // Store the challenge in the session as a Uint8Array
   const session = await getIronSession<CustomSessionData>(req, res, sessionOptions)
   session.challenge = new Uint8Array(challenge)
   await session.save()
@@ -37,5 +37,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const challengeString = isoBase64URL.fromBuffer(challenge)
   console.log('Challenge API: Generated challenge:', challengeString)
 
-  res.status(200).json({ challenge: Array.from(challenge) })
+  // Send the challenge as a Uint8Array to the client
+  res.status(200).json({ challenge: new Uint8Array(challenge) })
 } 

@@ -53,7 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Get the session to retrieve the challenge
     const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
-    const challengeFromSession = session.challenge; // Retrieve the stored challenge (as Buffer)
+    const challengeFromSession = session.challenge; // Retrieve the stored challenge (as Uint8Array)
 
     console.log('Register API: Challenge retrieved from session:', challengeFromSession);
 
@@ -67,7 +67,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     console.log('Register API: Retrieved challenge from session and cleared.');
 
-    // Convert the challenge Buffer to Base64URL string for verification
+    // Convert the challenge Uint8Array to Base64URL string for verification
     const expectedChallengeString = isoBase64URL.fromBuffer(Buffer.from(challengeFromSession));
     console.log('Register API: Converted challenge to Base64URL string:', expectedChallengeString);
 
