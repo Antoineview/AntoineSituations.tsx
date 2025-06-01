@@ -71,65 +71,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const expectedChallenge = isoBase64URL.fromBuffer(challengeFromSession);
     console.log('Register API: Converted challenge to Base64URL string.', expectedChallenge);
 
-    // Connect to Sanity to check invitation status
-    console.log('Register API: Connecting to Sanity...');
-    const sanityClient = createClient({
-      projectId,
-      dataset,
-      apiVersion,
-      token: process.env.SANITY_API_TOKEN,
-      useCdn: false,
-    })
-
-    console.log('Register API: Fetching invitation from Sanity...', { invitationId });
-    const invitation = await sanityClient.getDocument(invitationId);
-    console.log('Register API: Sanity invitation result:', invitation);
-
-    // Allow registration even if invitation is used, but only if a user with this invitation_id doesn't exist yet.
-    // This handles cases where the user was created but Sanity wasn't updated.
-    if (!invitation) {
-        console.log('Register API: Invalid invitation');
-        return res.status(400).json({ message: 'Invalid invitation' });
-    }
-
-    // Connect to Neon database
-    console.log('Register API: Connecting to Neon DB...');
-    const sql = neon(process.env.DATABASE_URL as string);
-    console.log('Register API: Connected to Neon DB.');
-
-    // Check if a user with this invitation_id already exists
-    console.log('Register API: Checking for existing user with invitation_id...', { invitationId });
-    const existingUsers = await sql`SELECT id FROM users WHERE invitation_id = ${invitationId}`;
-    let userId;
-
-    if (existingUsers.length > 0) {
-      // User already exists, use their ID
-      userId = existingUsers[0].id;
-      console.log('Register API: Existing user found with ID:', userId);
-      // If invitation is already marked as used in Sanity, but user exists, registration completed previously.
-      // We might want to handle this by just confirming success or re-attaching session.
-      if (invitation.used) {
-          console.log('Register API: User already exists and invitation already used. Registration previously completed.');
-          // Re-set the session and return success
-          // const session = await getIronSession<IronSessionData>(req, res, sessionOptions) // Session already retrieved above
-          session.user = {
-              id: userId,
-              authenticated: true,
-          };
-          await session.save();
-          return res.status(200).json({ success: true, userId: userId, message: 'Registration already completed.' });
-      }
-       console.log('Register API: User exists, but invitation not marked as used. Proceeding to store credential and mark invitation.');
-
-    } else {
-      // No existing user with this invitation_id, create a new one
-      console.log('Register API: No existing user found, creating new user...', { invitationId });
-      const newUser = await sql`INSERT INTO users (invitation_id) VALUES (${invitationId}) RETURNING id`;
-      userId = newUser[0].id; // Assuming the result is an array with one row
-      console.log('Register API: New user created with ID:', userId);
-    }
-
-    // 2. Process and store the passkey credential using @simplewebauthn/server
+    // 2. Process the passkey credential using @simplewebauthn/server immediately after getting challenge
     console.log('Register API: Processing passkey credential with @simplewebauthn/server...');
 
     // Configure verifyRegistrationResponse options
@@ -172,6 +114,72 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         // transports, // Log transports if needed
     });
 
+
+    // Connect to Sanity to check invitation status (Moved after verification)
+    console.log('Register API: Connecting to Sanity to check invitation status (after verification)...');
+    const sanityClient = createClient({
+      projectId,
+      dataset,
+      apiVersion,
+      token: process.env.SANITY_API_TOKEN,
+      useCdn: false,
+    })
+
+    console.log('Register API: Fetching invitation from Sanity (after verification)...', { invitationId });
+    const invitation = await sanityClient.getDocument(invitationId);
+    console.log('Register API: Sanity invitation result (after verification):', invitation);
+
+    // Allow registration even if invitation is used, but only if a user with this invitation_id doesn't exist yet.
+    // This handles cases where the user was created but Sanity wasn't updated.
+    // The primary invitation check is now done after verification to avoid unnecessary DB/Sanity calls on verification failure.
+    if (!invitation) {
+        console.log('Register API: Invalid invitation (after verification).');
+        // This case should ideally not be reached if the initial check passed, but as a safeguard:
+        return res.status(400).json({ message: 'Invalid invitation' });
+    }
+
+    // Connect to Neon database (Moved after verification)
+    console.log('Register API: Connecting to Neon DB (after verification)...');
+    const sql = neon(process.env.DATABASE_URL as string);
+    console.log('Register API: Connected to Neon DB (after verification).');
+
+    // Check if a user with this invitation_id already exists
+    console.log('Register API: Checking for existing user with invitation_id (after verification)...', { invitationId });
+    const existingUsers = await sql`SELECT id FROM users WHERE invitation_id = ${invitationId}`;
+    let userId;
+
+    if (existingUsers.length > 0) {
+      // User already exists, use their ID
+      userId = existingUsers[0].id;
+      console.log('Register API: Existing user found with ID (after verification):', userId);
+      // If invitation is already marked as used in Sanity, but user exists, registration completed previously.
+      // We might want to handle this by just confirming success or re-attaching session.
+      if (invitation.used) {
+          console.log('Register API: User already exists and invitation already used. Registration previously completed (after verification).');
+          // Re-set the session and return success
+          // const session = await getIronSession<IronSessionData>(req, res, sessionOptions) // Session already retrieved above
+          session.user = {
+              id: userId,
+              authenticated: true,
+          };
+          await session.save();
+          // Note: Returning 200 here means the frontend will think registration was successful again.
+          // Depending on desired UX, you might return a different status or message.
+          return res.status(200).json({ success: true, userId: userId, message: 'Registration already completed.' });
+      }
+       console.log('Register API: User exists, but invitation not marked as used. Proceeding to store credential and mark invitation (after verification).');
+
+    } else {
+      // No existing user with this invitation_id, create a new one
+      console.log('Register API: No existing user found, creating new user (after verification)...', { invitationId });
+      const newUser = await sql`INSERT INTO users (invitation_id) VALUES (${invitationId}) RETURNING id`;
+      userId = newUser[0].id; // Assuming the result is an array with one row
+      console.log('Register API: New user created with ID (after verification):', userId);
+    }
+
+    // 3. Store the passkey credential in the database (Moved after verification)
+    console.log('Register API: Storing passkey credential in DB (after verification)...');
+
     // Convert binary data to Buffer for storage in Neon BYTEA columns
     const credentialIdBuffer = arrayBufferToBuffer(credentialID);
     const publicKeyBuffer = arrayBufferToBuffer(credentialPublicKey);
@@ -179,7 +187,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Use transports directly from the client credential object as it seems more reliably provided there
     const transportsToStore = credential.response?.transports; 
 
-    console.log('Register API: Prepared credential data for DB insert:', {
+    console.log('Register API: Prepared credential data for DB insert (after verification):', {
         credentialId: credentialIdBuffer ? 'Buffer' : credentialIdBuffer, 
         userId,
         publicKey: publicKeyBuffer ? 'Buffer' : publicKeyBuffer, 
@@ -188,42 +196,42 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     // Check if this credential ID already exists for this user to prevent duplicates
-    console.log('Register API: Checking for existing credential for this user...');
+    console.log('Register API: Checking for existing credential for this user (after verification)...');
     // Need to query using the Buffer credentialIdBuffer
     const existingCredential = await sql`SELECT id FROM passkey_credentials WHERE id = ${credentialIdBuffer} AND user_id = ${userId}`;
 
     if (existingCredential.length === 0) {
          // Only insert if the credential doesn't already exist for this user
          await sql`INSERT INTO passkey_credentials (id, user_id, public_key, sign_counter, transports) VALUES (${credentialIdBuffer}, ${userId}, ${publicKeyBuffer}, ${signCounter}, ${transportsToStore})`;
-         console.log('Register API: Passkey credential stored in DB.');
+         console.log('Register API: Passkey credential stored in DB (after verification).');
     } else {
-        console.log('Register API: Passkey credential already exists for this user.');
+        console.log('Register API: Passkey credential already exists for this user (after verification).');
         // If credential exists, maybe update sign counter or just confirm success
         // For now, we'll treat it as success if the user exists and credential is sent again
     }
 
-    // 3. Mark the invitation as used in Sanity
+    // 4. Mark the invitation as used in Sanity (Moved after verification)
     // Only mark as used if it wasn't already
     if (!invitation.used) {
-        console.log('Register API: Patching invitation in Sanity...', { invitationId });
+        console.log('Register API: Patching invitation in Sanity (after verification)...', { invitationId });
         await sanityClient
           .patch(invitationId)
           .set({ used: true })
           .commit()
-        console.log('Register API: Invitation marked as used in Sanity.');
+        console.log('Register API: Invitation marked as used in Sanity (after verification).');
     } else {
-        console.log('Register API: Invitation already marked as used in Sanity.');
+        console.log('Register API: Invitation already marked as used in Sanity (after verification).');
     }
 
-    // 4. Set the user session
-    console.log('Register API: Setting user session...', { userId });
+    // 5. Set the user session (Moved after verification)
+    console.log('Register API: Setting user session (after verification)...', { userId });
     // const session = await getIronSession<IronSessionData>(req, res, sessionOptions) // Session already retrieved above
     session.user = {
       id: userId,
       authenticated: true,
     }
     await session.save()
-    console.log('Register API: Session saved.');
+    console.log('Register API: Session saved (after verification).');
 
     console.log('Register API: Registration successful.');
     res.status(200).json({ success: true, userId: userId })
