@@ -54,7 +54,8 @@ export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) 
 
       const attestationResponse = credential.response as AuthenticatorAttestationResponse
 
-      // Get the author ID from the invitation code
+      // Get the invitation ID from the invitation code
+      // We need the invitation ID to send to the register endpoint
       const validateResponse = await fetch('/api/auth/validate-invitation', {
         method: 'POST',
         headers: {
@@ -67,9 +68,14 @@ export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) 
         throw new Error('Invalid invitation code')
       }
 
-      const { authorId } = await validateResponse.json()
+      // Assuming validate-invitation returns the invitationId now
+      const { invitationId } = await validateResponse.json(); // <--- Get invitationId
 
-      // Send the credential to your server
+      if (!invitationId) {
+          throw new Error('Could not retrieve invitation ID from validation');
+      }
+
+      // Send the credential and invitation ID to your server
       const registerResponse = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
@@ -85,7 +91,7 @@ export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) 
             },
             type: credential.type,
           },
-          authorId,
+          invitationId, // <--- Send invitationId instead of authorId
         }),
       })
 
