@@ -68,7 +68,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('Register API: Retrieved challenge from session and cleared.');
 
     // Convert the challenge Buffer to Base64URL string for verification
-    const expectedChallengeString = isoBase64URL.fromBuffer(challengeFromSession);
+    const expectedChallengeString = isoBase64URL.fromBuffer(Buffer.from(challengeFromSession));
     console.log('Register API: Converted challenge to Base64URL string:', expectedChallengeString);
 
     // 2. Process the passkey credential using @simplewebauthn/server immediately after getting challenge
