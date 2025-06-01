@@ -9,6 +9,16 @@ import {
 } from '@simplewebauthn/server'
 import { isoBase64URL } from '@simplewebauthn/server/helpers'
 
+interface CustomSessionData extends IronSessionData {
+  challengeData?: {
+    buffer: number[];
+  };
+  user?: {
+    id: string;
+    authenticated: boolean;
+  };
+}
+
 const sessionOptions = {
   password: process.env.SESSION_PASSWORD || 'complex_password_at_least_32_characters_long',
   cookieName: 'auth_session',
@@ -32,22 +42,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Get the session to retrieve the challenge
-    const session = await getIronSession<IronSessionData>(req, res, sessionOptions)
-    const challengeFromSession = session.challenge
+    const session = await getIronSession<CustomSessionData>(req, res, sessionOptions)
+    const challengeData = session.challengeData
 
-    console.log('Verify API: Challenge retrieved from session:', challengeFromSession);
+    console.log('Verify API: Challenge data retrieved from session:', challengeData);
 
     // Clear the challenge from the session after retrieval (important for security)
-    session.challenge = undefined
+    session.challengeData = undefined
     await session.save()
     
-    if (!challengeFromSession) {
+    if (!challengeData?.buffer) {
         console.error('Verify API: Challenge not found in session.');
         return res.status(400).json({ message: 'Authentication ceremony timed out or challenge is missing.' });
     }
 
-    // Convert the challenge Buffer to Base64URL string for verification
-    const expectedChallengeString = isoBase64URL.fromBuffer(Buffer.from(challengeFromSession));
+    // Convert the challenge array to Buffer, then to Base64URL string for verification
+    const challengeBuffer = Buffer.from(challengeData.buffer);
+    const expectedChallengeString = isoBase64URL.fromBuffer(challengeBuffer);
     console.log('Verify API: Converted challenge to Base64URL string:', expectedChallengeString);
 
     // Convert the raw credential data to the format expected by @simplewebauthn/server
