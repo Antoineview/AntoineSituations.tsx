@@ -91,6 +91,7 @@ export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) 
               transports: attestationResponse.getTransports ? attestationResponse.getTransports() : undefined,
             },
             type: credential.type,
+            clientExtensionResults: credential.getClientExtensionResults ? credential.getClientExtensionResults() : {},
           },
           invitationId,
         }),

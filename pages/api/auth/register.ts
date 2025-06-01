@@ -69,14 +69,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Convert the challenge Buffer to Base64URL string for verification
     const expectedChallengeString = isoBase64URL.fromBuffer(challengeFromSession);
-    console.log('Register API: Converted challenge to Base64URL string.', expectedChallengeString);
+    console.log('Register API: Converted challenge to Base64URL string:', expectedChallengeString);
 
     // 2. Process the passkey credential using @simplewebauthn/server immediately after getting challenge
     console.log('Register API: Processing passkey credential with @simplewebauthn/server...');
 
+    // Convert the raw credential data to the format expected by @simplewebauthn/server
+    const credentialForVerification: RegistrationResponseJSON = {
+        id: credential.id,
+        rawId: isoBase64URL.fromBuffer(new Uint8Array(credential.rawId)),
+        response: {
+            clientDataJSON: isoBase64URL.fromBuffer(new Uint8Array(credential.response.clientDataJSON)),
+            attestationObject: isoBase64URL.fromBuffer(new Uint8Array(credential.response.attestationObject)),
+            transports: credential.response.transports,
+        },
+        type: credential.type,
+        clientExtensionResults: credential.clientExtensionResults || {},
+    };
+
     // Configure verifyRegistrationResponse options
     const verificationOptions = {
-        response: credential as RegistrationResponseJSON,
+        response: credentialForVerification,
         expectedChallenge: expectedChallengeString,
         expectedOrigin: process.env.NEXT_PUBLIC_WEB_ORIGIN as string,
         expectedRPID: process.env.NEXT_PUBLIC_WEB_ORIGIN?.replace(/^https?:\/\//, '') as string,
