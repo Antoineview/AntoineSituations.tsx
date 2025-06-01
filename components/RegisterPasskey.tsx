@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/router'
+// Import isoBase64URL for manual serialization
+import { isoBase64URL } from '@simplewebauthn/server/helpers';
 
 interface RegisterPasskeyProps {
   onRegistered: () => void
@@ -73,23 +75,34 @@ export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) 
           throw new Error('Could not retrieve invitation ID from validation');
       }
 
-      // Use .toJSON() to serialize the credential response correctly for the backend
-      // Cast to any to avoid TypeScript error since .toJSON() is available at runtime
-      const credentialResponseJSON = (attestationResponse as any).toJSON();
+      // Manually serialize binary data to Base64URL strings
+      // Create Uint8Array views of the ArrayBuffer data
+      const clientDataJSONBuffer = new Uint8Array(attestationResponse.clientDataJSON);
+      const attestationObjectBuffer = new Uint8Array(attestationResponse.attestationObject);
+      const rawIdBuffer = new Uint8Array(credential.rawId); // rawId is on the main credential object
 
-      // Send the credential and invitation ID to your server
+      const clientDataJSON = isoBase64URL.fromBuffer(clientDataJSONBuffer);
+      const attestationObject = isoBase64URL.fromBuffer(attestationObjectBuffer);
+      const rawId = isoBase64URL.fromBuffer(rawIdBuffer);
+
+      // Send the serialized credential data and invitation ID to your server
       const registerResponse = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          // Pass the serialized credential response
-          credential: { 
-             id: credential.id, // credential.id is usually already base64url
-             rawId: credentialResponseJSON.rawId, // Use rawId from serialized response
-             response: credentialResponseJSON,
-             type: credential.type,
+          credential: {
+            id: credential.id, // This might already be base64url, send as is
+            rawId: rawId, // Use the manually serialized rawId
+            response: {
+              clientDataJSON: clientDataJSON,
+              attestationObject: attestationObject,
+              // Include other properties from attestationResponse.response if needed,
+              // and manually serialize any binary ones
+              transports: attestationResponse.getTransports ? attestationResponse.getTransports() : undefined, // Example for transports if available
+            },
+            type: credential.type,
           },
           invitationId,
         }),
