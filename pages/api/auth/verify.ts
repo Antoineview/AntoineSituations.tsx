@@ -83,22 +83,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Get the credential from the database
     console.log('Verify API: Looking up credential in DB with ID:', credential.id);
     
-    // Convert Base64URL to standard Base64
-    const standardBase64 = credential.id
-        .replace(/-/g, '+')
-        .replace(/_/g, '/');
-    
-    // Add padding if needed (length should be multiple of 4)
-    const paddingLength = (4 - (standardBase64.length % 4)) % 4;
-    const paddedBase64 = standardBase64 + '='.repeat(paddingLength);
-    
-    console.log('Verify API: Converted to standard Base64 with padding:', paddedBase64);
+    // Convert Base64URL to hex string
+    const credentialBuffer = Buffer.from(credential.id, 'base64url');
+    const hexString = credentialBuffer.toString('hex');
+    console.log('Verify API: Converted to hex:', hexString);
     
     const storedCredential = await sql`
         SELECT pc.*, u.id as user_id 
         FROM passkey_credentials pc 
         JOIN users u ON pc.user_id = u.id 
-        WHERE pc.id = decode(${paddedBase64}, 'base64')
+        WHERE pc.id = decode(${hexString}, 'hex')
     `;
 
     if (storedCredential.length === 0) {
