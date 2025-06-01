@@ -141,6 +141,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         requireUserVerification: true, // Or false, depending on your requirement
     };
 
+    console.log('Register API: Verification options being passed to verifyRegistrationResponse:', verificationOptions);
+
     let verification;
     try {
         verification = await verifyRegistrationResponse(verificationOptions);
