@@ -75,17 +75,7 @@ export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) 
           throw new Error('Could not retrieve invitation ID from validation');
       }
 
-      // Manually serialize binary data to Base64URL strings
-      // Create Uint8Array views of the ArrayBuffer data
-      const clientDataJSONBuffer = new Uint8Array(attestationResponse.clientDataJSON);
-      const attestationObjectBuffer = new Uint8Array(attestationResponse.attestationObject);
-      const rawIdBuffer = new Uint8Array(credential.rawId); // rawId is on the main credential object
-
-      const clientDataJSON = isoBase64URL.fromBuffer(clientDataJSONBuffer);
-      const attestationObject = isoBase64URL.fromBuffer(attestationObjectBuffer);
-      const rawId = isoBase64URL.fromBuffer(rawIdBuffer);
-
-      // Send the serialized credential data and invitation ID to your server
+      // Send the credential data and invitation ID to your server
       const registerResponse = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
@@ -93,14 +83,12 @@ export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) 
         },
         body: JSON.stringify({
           credential: {
-            id: credential.id, // This might already be base64url, send as is
-            rawId: rawId, // Use the manually serialized rawId
+            id: credential.id,
+            rawId: Array.from(new Uint8Array(credential.rawId)),
             response: {
-              clientDataJSON: clientDataJSON,
-              attestationObject: attestationObject,
-              // Include other properties from attestationResponse.response if needed,
-              // and manually serialize any binary ones
-              transports: attestationResponse.getTransports ? attestationResponse.getTransports() : undefined, // Example for transports if available
+              clientDataJSON: Array.from(new Uint8Array(attestationResponse.clientDataJSON)),
+              attestationObject: Array.from(new Uint8Array(attestationResponse.attestationObject)),
+              transports: attestationResponse.getTransports ? attestationResponse.getTransports() : undefined,
             },
             type: credential.type,
           },

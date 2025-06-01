@@ -68,23 +68,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('Register API: Retrieved challenge from session and cleared.');
 
     // Convert the challenge Buffer to Base64URL string for verification
-    const expectedChallenge = isoBase64URL.fromBuffer(challengeFromSession);
-    console.log('Register API: Converted challenge to Base64URL string.', expectedChallenge);
+    const expectedChallengeString = isoBase64URL.fromBuffer(challengeFromSession);
+    console.log('Register API: Converted challenge to Base64URL string.', expectedChallengeString);
 
     // 2. Process the passkey credential using @simplewebauthn/server immediately after getting challenge
     console.log('Register API: Processing passkey credential with @simplewebauthn/server...');
 
     // Configure verifyRegistrationResponse options
     const verificationOptions = {
-        response: credential as RegistrationResponseJSON, // Pass the entire credential object and cast it
-        expectedChallenge: (() => {
-            const challengeValue = isoBase64URL.fromBuffer(challengeFromSession);
-            console.log('Register API: DEBUG - expectedChallenge inside verificationOptions:', challengeValue);
-            return challengeValue;
-        })(), // Use the challenge string from session, log inline
-        expectedOrigin: process.env.NEXT_PUBLIC_WEB_ORIGIN as string, // Your website's origin
-        expectedRPID: process.env.NEXT_PUBLIC_WEB_ORIGIN?.replace(/^https?:\/\//, '') as string, // Your RP ID
-        requireUserVerification: true, // Or false, depending on your requirement
+        response: credential as RegistrationResponseJSON,
+        expectedChallenge: expectedChallengeString,
+        expectedOrigin: process.env.NEXT_PUBLIC_WEB_ORIGIN as string,
+        expectedRPID: process.env.NEXT_PUBLIC_WEB_ORIGIN?.replace(/^https?:\/\//, '') as string,
+        requireUserVerification: true,
     };
 
     console.log('Register API: Verification options being passed to verifyRegistrationResponse:', verificationOptions);
@@ -117,7 +113,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         counter,
         // transports, // Log transports if needed
     });
-
 
     // Connect to Sanity to check invitation status (Moved after verification)
     console.log('Register API: Connecting to Sanity to check invitation status (after verification)...');

@@ -2,6 +2,15 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import crypto from 'crypto'
 import { getIronSession } from 'iron-session'
 import type { IronSessionData } from 'iron-session'
+import { isoBase64URL } from '@simplewebauthn/server/helpers'
+
+interface CustomSessionData extends IronSessionData {
+  challenge?: string;
+  user?: {
+    id: string;
+    authenticated: boolean;
+  };
+}
 
 const sessionOptions = {
   password: process.env.SESSION_PASSWORD || 'complex_password_at_least_32_characters_long',
@@ -18,10 +27,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // Generate a random challenge
   const challenge = crypto.randomBytes(32)
+  
+  // Convert challenge to Base64URL string for storage
+  const challengeString = isoBase64URL.fromBuffer(challenge)
 
   // Store the challenge in the session
-  const session = await getIronSession<IronSessionData>(req, res, sessionOptions)
-  session.challenge = challenge
+  const session = await getIronSession<CustomSessionData>(req, res, sessionOptions)
+  session.challenge = challengeString
   await session.save()
 
   res.status(200).json({ challenge: Array.from(challenge) })
