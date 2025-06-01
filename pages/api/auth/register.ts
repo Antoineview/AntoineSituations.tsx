@@ -55,6 +55,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const session = await getIronSession<IronSessionData>(req, res, sessionOptions);
     const challengeFromSession = session.challenge; // Retrieve the stored challenge (as Buffer)
 
+    console.log('Register API: Challenge retrieved from session:', challengeFromSession);
+
     // Clear the challenge from the session after retrieval (important for security)
     session.challenge = undefined;
     await session.save();
@@ -63,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         console.error('Register API: Challenge not found in session.');
         return res.status(400).json({ message: 'Authentication ceremony timed out or challenge is missing.' });
     }
-    console.log('Register API: Retrieved challenge from session.');
+    console.log('Register API: Retrieved challenge from session and cleared.');
 
     // Convert the challenge Buffer to Base64URL string for verification
     const expectedChallenge = isoBase64URL.fromBuffer(challengeFromSession);
