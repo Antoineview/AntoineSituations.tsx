@@ -124,17 +124,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ message: 'Passkey verification failed' });
     }
 
-    const { 
-        credentialPublicKey,
-        credentialID,
-        counter,
-        // transports, // Transports are also available here if needed
-    } = registrationInfo.credential;
+    console.log('Register API: Full registration info:', JSON.stringify(registrationInfo, null, 2));
+
+    // Extract credential information from the verification result
+    const verifiedCredential = registrationInfo.credential;
+    if (!verifiedCredential || !verifiedCredential.id || !verifiedCredential.publicKey) {
+        console.error('Register API: Missing required credential information:', verifiedCredential);
+        return res.status(400).json({ message: 'Invalid credential information' });
+    }
+
+    const credentialID = verifiedCredential.id;
+    const credentialPublicKey = verifiedCredential.publicKey;
+    const counter = verifiedCredential.counter || 0;
 
     console.log('Register API: Extracted registration info:', { 
-        credentialID: isoBase64URL.fromBuffer(credentialID), // Log as string for readability
+        credentialID: credentialID,
         counter,
-        // transports, // Log transports if needed
+        hasPublicKey: !!credentialPublicKey
     });
 
     // Connect to Sanity to check invitation status (Moved after verification)
@@ -203,8 +209,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.log('Register API: Storing passkey credential in DB (after verification)...');
 
     // Convert binary data to Buffer for storage in Neon BYTEA columns
-    const credentialIdBuffer = arrayBufferToBuffer(credentialID);
-    const publicKeyBuffer = arrayBufferToBuffer(credentialPublicKey);
+    const credentialIdBuffer = Buffer.from(credentialID);
+    const publicKeyBuffer = Buffer.from(credentialPublicKey);
     const signCounter = counter; // Use the counter from verification
     // Use transports directly from the client credential object as it seems more reliably provided there
     const transportsToStore = credential.response?.transports; 
