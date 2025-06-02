@@ -57,7 +57,7 @@ export const getStaticProps: GetStaticProps = async () => {
       projectId,
       dataset,
       apiVersion,
-      useCdn: false,
+      useCdn: true,
     })
     const categories = await client.fetch<Category[]>(categoriesQuery)
 

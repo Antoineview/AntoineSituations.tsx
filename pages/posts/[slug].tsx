@@ -13,8 +13,7 @@ import type {
   InferGetStaticPropsType,
 } from 'next'
 import { createClient } from 'next-sanity'
-import { PreviewSuspense } from 'next-sanity/preview'
-import { lazy } from 'react'
+import { lazy, Suspense } from 'react'
 
 const PreviewPostPage = lazy(() => import('components/PreviewPostPage'))
 
@@ -51,7 +50,7 @@ export const getStaticProps: GetStaticProps<
     projectId,
     dataset,
     apiVersion,
-    useCdn: preview,
+    useCdn: !preview,
     token: token || undefined,
   })
   const dataPromise = client.fetch<{ post: Post; morePosts: Post[] }>(
@@ -79,11 +78,11 @@ export default function PostRoute(
 
   if (preview) {
     return (
-      <PreviewSuspense
+      <Suspense
         fallback={<PostPage preview loading data={data} settings={settings} />}
       >
         <PreviewPostPage token={token} slug={data?.post?.slug} />
-      </PreviewSuspense>
+      </Suspense>
     )
   }
 

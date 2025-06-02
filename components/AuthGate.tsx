@@ -19,7 +19,7 @@ export default function AuthGate({ children, onAuthenticated }: AuthGateProps) {
       setError(null)
 
       if (!window.PublicKeyCredential) {
-        throw new Error("WebAuthn n'est pas supporté par ce navigateur")
+        throw new Error("Votre navigateur ne supporte pas les clés de sécurité")
       }
 
       const response = await fetch('/api/auth/challenge')
