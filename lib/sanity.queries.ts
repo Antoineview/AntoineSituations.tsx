@@ -1,3 +1,4 @@
+// lib/sanity.queries.ts
 import { groq } from 'next-sanity'
 
 const postFields = groq`
@@ -99,4 +100,8 @@ export interface Settings {
   title?: string
   lilparagraph?: string
   bigparagraph?: string
+}
+
+export type Author = {
+  name: string
 }
