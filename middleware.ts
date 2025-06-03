@@ -4,7 +4,9 @@ import { getIronSession } from 'iron-session'
 import type { IronSessionData } from 'iron-session'
 
 const sessionOptions = {
-  password: process.env.SESSION_PASSWORD || 'complex_password_at_least_32_characters_long',
+  password:
+    process.env.SESSION_PASSWORD ||
+    'complex_password_at_least_32_characters_long',
   cookieName: 'auth_session',
   cookieOptions: {
     secure: process.env.NODE_ENV === 'production',
@@ -12,7 +14,11 @@ const sessionOptions = {
 }
 
 export async function middleware(request: NextRequest) {
-  const session = await getIronSession<IronSessionData>(request, NextResponse.next(), sessionOptions)
+  const session = await getIronSession<IronSessionData>(
+    request,
+    NextResponse.next(),
+    sessionOptions,
+  )
 
   // Check if the user is authenticated
   const isAuthenticated = session.user?.authenticated
@@ -20,7 +26,9 @@ export async function middleware(request: NextRequest) {
   // If the user is not authenticated and trying to access a protected post,
   // redirect them to the login page
   if (!isAuthenticated && request.nextUrl.pathname.startsWith('/posts/')) {
-    const response = await fetch(`${request.nextUrl.origin}/api/posts/${request.nextUrl.pathname.split('/').pop()}`)
+    const response = await fetch(
+      `${request.nextUrl.origin}/api/posts/${request.nextUrl.pathname.split('/').pop()}`,
+    )
     const post = await response.json()
 
     if (post.requiresAuth) {
@@ -33,4 +41,4 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: '/posts/:path*',
-} 
+}

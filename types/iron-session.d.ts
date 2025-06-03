@@ -8,4 +8,4 @@ declare module 'iron-session' {
     }
     challenge?: Uint8Array
   }
-} 
+}

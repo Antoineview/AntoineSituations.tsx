@@ -16,7 +16,11 @@ interface Category {
   color: string
 }
 
-export default function CategoriesPage({ categories }: { categories: Category[] }) {
+export default function CategoriesPage({
+  categories,
+}: {
+  categories: Category[]
+}) {
   return (
     <Layout preview={false}>
       <Head>
@@ -74,4 +78,4 @@ export const getStaticProps: GetStaticProps = async () => {
       categories: [],
     },
   }
-} 
+}

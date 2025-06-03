@@ -14,7 +14,13 @@ import { createClient } from 'next-sanity'
 import { Suspense } from 'react'
 
 export const getStaticProps: GetStaticProps<
-  { preview: boolean; token: string | null; posts: Post[]; settings: Settings; categories: Category[] },
+  {
+    preview: boolean
+    token: string | null
+    posts: Post[]
+    settings: Settings
+    categories: Category[]
+  },
   any,
   { token?: string }
 > = async ({ preview = false, previewData = {} }) => {
@@ -46,7 +52,13 @@ export const getStaticProps: GetStaticProps<
 
   /* when the client isn't set up */
   return {
-    props: { preview: false, token: null, posts: [], settings: {}, categories: [] },
+    props: {
+      preview: false,
+      token: null,
+      posts: [],
+      settings: {},
+      categories: [],
+    },
     revalidate: undefined,
   }
 }
@@ -62,7 +74,13 @@ export default function IndexRoute({
     return (
       <Suspense
         fallback={
-          <IndexPage preview loading posts={posts} settings={settings} categories={categories || []} />
+          <IndexPage
+            preview
+            loading
+            posts={posts}
+            settings={settings}
+            categories={categories || []}
+          />
         }
       >
         <PreviewIndexPage token={token} />
@@ -70,5 +88,11 @@ export default function IndexRoute({
     )
   }
 
-  return <IndexPage posts={posts} settings={settings} categories={categories || []} />
+  return (
+    <IndexPage
+      posts={posts}
+      settings={settings}
+      categories={categories || []}
+    />
+  )
 }

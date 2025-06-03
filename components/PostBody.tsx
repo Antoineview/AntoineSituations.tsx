@@ -32,26 +32,32 @@ interface YouTubeNode {
 }
 
 const textVariants = {
-  hidden: { 
+  hidden: {
     opacity: 0,
-    y: 50
+    y: 50,
   },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
       duration: 0.6,
-      ease: [0.6, -0.05, 0.01, 0.99]
-    }
-  }
+      ease: [0.6, -0.05, 0.01, 0.99],
+    },
+  },
 }
 
-const AnimatedText = ({ children, as: Component = 'p' }: { children: ReactNode, as?: keyof JSX.IntrinsicElements }) => {
+const AnimatedText = ({
+  children,
+  as: Component = 'p',
+}: {
+  children: ReactNode
+  as?: keyof JSX.IntrinsicElements
+}) => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.1 })
-  
+
   // Convert React children to string
-  const textContent = React.Children.map(children, child => {
+  const textContent = React.Children.map(children, (child) => {
     if (typeof child === 'string') return child
     if (React.isValidElement(child)) {
       return child.props.children
@@ -59,20 +65,20 @@ const AnimatedText = ({ children, as: Component = 'p' }: { children: ReactNode, 
     return ''
   }).join('')
 
-  const lines = textContent.split('\n').filter(line => line.trim() !== '')
-  
+  const lines = textContent.split('\n').filter((line) => line.trim() !== '')
+
   return (
     <Component ref={ref} className={styles.portableText}>
       {lines.map((line, index) => (
         <motion.span
           key={index}
           initial="hidden"
-          animate={isInView ? "visible" : "hidden"}
+          animate={isInView ? 'visible' : 'hidden'}
           variants={textVariants}
           className="block"
           custom={index}
           transition={{
-            delay: index * 0.1
+            delay: index * 0.1,
           }}
         >
           {line}
@@ -86,28 +92,31 @@ const serializers = {
   types: {
     youtube: ({ value }: PortableTextTypeComponentProps<YouTubeNode>) => {
       const [isPlaying, setIsPlaying] = useState(false)
-      
+
       if (!value?.url) return null
-      
+
       return (
         <div className="relative w-full pt-[56.25%] mb-8">
           <div className="absolute top-0 left-0 w-full h-full">
             {value.coverImage?.asset?._ref && !isPlaying ? (
-              <div 
+              <div
                 className="relative w-full h-full cursor-pointer"
                 onClick={() => setIsPlaying(true)}
               >
                 <Image
-                  src={urlForImage(value.coverImage).width(1280).height(720).url()}
+                  src={urlForImage(value.coverImage)
+                    .width(1280)
+                    .height(720)
+                    .url()}
                   alt="Video cover"
                   fill
                   className="object-cover rounded-lg"
                 />
                 <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30 rounded-lg">
                   <div className="w-16 h-16 bg-white bg-opacity-90 rounded-full flex items-center justify-center">
-                    <svg 
-                      className="w-8 h-8 text-black" 
-                      viewBox="0 0 24 24" 
+                    <svg
+                      className="w-8 h-8 text-black"
+                      viewBox="0 0 24 24"
                       fill="currentColor"
                     >
                       <path d="M8 5v14l11-7z" />
@@ -128,15 +137,15 @@ const serializers = {
           </div>
         </div>
       )
-    }
-  }
+    },
+  },
 }
 
 export default function PostBody({ content }) {
   return (
     <div className={`mx-auto max-w-2xl ${styles.portableText}`}>
-      <PortableText 
-        value={content} 
+      <PortableText
+        value={content}
         components={{
           ...serializers,
           marks: {
@@ -144,7 +153,9 @@ export default function PostBody({ content }) {
             em: ({ children }) => <em>{children}</em>,
             code: ({ children }) => <code>{children}</code>,
             link: ({ children, value }) => {
-              const target = (value?.href || '').startsWith('http') ? '_blank' : undefined
+              const target = (value?.href || '').startsWith('http')
+                ? '_blank'
+                : undefined
               return (
                 <a
                   href={value?.href}
@@ -154,7 +165,7 @@ export default function PostBody({ content }) {
                   {children}
                 </a>
               )
-            }
+            },
           },
           block: {
             normal: ({ children }) => (
@@ -165,9 +176,9 @@ export default function PostBody({ content }) {
             ),
             h3: ({ children }) => (
               <AnimatedText as="h3">{children}</AnimatedText>
-            )
-          }
-        }} 
+            ),
+          },
+        }}
       />
     </div>
   )

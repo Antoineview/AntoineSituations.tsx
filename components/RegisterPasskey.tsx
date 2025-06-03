@@ -2,13 +2,15 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/router'
 // Import isoBase64URL for manual serialization
-import { isoBase64URL } from '@simplewebauthn/server/helpers';
+import { isoBase64URL } from '@simplewebauthn/server/helpers'
 
 interface RegisterPasskeyProps {
   onRegistered: () => void
 }
 
-export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) {
+export default function RegisterPasskey({
+  onRegistered,
+}: RegisterPasskeyProps) {
   const [isRegistering, setIsRegistering] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isHovered, setIsHovered] = useState(false)
@@ -21,13 +23,13 @@ export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) 
       setError(null)
 
       if (!window.PublicKeyCredential) {
-        throw new Error("Votre navigateur ne supporte pas les clés de sécurité")
+        throw new Error('Votre navigateur ne supporte pas les clés de sécurité')
       }
 
       const response = await fetch('/api/auth/challenge')
       const { challenge } = await response.json()
 
-      const credential = await navigator.credentials.create({
+      const credential = (await navigator.credentials.create({
         publicKey: {
           challenge: new Uint8Array(challenge),
           rp: {
@@ -46,13 +48,14 @@ export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) 
           timeout: 60000,
           attestation: 'direct',
         },
-      }) as PublicKeyCredential
+      })) as PublicKeyCredential
 
       if (!credential) {
         throw new Error("Aucune information d'identification reçue.")
       }
 
-      const attestationResponse = credential.response as AuthenticatorAttestationResponse
+      const attestationResponse =
+        credential.response as AuthenticatorAttestationResponse
 
       const validateResponse = await fetch('/api/auth/validate-invitation', {
         method: 'POST',
@@ -66,10 +69,12 @@ export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) 
         throw new Error("Code d'invitation invalide.")
       }
 
-      const { invitationId } = await validateResponse.json();
+      const { invitationId } = await validateResponse.json()
 
       if (!invitationId) {
-          throw new Error("Impossible de récupérer l'ID d'invitation après validation.");
+        throw new Error(
+          "Impossible de récupérer l'ID d'invitation après validation.",
+        )
       }
 
       const registerResponse = await fetch('/api/auth/register', {
@@ -82,12 +87,20 @@ export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) 
             id: credential.id,
             rawId: Array.from(new Uint8Array(credential.rawId)),
             response: {
-              clientDataJSON: Array.from(new Uint8Array(attestationResponse.clientDataJSON)),
-              attestationObject: Array.from(new Uint8Array(attestationResponse.attestationObject)),
-              transports: attestationResponse.getTransports ? attestationResponse.getTransports() : undefined,
+              clientDataJSON: Array.from(
+                new Uint8Array(attestationResponse.clientDataJSON),
+              ),
+              attestationObject: Array.from(
+                new Uint8Array(attestationResponse.attestationObject),
+              ),
+              transports: attestationResponse.getTransports
+                ? attestationResponse.getTransports()
+                : undefined,
             },
             type: credential.type,
-            clientExtensionResults: credential.getClientExtensionResults ? credential.getClientExtensionResults() : {},
+            clientExtensionResults: credential.getClientExtensionResults
+              ? credential.getClientExtensionResults()
+              : {},
           },
           invitationId,
         }),
@@ -99,11 +112,11 @@ export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) 
 
       onRegistered()
     } catch (err) {
-        if (err instanceof Error) {
-            setError(err.message);
-        } else {
-            setError("L'enregistrement a échoué.")
-        }
+      if (err instanceof Error) {
+        setError(err.message)
+      } else {
+        setError("L'enregistrement a échoué.")
+      }
     } finally {
       setIsRegistering(false)
     }
@@ -139,16 +152,16 @@ export default function RegisterPasskey({ onRegistered }: RegisterPasskeyProps) 
           </svg>
         </div>
 
-        {isRegistering && <p className="mt-4 text-lg">Enregistrement en cours...</p>}
-        {error && (
-          <p className="mt-4 text-red-500">{error}</p>
+        {isRegistering && (
+          <p className="mt-4 text-lg">Enregistrement en cours...</p>
         )}
+        {error && <p className="mt-4 text-red-500">{error}</p>}
         {!isRegistering && !error && (
-           <p className="mt-4 text-gray-600 dark:text-gray-400">
+          <p className="mt-4 text-gray-600 dark:text-gray-400">
             Créez la clé vers votre coeur.
           </p>
         )}
       </motion.div>
     </div>
   )
-} 
+}

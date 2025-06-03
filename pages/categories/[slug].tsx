@@ -4,7 +4,11 @@ import Layout from 'components/BlogLayout'
 import MoreStories from 'components/MoreStories'
 import { apiVersion, dataset, projectId } from 'lib/sanity.api'
 import { postsByCategoryQuery, categoriesQuery } from 'lib/sanity.queries'
-import type { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next'
+import type {
+  GetStaticPaths,
+  GetStaticProps,
+  InferGetStaticPropsType,
+} from 'next'
 import { createClient } from 'next-sanity'
 import Head from 'next/head'
 import type { Post } from 'lib/sanity.queries'
@@ -29,14 +33,13 @@ export default function CategoryPage({
       </Head>
       <Container>
         <div className="w-full">
-          <BlogHeader
-            title={category.title}
-            lilparagraph=""
-            bigparapraph=""
-          />
+          <BlogHeader title={category.title} lilparagraph="" bigparapraph="" />
         </div>
         <div className="mb-8">
-          <Link href="/" className="text-lg font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200">
+          <Link
+            href="/"
+            className="text-lg font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+          >
             ← Return Home
           </Link>
         </div>
@@ -81,7 +84,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
     const category = await client.fetch<Category>(
       `*[_type == "category" && slug.current == $slug][0]`,
-      { slug: params?.slug }
+      { slug: params?.slug },
     )
     const posts = await client.fetch<Post[]>(postsByCategoryQuery, {
       categorySlug: params?.slug,
@@ -108,4 +111,4 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       preview: false,
     },
   }
-} 
+}

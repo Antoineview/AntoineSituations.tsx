@@ -55,7 +55,7 @@ export const getStaticProps: GetStaticProps<
   })
   const dataPromise = client.fetch<{ post: Post; morePosts: Post[] }>(
     postQuery,
-    { slug: params.slug }
+    { slug: params.slug },
   )
   const settingsPromise = client.fetch<Settings>(settingsQuery)
 
@@ -72,7 +72,7 @@ export const getStaticProps: GetStaticProps<
 }
 
 export default function PostRoute(
-  props: InferGetStaticPropsType<typeof getStaticProps>
+  props: InferGetStaticPropsType<typeof getStaticProps>,
 ) {
   const { preview, token, data, settings } = props
 

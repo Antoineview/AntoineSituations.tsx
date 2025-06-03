@@ -66,15 +66,20 @@ async function readBody(readable) {
   return Buffer.concat(chunks).toString('utf8')
 }
 
-export default async function revalidate(req: NextApiRequest, res: NextApiResponse<any>) {
+export default async function revalidate(
+  req: NextApiRequest,
+  res: NextApiResponse<any>,
+) {
   const signatureHeader = req.headers[SIGNATURE_HEADER_NAME]
-  const signature = Array.isArray(signatureHeader) ? signatureHeader[0] : signatureHeader
+  const signature = Array.isArray(signatureHeader)
+    ? signatureHeader[0]
+    : signatureHeader
   const body = await readBody(req) // Read the body into a string
   if (
     !isValidSignature(
       body,
       signature || '',
-      process.env.SANITY_REVALIDATE_SECRET?.trim()
+      process.env.SANITY_REVALIDATE_SECRET?.trim(),
     )
   ) {
     const invalidSignature = 'Invalid signature'
@@ -98,7 +103,7 @@ export default async function revalidate(req: NextApiRequest, res: NextApiRespon
   const client = createClient({ projectId, dataset, apiVersion, useCdn: true })
   const slug = await client.fetch(getQueryForType(_type), { id })
   const slugs = (Array.isArray(slug) ? slug : [slug]).map(
-    (_slug) => `/posts/${_slug}`
+    (_slug) => `/posts/${_slug}`,
   )
   const staleRoutes = ['/', ...slugs]
 

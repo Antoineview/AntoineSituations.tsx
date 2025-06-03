@@ -8,7 +8,10 @@ interface InvitationGeneratorProps {
   onChange: (value: string) => void
 }
 
-export default function InvitationGenerator({ value, onChange }: InvitationGeneratorProps) {
+export default function InvitationGenerator({
+  value,
+  onChange,
+}: InvitationGeneratorProps) {
   const document: any = useFormValue([])
 
   const [isGenerating, setIsGenerating] = useState(false)
@@ -43,8 +46,14 @@ export default function InvitationGenerator({ value, onChange }: InvitationGener
 
       if (!response.ok) {
         const errorBody = await response.text()
-        console.error('API responded with an error:', response.status, errorBody)
-        throw new Error(`API error: ${response.status} ${response.statusText} - ${errorBody}`)
+        console.error(
+          'API responded with an error:',
+          response.status,
+          errorBody,
+        )
+        throw new Error(
+          `API error: ${response.status} ${response.statusText} - ${errorBody}`,
+        )
       }
 
       const { invitationLink } = await response.json()
@@ -57,24 +66,30 @@ export default function InvitationGenerator({ value, onChange }: InvitationGener
         onChange(code)
         console.log('Updated Sanity field with code:', code)
       } else {
-         console.error('Invalid invitation link format from API:', invitationLink)
-         throw new Error('Invalid invitation link received from API.')
+        console.error(
+          'Invalid invitation link format from API:',
+          invitationLink,
+        )
+        throw new Error('Invalid invitation link received from API.')
       }
-
     } catch (err) {
-      console.error('Error caught in handleGenerate:', err);
+      console.error('Error caught in handleGenerate:', err)
       // More detailed logging for the caught error
       if (err instanceof Error) {
-        console.error('Caught error is an Error instance:', err.message, err.stack);
-        setError(err.message);
+        console.error(
+          'Caught error is an Error instance:',
+          err.message,
+          err.stack,
+        )
+        setError(err.message)
       } else {
-        console.error('Caught error is NOT an Error instance:', err);
+        console.error('Caught error is NOT an Error instance:', err)
         // Attempt to stringify or represent the non-Error value
         try {
-          setError(JSON.stringify(err));
+          setError(JSON.stringify(err))
         } catch (stringifyErr) {
-          console.error('Failed to stringify non-Error object:', stringifyErr);
-          setError('An unknown error occurred.');
+          console.error('Failed to stringify non-Error object:', stringifyErr)
+          setError('An unknown error occurred.')
         }
       }
     } finally {
@@ -97,22 +112,22 @@ export default function InvitationGenerator({ value, onChange }: InvitationGener
 
   // Check if the document is available but new and unsaved (no _id yet)
   if (document && !document._id) {
-     return (
-       <Text size={1} muted>
-         Save the document to generate an invitation code.
-       </Text>
-     )
+    return (
+      <Text size={1} muted>
+        Save the document to generate an invitation code.
+      </Text>
+    )
   }
 
   // If document is completely missing (unexpected after saving, but handle defensively)
-   if (!document) {
-     return (
-       <Text size={1} style={{ color: 'red' }}>
-         Document information is missing (Please report this error if the document is saved) 
-       </Text>
-     )
+  if (!document) {
+    return (
+      <Text size={1} style={{ color: 'red' }}>
+        Document information is missing (Please report this error if the
+        document is saved)
+      </Text>
+    )
   }
-
 
   const currentLink = getInvitationLink()
 
@@ -154,4 +169,4 @@ export default function InvitationGenerator({ value, onChange }: InvitationGener
       )}
     </Stack>
   )
-} 
+}

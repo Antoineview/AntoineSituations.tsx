@@ -13,7 +13,7 @@ export default function CoverImageInput(props: CoverImageInputProps) {
   const { value, onChange } = props
   const [isGenerating, setIsGenerating] = useState(false)
   const client = useClient()
-  
+
   // Get the document data using useFormValue
   const document = useFormValue([]) as any
   const title = document?.title
@@ -27,12 +27,14 @@ export default function CoverImageInput(props: CoverImageInputProps) {
   const generateImage = async () => {
     try {
       setIsGenerating(true)
-      
+
       // Check if we're in a browser environment
       if (typeof window === 'undefined') {
-        throw new Error('Canvas operations can only be performed in the browser')
+        throw new Error(
+          'Canvas operations can only be performed in the browser',
+        )
       }
-      
+
       // Create a temporary canvas
       const canvas = window.document.createElement('canvas')
       const ctx = canvas.getContext('2d')
@@ -54,7 +56,12 @@ export default function CoverImageInput(props: CoverImageInputProps) {
       const color2 = getRandomColor()
 
       // Draw gradient background
-      const gradientObj = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
+      const gradientObj = ctx.createLinearGradient(
+        0,
+        0,
+        canvas.width,
+        canvas.height,
+      )
       gradientObj.addColorStop(0, color1)
       gradientObj.addColorStop(1, color2)
       ctx.fillStyle = gradientObj
@@ -63,14 +70,14 @@ export default function CoverImageInput(props: CoverImageInputProps) {
       // Add grain effect
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
       const data = imageData.data
-      
+
       for (let i = 0; i < data.length; i += 4) {
         const noise = Math.random() * 50 - 25
         data[i] = Math.max(0, Math.min(255, data[i] + noise))
         data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + noise))
         data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + noise))
       }
-      
+
       ctx.putImageData(imageData, 0, 0)
 
       // Add text
@@ -79,10 +86,16 @@ export default function CoverImageInput(props: CoverImageInputProps) {
       ctx.textBaseline = 'middle'
 
       // Get optimal font size
-      const getOptimalFontSize = (text: string, maxWidth: number, maxHeight: number, minSize: number, maxSize: number) => {
+      const getOptimalFontSize = (
+        text: string,
+        maxWidth: number,
+        maxHeight: number,
+        minSize: number,
+        maxSize: number,
+      ) => {
         let fontSize = maxSize
         ctx.font = `${fontSize}px Crozet-Regular, serif`
-        
+
         while (fontSize > minSize) {
           const metrics = ctx.measureText(text)
           if (metrics.width <= maxWidth && fontSize <= maxHeight) {
@@ -91,7 +104,7 @@ export default function CoverImageInput(props: CoverImageInputProps) {
           fontSize -= 1
           ctx.font = `${fontSize}px Crozet-Regular, serif`
         }
-        
+
         return fontSize
       }
 
@@ -108,7 +121,7 @@ export default function CoverImageInput(props: CoverImageInputProps) {
       ctx.font = `${titleFontSize}px Crozet-Regular, serif`
       ctx.save()
       ctx.translate(canvas.width / 2, canvas.height * 0.5)
-      ctx.rotate((Math.random() - 0.5) * Math.PI / 4) // Random rotation between -22.5 and 22.5 degrees
+      ctx.rotate(((Math.random() - 0.5) * Math.PI) / 4) // Random rotation between -22.5 and 22.5 degrees
       ctx.fillText(formattedTitle, 0, 0)
       ctx.restore()
 
@@ -120,7 +133,11 @@ export default function CoverImageInput(props: CoverImageInputProps) {
       })
 
       // Create a file object
-      const file = new File([blob], `${document?._id || 'generated'}-cover.png`, { type: 'image/png' })
+      const file = new File(
+        [blob],
+        `${document?._id || 'generated'}-cover.png`,
+        { type: 'image/png' },
+      )
 
       // Upload to Sanity
       const result = await client.assets.upload('image', file, {
@@ -132,8 +149,8 @@ export default function CoverImageInput(props: CoverImageInputProps) {
         _type: 'image',
         asset: {
           _type: 'reference',
-          _ref: result._id
-        }
+          _ref: result._id,
+        },
       }
 
       // Update the field
@@ -179,4 +196,4 @@ export default function CoverImageInput(props: CoverImageInputProps) {
       <ImageInput {...props} />
     </Stack>
   )
-} 
+}

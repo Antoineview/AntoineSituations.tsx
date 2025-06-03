@@ -18,34 +18,34 @@ export default function HeroPost(
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15
-      }
-    }
+        staggerChildren: 0.15,
+      },
+    },
   }
 
   const itemVariants = {
-    hidden: { 
+    hidden: {
       opacity: 0,
-      y: 20
+      y: 20,
     },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.7,
-        ease: [0.6, -0.05, 0.01, 0.99]
-      }
-    }
+        ease: [0.6, -0.05, 0.01, 0.99],
+      },
+    },
   }
 
   return (
-    <motion.section 
+    <motion.section
       className="herocard"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
-      <motion.h1 
+      <motion.h1
         variants={itemVariants}
         className="mb-2 ml-1 text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tighter hero-date"
       >
@@ -58,17 +58,14 @@ export default function HeroPost(
           <CoverImage slug={slug} title={title} image={coverImage} priority />
         )}
       </div>
-      <motion.div 
-        variants={itemVariants}
-        className=""
-      >
+      <motion.div variants={itemVariants} className="">
         <div>
-          <motion.h1 
+          <motion.h1
             variants={itemVariants}
             className="text-4xl sm:text-6xl md:text-6xl lg:text-7xl leading-tight tracking-tighter mb-4 sm:mb-1"
           >
-            <Link 
-              href={`/posts/${slug}`} 
+            <Link
+              href={`/posts/${slug}`}
               className="hover:underline font-['Homoneta'] italic"
             >
               {title || 'Untitled'}
@@ -77,7 +74,7 @@ export default function HeroPost(
         </div>
         <div>
           {excerpt && (
-            <motion.p 
+            <motion.p
               variants={itemVariants}
               className="mb-4 text-base sm:text-lg leading-relaxed hero-excerpt"
             >

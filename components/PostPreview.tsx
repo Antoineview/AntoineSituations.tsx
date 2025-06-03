@@ -21,8 +21,8 @@ export default function PostPreview({
         />
       </div>
       <h1 className="mb-7 text-4xl leading-tight">
-        <Link 
-          href={`/posts/${slug}`} 
+        <Link
+          href={`/posts/${slug}`}
           className="hover:underline font-['Homoneta'] italic"
         >
           {title}
@@ -31,7 +31,11 @@ export default function PostPreview({
       <div className="mb-4 text-lg preview-date">
         <Date dateString={date} />
       </div>
-      {excerpt && <p className="mb-4 text-lg leading-relaxed preview-excerpt">{excerpt}</p>}
+      {excerpt && (
+        <p className="mb-4 text-lg leading-relaxed preview-excerpt">
+          {excerpt}
+        </p>
+      )}
     </div>
   )
 }

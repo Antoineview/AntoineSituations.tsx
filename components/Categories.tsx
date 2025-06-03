@@ -5,9 +5,9 @@ import { useMemo } from 'react'
 
 export default function Categories({ categories }: { categories: Category[] }) {
   // Cache the sorted categories
-  const sortedCategories = useMemo(() => 
-    [...categories].sort((a, b) => a.title.localeCompare(b.title)),
-    [categories]
+  const sortedCategories = useMemo(
+    () => [...categories].sort((a, b) => a.title.localeCompare(b.title)),
+    [categories],
   )
 
   const containerVariants = {
@@ -15,15 +15,15 @@ export default function Categories({ categories }: { categories: Category[] }) {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15
-      }
-    }
+        staggerChildren: 0.15,
+      },
+    },
   }
 
   const itemVariants = {
-    hidden: { 
+    hidden: {
       opacity: 0,
-      y: 20
+      y: 20,
     },
     visible: (index: number) => ({
       opacity: 1,
@@ -31,8 +31,8 @@ export default function Categories({ categories }: { categories: Category[] }) {
       transition: {
         duration: 0.7,
         delay: index * 0.1,
-        ease: [0.6, -0.05, 0.01, 0.99]
-      }
+        ease: [0.6, -0.05, 0.01, 0.99],
+      },
     }),
     exit: (index: number) => ({
       opacity: 0,
@@ -40,14 +40,14 @@ export default function Categories({ categories }: { categories: Category[] }) {
       transition: {
         duration: 0.5,
         delay: index * 0.05,
-        ease: [0.6, -0.05, 0.01, 0.99]
-      }
-    })
+        ease: [0.6, -0.05, 0.01, 0.99],
+      },
+    }),
   }
 
   return (
     <section className="morecardcontainer">
-      <motion.h1 
+      <motion.h1
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: [0.6, -0.05, 0.01, 0.99] }}
@@ -55,7 +55,7 @@ export default function Categories({ categories }: { categories: Category[] }) {
       >
         catégories.
       </motion.h1>
-      <motion.div 
+      <motion.div
         className="mb-6 grid grid-cols-1 gap-y-4 md:grid-cols-2 md:gap-x-5 md:gap-y-5 lg:gap-x-3"
         variants={containerVariants}
         initial="hidden"
@@ -69,21 +69,24 @@ export default function Categories({ categories }: { categories: Category[] }) {
               variants={itemVariants}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: false, margin: "-100px" }}
+              viewport={{ once: false, margin: '-100px' }}
               exit="exit"
               layout
             >
-              <Link href={`/categories/${category.slug}`} className="block group">
-                <div 
+              <Link
+                href={`/categories/${category.slug}`}
+                className="block group"
+              >
+                <div
                   className="flex items-center space-x-3 p-4 rounded-lg border border-white/20 backdrop-blur-sm bg-white/5 hover:bg-white/10 transition-all duration-300 relative overflow-hidden"
                   style={{
-                    background: category.color?.hex ? 
-                      `linear-gradient(135deg, transparent 0%, ${category.color.hex}30 50%, ${category.color.hex}40 100%)` : 
-                      'transparent'
+                    background: category.color?.hex
+                      ? `linear-gradient(135deg, transparent 0%, ${category.color.hex}30 50%, ${category.color.hex}40 100%)`
+                      : 'transparent',
                   }}
                 >
                   {category.color?.hex && (
-                    <div 
+                    <div
                       className="w-4 h-4 rounded-full flex-shrink-0"
                       style={{ backgroundColor: category.color.hex }}
                     />

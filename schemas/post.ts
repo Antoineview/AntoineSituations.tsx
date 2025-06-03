@@ -45,11 +45,11 @@ export default defineType({
       type: 'array',
       of: [
         defineArrayMember({
-          type: 'block'
+          type: 'block',
         }),
         defineArrayMember({
-          type: 'youtube'
-        })
+          type: 'youtube',
+        }),
       ],
     },
     {
@@ -65,8 +65,8 @@ export default defineType({
         hotspot: true,
       },
       components: {
-        input: CoverImageInput
-      }
+        input: CoverImageInput,
+      },
     },
     {
       name: 'file',
@@ -77,7 +77,7 @@ export default defineType({
       name: 'videoUrl',
       title: 'URL Vidéo',
       type: 'url',
-      description: 'URL d\'une vidéo externe (YouTube, Vimeo, etc.)',
+      description: "URL d'une vidéo externe (YouTube, Vimeo, etc.)",
     },
     {
       name: 'date',
@@ -100,7 +100,8 @@ export default defineType({
       name: 'requiresAuth',
       title: 'Requiert une authentification',
       type: 'boolean',
-      description: 'Si coché, ce post ne sera accessible qu\'après authentification',
+      description:
+        "Si coché, ce post ne sera accessible qu'après authentification",
       initialValue: false,
     },
   ],

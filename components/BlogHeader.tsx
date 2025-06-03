@@ -13,7 +13,10 @@ export default function BlogHeader({
   return (
     <div className="mb-7 mt-7">
       <h1 className="w-full font-normal tracking-tighter main-title block text-center md:text-left text-[clamp(3rem,min(12vw,6rem),6rem)] md:text-[clamp(2.5rem,min(12vw,7rem),7rem)]">
-        <Link href="/studio" className="hover:opacity-80 transition-opacity font-['Crozet-Regular']">
+        <Link
+          href="/studio"
+          className="hover:opacity-80 transition-opacity font-['Crozet-Regular']"
+        >
           {title}
         </Link>
       </h1>

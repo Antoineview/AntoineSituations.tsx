@@ -12,7 +12,8 @@ export default defineType({
       name: 'label',
       title: 'Label',
       type: 'string',
-      description: 'A descriptive label for this invitation (e.g., \'Marketing Campaign 2024\').',
+      description:
+        "A descriptive label for this invitation (e.g., 'Marketing Campaign 2024').",
     },
     {
       name: 'code',
@@ -21,15 +22,16 @@ export default defineType({
       readOnly: true,
       description: 'This code will be used to generate an invitation link.',
       components: {
-        input: InvitationGenerator
-      }
+        input: InvitationGenerator,
+      },
     },
     {
       name: 'used',
       title: 'Used',
       type: 'boolean',
       readOnly: true,
-      description: 'Indicates if the invitation has been used to create a passkey.',
+      description:
+        'Indicates if the invitation has been used to create a passkey.',
       initialValue: false,
     },
     {
@@ -54,4 +56,4 @@ export default defineType({
       }
     },
   },
-}) 
+})

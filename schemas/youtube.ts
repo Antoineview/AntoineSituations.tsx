@@ -1,6 +1,6 @@
-import {defineType, defineField} from 'sanity'
-import {PlayIcon} from '@sanity/icons'
-import {YouTubePreview} from './youtube/YouTubePreview'
+import { defineType, defineField } from 'sanity'
+import { PlayIcon } from '@sanity/icons'
+import { YouTubePreview } from './youtube/YouTubePreview'
 
 export const youtube = defineType({
   name: 'youtube',
@@ -27,10 +27,10 @@ export const youtube = defineType({
   preview: {
     select: {
       title: 'url',
-      media: 'coverImage'
-    }
+      media: 'coverImage',
+    },
   },
   components: {
-    preview: YouTubePreview
-  }
-}) 
+    preview: YouTubePreview,
+  },
+})

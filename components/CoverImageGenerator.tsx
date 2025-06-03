@@ -4,15 +4,19 @@ import { createClient } from 'next-sanity'
 import { projectId, dataset, apiVersion } from 'lib/sanity.api'
 
 interface CoverImageGeneratorProps {
-  onImageGenerated?: (imageUrl: string | { _type: string; asset: { _type: string; _ref: string } }) => void
+  onImageGenerated?: (
+    imageUrl:
+      | string
+      | { _type: string; asset: { _type: string; _ref: string } },
+  ) => void
   initialTitle?: string
   postId?: string
 }
 
-const CoverImageGenerator = ({ 
-  onImageGenerated, 
+const CoverImageGenerator = ({
+  onImageGenerated,
   initialTitle = '',
-  postId = ''
+  postId = '',
 }: CoverImageGeneratorProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -23,17 +27,21 @@ const CoverImageGenerator = ({
     return `hsl(${hue}, ${saturation}%, ${lightness}%)`
   }
 
-  const addGrain = (ctx: CanvasRenderingContext2D, width: number, height: number) => {
+  const addGrain = (
+    ctx: CanvasRenderingContext2D,
+    width: number,
+    height: number,
+  ) => {
     const imageData = ctx.getImageData(0, 0, width, height)
     const data = imageData.data
-    
+
     for (let i = 0; i < data.length; i += 4) {
       const noise = Math.random() * 50 - 25
       data[i] = Math.max(0, Math.min(255, data[i] + noise))
       data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + noise))
       data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + noise))
     }
-    
+
     ctx.putImageData(imageData, 0, 0)
   }
 
@@ -43,10 +51,17 @@ const CoverImageGenerator = ({
     }
   }, [initialTitle])
 
-  const getOptimalFontSize = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number, maxHeight: number, minSize: number, maxSize: number) => {
+  const getOptimalFontSize = (
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    maxWidth: number,
+    maxHeight: number,
+    minSize: number,
+    maxSize: number,
+  ) => {
     let fontSize = maxSize
     ctx.font = `${fontSize}px Crozet-Regular, serif`
-    
+
     while (fontSize > minSize) {
       const metrics = ctx.measureText(text)
       if (metrics.width <= maxWidth && fontSize <= maxHeight) {
@@ -55,7 +70,7 @@ const CoverImageGenerator = ({
       fontSize -= 1
       ctx.font = `${fontSize}px Crozet-Regular, serif`
     }
-    
+
     return fontSize
   }
 
@@ -73,7 +88,9 @@ const CoverImageGenerator = ({
       const blob = await response.blob()
 
       // Create a file object
-      const file = new File([blob], `${postId || 'generated'}-cover.png`, { type: 'image/png' })
+      const file = new File([blob], `${postId || 'generated'}-cover.png`, {
+        type: 'image/png',
+      })
 
       // Upload to Sanity
       const result = await client.assets.upload('image', file, {
@@ -85,8 +102,8 @@ const CoverImageGenerator = ({
         _type: 'image',
         asset: {
           _type: 'reference',
-          _ref: result._id
-        }
+          _ref: result._id,
+        },
       }
 
       return imageReference
@@ -112,7 +129,12 @@ const CoverImageGenerator = ({
     const color2 = getRandomColor()
 
     // Draw gradient background
-    const gradientObj = ctx.createLinearGradient(0, 0, canvas.width, canvas.height)
+    const gradientObj = ctx.createLinearGradient(
+      0,
+      0,
+      canvas.width,
+      canvas.height,
+    )
     gradientObj.addColorStop(0, color1)
     gradientObj.addColorStop(1, color2)
     ctx.fillStyle = gradientObj
@@ -128,19 +150,26 @@ const CoverImageGenerator = ({
 
     // Calculate optimal font size for title
     const formattedTitle = initialTitle.replace(/\s+/g, '')
-    const titleFontSize = getOptimalFontSize(ctx, formattedTitle, canvas.width * 10, canvas.height * 8, 32, 2000)
+    const titleFontSize = getOptimalFontSize(
+      ctx,
+      formattedTitle,
+      canvas.width * 10,
+      canvas.height * 8,
+      32,
+      2000,
+    )
 
     // Title
     ctx.font = `${titleFontSize}px Crozet-Regular, serif`
     ctx.save()
     ctx.translate(canvas.width / 2, canvas.height * 0.6)
-    ctx.rotate((Math.random() - 0.5) * Math.PI / 4) // Random rotation between -22.5 and 22.5 degrees
+    ctx.rotate(((Math.random() - 0.5) * Math.PI) / 4) // Random rotation between -22.5 and 22.5 degrees
     ctx.fillText(formattedTitle, 0, 0)
     ctx.restore()
 
     // Convert to image URL
     const imageUrl = canvas.toDataURL('image/png')
-    
+
     // Upload to Sanity if postId is provided
     if (postId) {
       const uploadedImage = await uploadImageToSanity(imageUrl)
@@ -174,4 +203,4 @@ const CoverImageGenerator = ({
   )
 }
 
-export default CoverImageGenerator 
+export default CoverImageGenerator

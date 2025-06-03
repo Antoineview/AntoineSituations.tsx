@@ -3,7 +3,10 @@ import { createClient } from 'next-sanity'
 import { apiVersion, dataset, projectId } from 'lib/sanity.api'
 import { postBySlugQuery } from 'lib/sanity.queries'
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' })
   }
@@ -33,4 +36,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.error('Error fetching post:', error)
     res.status(500).json({ message: 'Error fetching post' })
   }
-} 
+}

@@ -2,7 +2,10 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { createClient } from 'next-sanity'
 import { apiVersion, dataset, projectId } from 'lib/sanity.api'
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Method not allowed' })
   }
@@ -24,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Find the invitation with the matching code
     const invitation = await client.fetch(
       `*[_type == "invitation" && code == $code][0]`,
-      { code }
+      { code },
     )
 
     if (!invitation) {
@@ -32,7 +35,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (invitation.used) {
-      return res.status(400).json({ message: 'Invitation code has already been used' })
+      return res
+        .status(400)
+        .json({ message: 'Invitation code has already been used' })
     }
 
     res.status(200).json({ valid: true, invitationId: invitation._id })
@@ -40,4 +45,4 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.error('Error validating invitation:', error)
     res.status(500).json({ message: 'Error validating invitation' })
   }
-} 
+}

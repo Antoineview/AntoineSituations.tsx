@@ -72,4 +72,4 @@ export default function VideoPlayer({ url, title }: VideoPlayerProps) {
       />
     </div>
   )
-} 
+}

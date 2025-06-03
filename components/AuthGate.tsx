@@ -19,26 +19,27 @@ export default function AuthGate({ children, onAuthenticated }: AuthGateProps) {
       setError(null)
 
       if (!window.PublicKeyCredential) {
-        throw new Error("Votre navigateur ne supporte pas les clés de sécurité")
+        throw new Error('Votre navigateur ne supporte pas les clés de sécurité')
       }
 
       const response = await fetch('/api/auth/challenge')
       const { challenge } = await response.json()
 
-      const credential = await navigator.credentials.get({
+      const credential = (await navigator.credentials.get({
         publicKey: {
           challenge: new Uint8Array(challenge),
           rpId: window.location.hostname,
           allowCredentials: [],
           userVerification: 'preferred',
         },
-      }) as PublicKeyCredential
+      })) as PublicKeyCredential
 
       if (!credential) {
         throw new Error("Aucune information d'identification reçue")
       }
 
-      const assertionResponse = credential.response as AuthenticatorAssertionResponse
+      const assertionResponse =
+        credential.response as AuthenticatorAssertionResponse
 
       const verifyResponse = await fetch('/api/auth/verify', {
         method: 'POST',
@@ -50,10 +51,18 @@ export default function AuthGate({ children, onAuthenticated }: AuthGateProps) {
             id: credential.id,
             rawId: Array.from(new Uint8Array(credential.rawId)),
             response: {
-              clientDataJSON: Array.from(new Uint8Array(assertionResponse.clientDataJSON)),
-              authenticatorData: Array.from(new Uint8Array(assertionResponse.authenticatorData)),
-              signature: Array.from(new Uint8Array(assertionResponse.signature)),
-              userHandle: assertionResponse.userHandle ? Array.from(new Uint8Array(assertionResponse.userHandle)) : null,
+              clientDataJSON: Array.from(
+                new Uint8Array(assertionResponse.clientDataJSON),
+              ),
+              authenticatorData: Array.from(
+                new Uint8Array(assertionResponse.authenticatorData),
+              ),
+              signature: Array.from(
+                new Uint8Array(assertionResponse.signature),
+              ),
+              userHandle: assertionResponse.userHandle
+                ? Array.from(new Uint8Array(assertionResponse.userHandle))
+                : null,
             },
             type: credential.type,
           },
@@ -66,7 +75,10 @@ export default function AuthGate({ children, onAuthenticated }: AuthGateProps) {
 
       onAuthenticated()
     } catch (err) {
-      if (err instanceof Error && err.message.includes('No credentials found')) {
+      if (
+        err instanceof Error &&
+        err.message.includes('No credentials found')
+      ) {
         setShowRegistration(true)
       } else {
         if (err instanceof Error) {
@@ -121,16 +133,16 @@ export default function AuthGate({ children, onAuthenticated }: AuthGateProps) {
           </svg>
         </div>
 
-        {isAuthenticating && <p className="mt-4 text-lg">Authentification en cours...</p>}
-        {error && (
-          <p className="mt-4 text-red-500">{error}</p>
+        {isAuthenticating && (
+          <p className="mt-4 text-lg">Authentification en cours...</p>
         )}
+        {error && <p className="mt-4 text-red-500">{error}</p>}
         {!isAuthenticating && !error && (
-           <p className="mt-4 text-gray-600 dark:text-gray-400">
+          <p className="mt-4 text-gray-600 dark:text-gray-400">
             Utilisez la clé vers votre coeur.
           </p>
         )}
       </motion.div>
     </div>
   )
-} 
+}

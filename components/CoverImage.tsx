@@ -17,8 +17,10 @@ interface CoverImageProps {
 
 const CoverImage = (props: CoverImageProps) => {
   const { title, slug, image: source, priority, description, postId } = props
-  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | { _type: string; asset: { _type: string; _ref: string } } | null>(null)
-  
+  const [generatedImageUrl, setGeneratedImageUrl] = useState<
+    string | { _type: string; asset: { _type: string; _ref: string } } | null
+  >(null)
+
   const imageContent = source?.asset?._ref ? (
     <Image
       className="h-auto w-full object-cover"
@@ -26,7 +28,12 @@ const CoverImage = (props: CoverImageProps) => {
       width={2000}
       height={1000}
       alt={`Cover Image for ${title}`}
-      src={urlForImage(source).height(1000).width(2000).auto('format').quality(75).url()}
+      src={urlForImage(source)
+        .height(1000)
+        .width(2000)
+        .auto('format')
+        .quality(75)
+        .url()}
       sizes="100vw"
       priority={priority}
     />
@@ -37,9 +44,16 @@ const CoverImage = (props: CoverImageProps) => {
       width={2000}
       height={1000}
       alt={`Generated Cover Image for ${title}`}
-      src={typeof generatedImageUrl === 'string' 
-        ? generatedImageUrl 
-        : urlForImage(generatedImageUrl).height(1000).width(2000).auto('format').quality(75).url()}
+      src={
+        typeof generatedImageUrl === 'string'
+          ? generatedImageUrl
+          : urlForImage(generatedImageUrl)
+              .height(1000)
+              .width(2000)
+              .auto('format')
+              .quality(75)
+              .url()
+      }
       sizes="100vw"
       priority={priority}
     />
@@ -54,17 +68,17 @@ const CoverImage = (props: CoverImageProps) => {
   const wrapper = (
     <motion.div
       style={{ borderRadius: '12px' }}
-      whileHover={{ 
+      whileHover={{
         scale: 1.009,
-        boxShadow: '0 10px 30px -5px rgba(0, 0, 0, 0.15)'
+        boxShadow: '0 10px 30px -5px rgba(0, 0, 0, 0.15)',
       }}
-      transition={{ 
-        duration: 0.4, 
-        ease: "easeInOut",
+      transition={{
+        duration: 0.4,
+        ease: 'easeInOut',
         boxShadow: {
           duration: 0.3,
-          ease: "easeOut"
-        }
+          ease: 'easeOut',
+        },
       }}
     >
       {imageContent}
