@@ -3,16 +3,16 @@ import BlogHeader from 'components/BlogHeader'
 import Layout from 'components/BlogLayout'
 import MoreStories from 'components/MoreStories'
 import { apiVersion, dataset, projectId } from 'lib/sanity.api'
-import { postsByCategoryQuery, categoriesQuery } from 'lib/sanity.queries'
+import type { Post } from 'lib/sanity.queries'
+import { categoriesQuery,postsByCategoryQuery } from 'lib/sanity.queries'
 import type {
   GetStaticPaths,
   GetStaticProps,
   InferGetStaticPropsType,
 } from 'next'
-import { createClient } from 'next-sanity'
 import Head from 'next/head'
-import type { Post } from 'lib/sanity.queries'
 import Link from 'next/link'
+import { createClient } from 'next-sanity'
 
 interface Category {
   _id: string
@@ -40,7 +40,7 @@ export default function CategoryPage({
             href="/"
             className="text-lg font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
           >
-            ← Return Home
+            ← Retour à l&aposaccueil
           </Link>
         </div>
         {posts.length > 0 && <MoreStories posts={posts} hideTitle />}

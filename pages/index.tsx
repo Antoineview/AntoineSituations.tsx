@@ -1,13 +1,14 @@
+
 import IndexPage from 'components/IndexPage'
 import PreviewIndexPage from 'components/PreviewIndexPage'
 import { apiVersion, dataset, projectId } from 'lib/sanity.api'
 import {
-  type Post,
-  type Settings,
+  categoriesQuery,
   type Category,
   indexQuery,
+  type Post,
+  type Settings,
   settingsQuery,
-  categoriesQuery,
 } from 'lib/sanity.queries'
 import type { GetStaticProps, InferGetStaticPropsType } from 'next'
 import { createClient } from 'next-sanity'
