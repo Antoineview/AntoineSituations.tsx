@@ -2,8 +2,8 @@ import PostPage from 'components/PostPage'
 import { usePreview } from 'lib/sanity.preview'
 import {
   type Post,
-  type Settings,
   postQuery,
+  type Settings,
   settingsQuery,
 } from 'lib/sanity.queries'
 

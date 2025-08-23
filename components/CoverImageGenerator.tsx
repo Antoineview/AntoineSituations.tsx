@@ -1,7 +1,7 @@
-import { useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
+import { apiVersion,dataset, projectId } from 'lib/sanity.api'
 import { createClient } from 'next-sanity'
-import { projectId, dataset, apiVersion } from 'lib/sanity.api'
+import { useCallback,useEffect, useRef } from 'react'
 
 interface CoverImageGeneratorProps {
   onImageGenerated?: (
@@ -45,11 +45,6 @@ const CoverImageGenerator = ({
     ctx.putImageData(imageData, 0, 0)
   }
 
-  useEffect(() => {
-    if (initialTitle) {
-      generateImage()
-    }
-  }, [initialTitle])
 
   const getOptimalFontSize = (
     ctx: CanvasRenderingContext2D,
@@ -74,7 +69,7 @@ const CoverImageGenerator = ({
     return fontSize
   }
 
-  const uploadImageToSanity = async (imageDataUrl: string) => {
+  const uploadImageToSanity = useCallback(async (imageDataUrl: string) => {
     try {
       const client = createClient({
         projectId,
@@ -111,9 +106,9 @@ const CoverImageGenerator = ({
       console.error('Error uploading image to Sanity:', error)
       return null
     }
-  }
+  }, [postId])
 
-  const generateImage = async () => {
+  const generateImage = useCallback(async () => {
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -179,7 +174,13 @@ const CoverImageGenerator = ({
     } else if (onImageGenerated) {
       onImageGenerated(imageUrl)
     }
-  }
+  }, [initialTitle, postId, onImageGenerated, uploadImageToSanity])
+
+  useEffect(() => {
+    if (initialTitle) {
+      generateImage()
+    }
+  }, [initialTitle, generateImage])
 
   return (
     <div className="w-full max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">

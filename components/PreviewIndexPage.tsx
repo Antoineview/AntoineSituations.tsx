@@ -1,12 +1,12 @@
 import IndexPage from 'components/IndexPage'
 import { usePreview } from 'lib/sanity.preview'
 import {
-  type Post,
-  type Settings,
+  categoriesQuery,
   type Category,
   indexQuery,
+  type Post,
+  type Settings,
   settingsQuery,
-  categoriesQuery,
 } from 'lib/sanity.queries'
 
 export default function PreviewIndexPage({ token }: { token: null | string }) {

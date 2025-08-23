@@ -24,8 +24,8 @@
 
 import { isValidSignature, SIGNATURE_HEADER_NAME } from '@sanity/webhook'
 import { apiVersion, dataset, projectId } from 'lib/sanity.api'
-import { createClient } from 'next-sanity'
 import { NextApiRequest, NextApiResponse } from 'next'
+import { createClient } from 'next-sanity'
 import { groq } from 'next-sanity'
 
 // Next.js will by default parse the body, which can lead to invalid signatures

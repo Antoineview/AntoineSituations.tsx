@@ -1,9 +1,9 @@
 import CoverImage from 'components/CoverImage'
 import Date from 'components/PostDate'
 import VideoPlayer from 'components/VideoPlayer'
+import { motion } from 'framer-motion'
 import type { Post } from 'lib/sanity.queries'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 
 export default function HeroPost(
   props: Pick<

@@ -104,4 +104,5 @@ export interface Settings {
 
 export type Author = {
   name: string
+  picture: any
 }

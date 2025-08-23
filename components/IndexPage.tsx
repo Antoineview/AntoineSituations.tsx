@@ -1,12 +1,12 @@
 import Container from 'components/BlogContainer'
 import BlogHeader from 'components/BlogHeader'
 import Layout from 'components/BlogLayout'
+import Categories from 'components/Categories'
 import HeroPost from 'components/HeroPost'
 import MoreStories from 'components/MoreStories'
-import Categories from 'components/Categories'
-import type { Post, Settings, Category } from 'lib/sanity.queries'
-import Head from 'next/head'
 import SectionSeparator from 'components/SectionSeparator'
+import type { Category,Post, Settings } from 'lib/sanity.queries'
+import Head from 'next/head'
 
 export default function IndexPage(props: {
   preview?: boolean

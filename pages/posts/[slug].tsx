@@ -2,9 +2,9 @@ import PostPage from 'components/PostPage'
 import { apiVersion, dataset, projectId } from 'lib/sanity.api'
 import {
   type Post,
-  type Settings,
   postQuery,
   postSlugsQuery,
+  type Settings,
   settingsQuery,
 } from 'lib/sanity.queries'
 import type {

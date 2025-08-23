@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { useRouter } from 'next/router'
 // Import isoBase64URL for manual serialization
 import { isoBase64URL } from '@simplewebauthn/server/helpers'
+import { motion } from 'framer-motion'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 
 interface RegisterPasskeyProps {
   onRegistered: () => void

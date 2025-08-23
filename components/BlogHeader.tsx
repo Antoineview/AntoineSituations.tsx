@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import type { Post, Settings } from 'lib/sanity.queries'
+import Link from 'next/link'
 
 export default function BlogHeader({
   title,

@@ -1,11 +1,12 @@
-import type { PreviewProps } from 'sanity'
 import { Flex, Text } from '@sanity/ui'
-import YouTubePlayer from 'react-player/youtube'
 import { urlForImage } from 'lib/sanity.image'
 import Image from 'next/image'
+import YouTubePlayer from 'react-player/youtube'
+import type { Image as SanityImage } from 'sanity'
+import type { PreviewProps } from 'sanity'
 
 export function YouTubePreview(props: PreviewProps) {
-  const { title: url, media: coverImage } = props
+  const { title: url, coverImage } = props as unknown as { title?: string; coverImage?: SanityImage }
 
   return (
     <Flex padding={3} align="center" justify="center">
