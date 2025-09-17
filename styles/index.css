@@ -2,63 +2,359 @@
 @tailwind components;
 @tailwind utilities;
 
-.blogimages{
-	border-radius: 15px;
+@font-face {
+  font-family: 'Homoneta';
+  src:
+    url('/fonts/homoneta/Homoneta-Italic.woff2') format('woff2'),
+    url('/fonts/homoneta/Homoneta-Italic.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
 }
 
+@font-face {
+  font-family: 'Crozet-Regular';
+  src:
+    url('/fonts/Crozet-Regular.woff2') format('woff2'),
+    url('/fonts/Crozet-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Poppins Display Fonts */
+@font-face {
+  font-family: 'Poppins-Display';
+  src:
+    url('/fonts/poppins/BBBPoppinsTN-DisplayRegular.woff2') format('woff2'),
+    url('/fonts/poppins/BBBPoppinsTN-DisplayRegular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins-Display';
+  src:
+    url('/fonts/poppins/BBBPoppinsTN-DisplaySemiBold.woff2') format('woff2'),
+    url('/fonts/poppins/BBBPoppinsTN-DisplaySemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins-Display';
+  src:
+    url('/fonts/poppins/BBBPoppinsTN-DisplayBold.woff2') format('woff2'),
+    url('/fonts/poppins/BBBPoppinsTN-DisplayBold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins-Display';
+  src:
+    url('/fonts/poppins/BBBPoppinsTN-DisplayBlack.woff2') format('woff2'),
+    url('/fonts/poppins/BBBPoppinsTN-DisplayBlack.woff') format('woff');
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Poppins Text Fonts */
+@font-face {
+  font-family: 'Poppins-Text';
+  src:
+    url('/fonts/poppins/BBBPoppinsTN-TextRegular.woff2') format('woff2'),
+    url('/fonts/poppins/BBBPoppinsTN-TextRegular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins-Text';
+  src:
+    url('/fonts/poppins/BBBPoppinsTN-TextSemiBold.woff2') format('woff2'),
+    url('/fonts/poppins/BBBPoppinsTN-TextSemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Poppins-Text';
+  src:
+    url('/fonts/poppins/BBBPoppinsTN-TextBold.woff2') format('woff2'),
+    url('/fonts/poppins/BBBPoppinsTN-TextBold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.main-title {
+  font-family: 'Crozet-Regular', serif;
+  color: var(--main-title-color);
+  transition: color 0.3s ease;
+}
+
+.blogimages {
+  border-radius: 15px;
+}
+
+/* Base styles for html and body */
 html,
-body,
-main{
-	background-color: black;
-	color: white;
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  @apply bg-white dark:bg-gray-900 text-black dark:text-white;
+  transition: none;
 }
 
-.image{
-	transform: scale(1) ;
-	transition: all 700ms ease;
+/* Ensure #__next takes full height and inherits background */
+#__next {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  @apply bg-white dark:bg-gray-900 text-black dark:text-white;
+  transition: none;
 }
 
-.image:hover{
-	transform: scale(1.01) ;
-	transition: all 700ms ease;
+/* Ensure main content area takes full height */
+main {
+  flex: 1;
+  @apply bg-white dark:bg-gray-900 text-black dark:text-white;
+  transition: none;
 }
 
-.heropostimage{
-	border-radius: 10px;
-	border: 1px solid rgba( 255, 255, 255, 0.18 );
+/* Specific text color transitions */
+.main-title,
+.blog-subtitle,
+.blog-description,
+.back-link,
+.preview-title,
+.preview-date,
+.preview-excerpt,
+.author-name,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+div,
+a,
+li,
+td,
+th {
+  @apply text-black dark:text-white;
+  transition: none;
 }
 
-.heroposttext{
-	font-size: 44px;
+/* Override Tailwind's transition classes */
+.transition-colors {
+  transition: none !important;
 }
 
-.herocard{
-	-webkit-backdrop-filter: blur( 4px );
-	border: 1px solid rgba( 255, 255, 255, 0.18 );
-	backdrop-filter: blur( 4px );
-	background-color: rgba(142, 197, 252, 0.25);
-	background-image: linear-gradient(62deg, rgba(142, 197, 252, 0.25) 0%, rgba(224, 195, 252, 0.25) 100%);
-	padding: 10px;
-	border-radius: 15px;
-	margin-bottom: 60px;
-
+.duration-200 {
+  transition-duration: 0s !important;
 }
 
-.morecardcontainer{
-	-webkit-backdrop-filter: blur( 4px );
-	border: 1px solid rgba( 255, 255, 255, 0.18 );
-	backdrop-filter: blur( 4px );
-	background-color: rgba(40, 39, 39, 0.25);
-	padding: 15px;
-	border-radius: 15px;
-	margin-bottom: 30px;
-
+.image {
+  transform: scale(1);
+  transition: all 700ms ease;
 }
 
-.separator{
-	background-color: rgba(58, 58, 58, 1)
+.image:hover {
+  transform: scale(1.01);
+  transition: all 700ms ease;
 }
-.morecardh1{
-	
 
+.heropostimage {
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.heroposttext {
+  font-size: 44px !important;
+  font-family: 'Homoneta', serif !important;
+  font-style: italic !important;
+  font-weight: normal !important;
+}
+
+.herocard {
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(24px);
+  background-color: var(--background-color);
+  background-image: linear-gradient(
+    62deg,
+    rgba(142, 197, 252, 0.08) 0%,
+    rgba(224, 195, 252, 0.08) 100%
+  );
+  padding: 10px;
+  border-radius: 15px;
+  margin-bottom: 60px;
+  @apply dark:bg-gray-800 dark:bg-opacity-30;
+  transition: background-color 0.3s ease;
+}
+
+.morecardcontainer {
+  padding: 0px;
+  border-radius: 15px;
+  margin-bottom: 30px;
+}
+
+.separator {
+  background-color: rgba(58, 58, 58, 1);
+}
+.morecardh1 {
+  font-family: 'Poppins-Display', sans-serif;
+  font-weight: 700;
+}
+
+/* Typography System */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Poppins-Display', sans-serif;
+}
+
+h1 {
+  font-weight: 700;
+}
+
+h2 {
+  font-weight: 600;
+}
+
+h3 {
+  font-weight: 700;
+}
+
+h4 {
+  font-weight: 600;
+}
+
+h5,
+h6 {
+  font-weight: 500;
+}
+
+p,
+span,
+div,
+a,
+li,
+td,
+th {
+  font-family: 'Poppins-Text', sans-serif;
+  font-weight: 400;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+/* Specific typography classes for components */
+.post-title {
+  font-family: 'Poppins-Display', sans-serif;
+  font-weight: 700;
+}
+
+.hero-date {
+  font-family: 'Poppins-Display', sans-serif;
+  font-weight: 700;
+}
+
+.hero-excerpt {
+  font-family: 'Poppins-Text', sans-serif;
+  font-weight: 400;
+}
+
+.preview-title {
+  font-family: 'Poppins-Display', sans-serif;
+  font-weight: 700;
+}
+
+.preview-date {
+  font-family: 'Poppins-Text', sans-serif;
+  font-weight: 500;
+}
+
+.preview-excerpt {
+  font-family: 'Poppins-Text', sans-serif;
+  font-weight: 400;
+}
+
+.author-name {
+  font-family: 'Poppins-Text', sans-serif;
+  font-weight: 600;
+}
+
+.blog-subtitle {
+  font-family: 'Poppins-Text', sans-serif;
+  font-weight: 400;
+  color: var(--blog-subtitle-color);
+  transition: color 0.3s ease;
+}
+
+.blog-description {
+  font-family: 'Poppins-Text', sans-serif;
+  font-weight: 400;
+}
+
+.back-link {
+  font-family: 'Poppins-Display', sans-serif;
+  font-weight: 600;
+  color: var(--back-link-color);
+  transition: color 0.3s ease;
+}
+
+:root {
+  --main-title-color: #000;
+  --blog-subtitle-color: #000;
+  --back-link-color: #4b5563; /* gray-600 */
+  --background-color: #f3f4f6; /* gray-100 */
+  --viewport-bg-color: #f3f4f6; /* gray-100 */
+}
+
+html.dark {
+  --main-title-color: #fff;
+  --blog-subtitle-color: #fff;
+  --back-link-color: #9ca3af; /* gray-400 */
+  --background-color: #111827; /* gray-900 */
+  --viewport-bg-color: #111827; /* gray-900 */
+}
+
+/* Remove the old animation keyframes and class since we're using Framer Motion */
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.7s ease-out forwards;
 }

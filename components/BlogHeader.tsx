@@ -1,49 +1,35 @@
-import Link from 'next/link'
 import type { Post, Settings } from 'lib/sanity.queries'
-
-
+import Link from 'next/link'
 
 export default function BlogHeader({
   title,
-  level,
   lilparagraph,
+  bigparapraph,
 }: {
-  lilparagraph: string
   title: string
-  level: 1 | 2 
+  lilparagraph?: string
+  bigparapraph?: string
 }) {
-  
-  
-  switch (level) {
-    case 1:
-      return (
-        <header className="mt-16 mb-10 flex flex-col items-center md:mb-12 md:flex-row md:justify-between">
-          <h1 className="text-6xl font-bold leading-tight tracking-tighter md:pr-8 md:text-8xl">
-            {title}
-          </h1>
-          <h4 className="mt-5 text-center text-lg md:pl-8 md:text-left">
-            {lilparagraph}
-          </h4>
-        </header>
-      )
-
-    case 2:
-      return (
-        <header>
-          <h2 className="mt-8 mb-20 text-2xl font-bold leading-tight tracking-tight md:text-4xl md:tracking-tighter">
-            <Link href="/" className="hover:underline">
-              {title}
-            </Link>
-          </h2>
-          
-        </header>
-      )
-
-    default:
-      throw new Error(
-        `Invalid level: ${
-          JSON.stringify(level) || typeof level
-        }, only 1 or 2 are allowed`
-      )
-  }
+  return (
+    <div className="mb-7 mt-7">
+      <h1 className="w-full font-normal tracking-tighter main-title block text-center md:text-left text-[clamp(3rem,min(12vw,6rem),6rem)] md:text-[clamp(2.5rem,min(12vw,7rem),7rem)]">
+        <Link
+          href="/studio"
+          className="hover:opacity-80 transition-opacity font-['Crozet-Regular']"
+        >
+          {title}
+        </Link>
+      </h1>
+      {lilparagraph && (
+        <h1 className="mt-5 text-center text-base sm:text-lg md:text-left blog-subtitle">
+          {lilparagraph}
+        </h1>
+      )}
+      {bigparapraph && (
+        <p className="mt-8 text-center text-base sm:text-lg md:text-left blog-description">
+          {bigparapraph}
+        </p>
+      )}
+    </div>
+  )
 }

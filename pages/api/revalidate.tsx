@@ -24,7 +24,9 @@
 
 import { isValidSignature, SIGNATURE_HEADER_NAME } from '@sanity/webhook'
 import { apiVersion, dataset, projectId } from 'lib/sanity.api'
+import { NextApiRequest, NextApiResponse } from 'next'
 import { createClient } from 'next-sanity'
+import { groq } from 'next-sanity'
 
 // Next.js will by default parse the body, which can lead to invalid signatures
 export const config = {
@@ -64,14 +66,20 @@ async function readBody(readable) {
   return Buffer.concat(chunks).toString('utf8')
 }
 
-export default async function revalidate(req, res) {
-  const signature = req.headers[SIGNATURE_HEADER_NAME]
+export default async function revalidate(
+  req: NextApiRequest,
+  res: NextApiResponse<any>,
+) {
+  const signatureHeader = req.headers[SIGNATURE_HEADER_NAME]
+  const signature = Array.isArray(signatureHeader)
+    ? signatureHeader[0]
+    : signatureHeader
   const body = await readBody(req) // Read the body into a string
   if (
     !isValidSignature(
       body,
-      signature,
-      process.env.SANITY_REVALIDATE_SECRET?.trim()
+      signature || '',
+      process.env.SANITY_REVALIDATE_SECRET?.trim(),
     )
   ) {
     const invalidSignature = 'Invalid signature'
@@ -92,10 +100,10 @@ export default async function revalidate(req, res) {
   await new Promise((resolve) => setTimeout(resolve, 1000))
 
   log(`Querying post slug for _id '${id}', type '${_type}' ..`)
-  const client = createClient({ projectId, dataset, apiVersion, useCdn: false })
+  const client = createClient({ projectId, dataset, apiVersion, useCdn: true })
   const slug = await client.fetch(getQueryForType(_type), { id })
   const slugs = (Array.isArray(slug) ? slug : [slug]).map(
-    (_slug) => `/posts/${_slug}`
+    (_slug) => `/posts/${_slug}`,
   )
   const staleRoutes = ['/', ...slugs]
 

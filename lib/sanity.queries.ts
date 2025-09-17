@@ -1,3 +1,4 @@
+// lib/sanity.queries.ts
 import { groq } from 'next-sanity'
 
 const postFields = groq`
@@ -7,8 +8,11 @@ const postFields = groq`
   excerpt,
   file,
   coverImage,
+  videoUrl,
+  requiresAuth,
   "slug": slug.current,
   "auteur": auteur->{name, picture},
+  "category": category->{title, "slug": slug.current, description, "color": color.hex}
 `
 
 export const settingsQuery = groq`*[_type == "settings"][0]{title,lilparagraph}`
@@ -18,7 +22,19 @@ export const indexQuery = groq`
   ${postFields}
 }`
 
+export const categoriesQuery = groq`
+*[_type == "category"] | order(title asc) {
+  _id,
+  title,
+  "slug": slug.current,
+  description,
+  "color": color.hex
+}`
 
+export const postsByCategoryQuery = groq`
+*[_type == "post" && category->slug.current == $categorySlug] | order(date desc, _updatedAt desc) {
+  ${postFields}
+}`
 
 export const postQuery = groq`
 {
@@ -43,9 +59,26 @@ export const postBySlugQuery = groq`
 }
 `
 
+export const fileQuery = groq`
+*[_type == 'file'] {
+  title,
+  "file": file.asset->url
+}
+`
+
 export interface auteur {
   name?: string
   picture?: any
+}
+
+export interface Category {
+  _id: string
+  title?: string
+  slug?: string
+  description?: string
+  color?: {
+    hex: string
+  }
 }
 
 export interface Post {
@@ -58,9 +91,18 @@ export interface Post {
   slug?: string
   content?: any
   file?: any
+  videoUrl?: string
+  category?: Category
+  requiresAuth?: boolean
 }
 
 export interface Settings {
   title?: string
   lilparagraph?: string
+  bigparagraph?: string
+}
+
+export type Author = {
+  name: string
+  picture: any
 }

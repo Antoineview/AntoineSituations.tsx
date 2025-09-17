@@ -1,4 +1,3 @@
-import Avatar from 'components/AuthorAvatar'
 import CoverImage from 'components/CoverImage'
 import Date from 'components/PostDate'
 import type { Post } from 'lib/sanity.queries'
@@ -9,9 +8,8 @@ export default function PostPreview({
   coverImage,
   date,
   excerpt,
-  auteur,
   slug,
-}: Omit<Post, '_id'>) {
+}: Omit<Post, '_id' | 'auteur'>) {
   return (
     <div>
       <div className="mb-5">
@@ -22,16 +20,22 @@ export default function PostPreview({
           priority={false}
         />
       </div>
-      <h3 className="mb-3 text-3xl leading-snug">
-        <Link href={`/posts/${slug}`} className="hover:underline">
+      <h1 className="mb-7 text-4xl leading-tight">
+        <Link
+          href={`/posts/${slug}`}
+          className="hover:underline font-['Homoneta'] italic"
+        >
           {title}
         </Link>
-      </h3>
-      <div className="mb-4 text-lg">
+      </h1>
+      <div className="mb-4 text-lg preview-date">
         <Date dateString={date} />
       </div>
-      {excerpt && <p className="mb-4 text-lg leading-relaxed">{excerpt}</p>}
-      {auteur && <Avatar name={auteur.name} picture={auteur.picture} />}
+      {excerpt && (
+        <p className="mb-4 text-lg leading-relaxed preview-excerpt">
+          {excerpt}
+        </p>
+      )}
     </div>
   )
 }

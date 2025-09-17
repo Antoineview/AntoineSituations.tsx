@@ -1,40 +1,88 @@
-import AuthorAvatar from 'components/AuthorAvatar'
 import CoverImage from 'components/CoverImage'
 import Date from 'components/PostDate'
+import VideoPlayer from 'components/VideoPlayer'
+import { motion } from 'framer-motion'
 import type { Post } from 'lib/sanity.queries'
 import Link from 'next/link'
 
 export default function HeroPost(
   props: Pick<
     Post,
-    'title' | 'coverImage' | 'date' | 'excerpt' | 'auteur' | 'slug'
-  >
+    'title' | 'coverImage' | 'date' | 'excerpt' | 'slug' | 'videoUrl'
+  >,
 ) {
-  const { title, coverImage, date, excerpt, auteur, slug } = props
+  const { title, coverImage, date, excerpt, slug, videoUrl } = props
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: {
+      opacity: 0,
+      y: 20,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.7,
+        ease: [0.6, -0.05, 0.01, 0.99],
+      },
+    },
+  }
+
   return (
-    <section className="herocard">
-      <h2 className="mb-2 ml-1 text-6xl font-bold leading-tight tracking-tighter md:text-7xl">
-        Latest 🔥 &rarr; <Date dateString={date} />
-      </h2>
-      <div className="heropostimage">
-        <CoverImage slug={slug} title={title} image={coverImage} priority />
+    <motion.section
+      className="herocard"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.h1
+        variants={itemVariants}
+        className="mb-2 ml-1 text-4xl sm:text-5xl md:text-6xl font-bold leading-tight tracking-tighter hero-date"
+      >
+        <Date dateString={date} />
+      </motion.h1>
+      <div className="heropostimage mb-4 sm:mb-1">
+        {videoUrl ? (
+          <VideoPlayer url={videoUrl} title={title} />
+        ) : (
+          <CoverImage slug={slug} title={title} image={coverImage} priority />
+        )}
       </div>
-      <div className="">
+      <motion.div variants={itemVariants} className="">
         <div>
-          <h3 className="heroposttext">
-            <Link href={`/posts/${slug}`} className="hover:underline">
+          <motion.h1
+            variants={itemVariants}
+            className="text-4xl sm:text-6xl md:text-6xl lg:text-7xl leading-tight tracking-tighter mb-4 sm:mb-1"
+          >
+            <Link
+              href={`/posts/${slug}`}
+              className="hover:underline font-['Homoneta'] italic"
+            >
               {title || 'Untitled'}
             </Link>
-          </h3>
-          
+          </motion.h1>
         </div>
         <div>
-          {excerpt && <p className="mb-4 text-lg leading-relaxed">{excerpt}</p>}
-          {auteur && (
-            <AuthorAvatar name={auteur.name} picture={auteur.picture} />
+          {excerpt && (
+            <motion.p
+              variants={itemVariants}
+              className="mb-4 text-base sm:text-lg leading-relaxed hero-excerpt"
+            >
+              {excerpt}
+            </motion.p>
           )}
         </div>
-      </div>
-    </section>
+      </motion.div>
+    </motion.section>
   )
 }

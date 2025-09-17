@@ -13,7 +13,7 @@ export default defineType({
       name: 'title',
       description: 'Titre du blog.',
       title: 'Titre',
-      type: 'string',
+      type: 'text',
       initialValue: 'Blog.',
       validation: (rule) => rule.required(),
     },

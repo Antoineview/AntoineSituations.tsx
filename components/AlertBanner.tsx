@@ -11,7 +11,15 @@ export default function Alert({
   if (!preview) return
 
   return (
-    <div className="border-b border-accent-7 bg-accent-7 text-white">
+    <div
+      className="border-b text-white"
+      style={{
+        background:
+          'linear-gradient(90deg, var(--blob-color-1, #3b82f6), var(--blob-color-2, #8b5cf6), var(--blob-color-3, #ec4899), var(--blob-color-4, #f59e0b))',
+        borderColor: 'rgba(255,255,255,0.18)',
+        transition: 'background 0.5s',
+      }}
+    >
       <Container>
         <div className="py-2 text-center text-sm">
           {loading ? 'Loading... ' : 'This page is a preview. '}

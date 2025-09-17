@@ -1,7 +1,9 @@
 import { BookIcon } from '@sanity/icons'
-import { defineType } from 'sanity'
+import { defineType, defineArrayMember } from 'sanity'
+import CoverImageInput from './post/CoverImageInput'
 
 import authorType from './author'
+import { youtube } from './youtube'
 
 /**
  * This file is the schema definition for a post.
@@ -41,7 +43,14 @@ export default defineType({
       name: 'content',
       title: 'Contenu.',
       type: 'array',
-      of: [{ type: 'block' }],
+      of: [
+        defineArrayMember({
+          type: 'block',
+        }),
+        defineArrayMember({
+          type: 'youtube',
+        }),
+      ],
     },
     {
       name: 'excerpt',
@@ -55,11 +64,20 @@ export default defineType({
       options: {
         hotspot: true,
       },
+      components: {
+        input: CoverImageInput,
+      },
     },
     {
       name: 'file',
       title: 'Fichier.',
       type: 'file',
+    },
+    {
+      name: 'videoUrl',
+      title: 'URL Vidéo',
+      type: 'url',
+      description: "URL d'une vidéo externe (YouTube, Vimeo, etc.)",
     },
     {
       name: 'date',
@@ -71,6 +89,20 @@ export default defineType({
       title: 'Auteur.',
       type: 'reference',
       to: [{ type: authorType.name }],
+    },
+    {
+      name: 'category',
+      title: 'Catégorie',
+      type: 'reference',
+      to: [{ type: 'category' }],
+    },
+    {
+      name: 'requiresAuth',
+      title: 'Requiert une authentification',
+      type: 'boolean',
+      description:
+        "Si coché, ce post ne sera accessible qu'après authentification",
+      initialValue: false,
     },
   ],
   preview: {

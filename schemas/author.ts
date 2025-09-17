@@ -2,8 +2,8 @@ import { UserIcon } from '@sanity/icons'
 import { defineType } from 'sanity'
 
 export default defineType({
-  name: 'auteur',
-  title: 'Auteur',
+  name: 'author',
+  title: 'Author',
   icon: UserIcon,
   type: 'document',
   fields: [
@@ -21,4 +21,10 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     },
   ],
+  preview: {
+    select: {
+      title: 'name',
+      media: 'picture',
+    },
+  },
 })
