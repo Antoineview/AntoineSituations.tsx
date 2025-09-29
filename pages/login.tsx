@@ -1,9 +1,9 @@
-import { useRouter } from 'next/router'
 import AuthGate from 'components/AuthGate'
-import Layout from 'components/BlogLayout'
 import Container from 'components/BlogContainer'
 import BlogHeader from 'components/BlogHeader'
+import Layout from 'components/BlogLayout'
 import { motion } from 'framer-motion'
+import { useRouter } from 'next/router'
 
 export default function LoginPage() {
   const router = useRouter()

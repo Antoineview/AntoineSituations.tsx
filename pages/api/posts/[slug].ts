@@ -1,7 +1,7 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { createClient } from 'next-sanity'
 import { apiVersion, dataset, projectId } from 'lib/sanity.api'
 import { postBySlugQuery } from 'lib/sanity.queries'
+import { NextApiRequest, NextApiResponse } from 'next'
+import { createClient } from 'next-sanity'
 
 export default async function handler(
   req: NextApiRequest,

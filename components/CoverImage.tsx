@@ -1,9 +1,10 @@
 import cn from 'classnames'
+import { motion } from 'framer-motion'
 import { urlForImage } from 'lib/sanity.image'
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { useState, useEffect } from 'react'
+import { useEffect,useState } from 'react'
+
 import CoverImageGenerator from './CoverImageGenerator'
 
 interface CoverImageProps {

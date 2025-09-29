@@ -16,11 +16,6 @@ export default function BlogLayout({
       <Head>
         <BlogMeta />
         <meta
-          property="og:image"
-          content="https://og-image.vercel.app/AdaptativeDesigns.png?theme=light&md=1&fontSize=150px&images=https%3A%2F%2Fassets.vercel.com%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fvercel-triangle-black.svg"
-          key="ogImage"
-        />
-        <meta
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />

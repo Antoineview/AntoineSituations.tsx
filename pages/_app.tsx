@@ -2,8 +2,9 @@ import 'styles/index.css'
 
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-import { ThemeProvider } from '../components/ThemeContext'
 import Head from 'next/head'
+
+import { ThemeProvider } from '../components/ThemeContext'
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -26,7 +27,7 @@ function MyApp({ Component, pageProps }) {
         />
         <meta
           name="description"
-          content="Blog de R&D développement web et apps crée par Antoine RICHARD-CAPPONI à la quête du less is more."
+          content="Blog de Antoine RC."
         />
         <meta name="author" content="Antoine RICHARD-CAPPONI" />
 
@@ -35,11 +36,11 @@ function MyApp({ Component, pageProps }) {
         <meta property="og:title" content="Antoine Situations" />
         <meta
           property="og:description"
-          content="Blog de R&D développement web et apps crée par Antoine RC"
+          content="Blog de Antoine RC."
         />
         <meta
           property="og:image"
-          content="https://og-image.vercel.app/AntoineView.png?theme=light&md=1&fontSize=150px&images=https%3A%2F%2Fassets.vercel.com%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fvercel-triangle-black.svg"
+          content="https://cdn.sanity.io/images/y2ew53ag/production/af0b82efb73552c72c4dd8820b7cedd6e0c9ef6d-1200x630.png?w=2000&fit=max&auto=format&dpr=2"
         />
 
         {/* Twitter */}
@@ -47,11 +48,11 @@ function MyApp({ Component, pageProps }) {
         <meta name="twitter:title" content="AntoineView" />
         <meta
           name="twitter:description"
-          content="Blog de R&D développement web et apps crée par Antoine RICHARD-CAPPONI à la quête du less is more."
+          content="Blog de Antoine RC."
         />
         <meta
           name="twitter:image"
-          content="https://og-image.vercel.app/AntoineView.png?theme=light&md=1&fontSize=150px&images=https%3A%2F%2Fassets.vercel.com%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fvercel-triangle-black.svg"
+          content="https://cdn.sanity.io/images/y2ew53ag/production/af0b82efb73552c72c4dd8820b7cedd6e0c9ef6d-1200x630.png?w=2000&fit=max&auto=format&dpr=2"
         />
 
         {/* PWA */}

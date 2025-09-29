@@ -1,15 +1,15 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { getIronSession } from 'iron-session'
-import type { IronSessionData } from 'iron-session'
-import { createClient } from 'next-sanity'
-import { apiVersion, dataset, projectId } from 'lib/sanity.api'
 import { neon } from '@neondatabase/serverless'
 import {
-  verifyRegistrationResponse,
-  VerifiedRegistrationResponse,
   RegistrationResponseJSON,
+  VerifiedRegistrationResponse,
+  verifyRegistrationResponse,
 } from '@simplewebauthn/server'
 import { isoBase64URL } from '@simplewebauthn/server/helpers'
+import type { IronSessionData } from 'iron-session'
+import { getIronSession } from 'iron-session'
+import { apiVersion, dataset, projectId } from 'lib/sanity.api'
+import { NextApiRequest, NextApiResponse } from 'next'
+import { createClient } from 'next-sanity'
 
 interface CustomSessionData extends IronSessionData {
   challengeData?: {

@@ -1,17 +1,16 @@
+
 import IndexPage from 'components/IndexPage'
-import PreviewIndexPage from 'components/PreviewIndexPage'
 import { apiVersion, dataset, projectId } from 'lib/sanity.api'
 import {
-  type Post,
-  type Settings,
+  categoriesQuery,
   type Category,
   indexQuery,
+  type Post,
+  type Settings,
   settingsQuery,
-  categoriesQuery,
 } from 'lib/sanity.queries'
 import type { GetStaticProps, InferGetStaticPropsType } from 'next'
 import { createClient } from 'next-sanity'
-import { Suspense } from 'react'
 
 export const getStaticProps: GetStaticProps<
   {
@@ -64,29 +63,10 @@ export const getStaticProps: GetStaticProps<
 }
 
 export default function IndexRoute({
-  preview,
-  token,
   posts,
   settings,
   categories,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  if (preview) {
-    return (
-      <Suspense
-        fallback={
-          <IndexPage
-            preview
-            loading
-            posts={posts}
-            settings={settings}
-            categories={categories || []}
-          />
-        }
-      >
-        <PreviewIndexPage token={token} />
-      </Suspense>
-    )
-  }
 
   return (
     <IndexPage

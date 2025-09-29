@@ -7,16 +7,17 @@
  * https://portabletext.org/
  *
  */
-import { PortableText } from '@portabletext/react'
 import type { PortableTextTypeComponentProps } from '@portabletext/react'
-import dynamic from 'next/dynamic'
+import { PortableText } from '@portabletext/react'
+import { motion, useInView } from 'framer-motion'
 import { urlForImage } from 'lib/sanity.image'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { useState } from 'react'
-import styles from './PostBody.module.css'
-import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import React, { ReactNode } from 'react'
+
+import styles from './PostBody.module.css'
 
 // Dynamically import ReactPlayer with no SSR
 const ReactPlayer = dynamic(() => import('react-player'), { ssr: false })
@@ -31,21 +32,6 @@ interface YouTubeNode {
   }
 }
 
-const textVariants = {
-  hidden: {
-    opacity: 0,
-    y: 50,
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.6,
-      ease: [0.6, -0.05, 0.01, 0.99],
-    },
-  },
-}
-
 const AnimatedText = ({
   children,
   as: Component = 'p',
@@ -56,41 +42,51 @@ const AnimatedText = ({
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, amount: 0.1 })
 
-  // Convert React children to string
-  const textContent = React.Children.map(children, (child) => {
-    if (typeof child === 'string') return child
-    if (React.isValidElement(child)) {
-      return child.props.children
-    }
-    return ''
-  }).join('')
-
-  const lines = textContent.split('\n').filter((line) => line.trim() !== '')
+  const textVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.6, -0.05, 0.01, 0.99],
+        delay: i * 0.1,
+      },
+    }),
+  }
 
   return (
-    <Component ref={ref} className={styles.portableText}>
-      {lines.map((line, index) => (
-        <motion.span
-          key={index}
-          initial="hidden"
-          animate={isInView ? 'visible' : 'hidden'}
-          variants={textVariants}
-          className="block"
-          custom={index}
-          transition={{
-            delay: index * 0.1,
-          }}
-        >
-          {line}
-        </motion.span>
-      ))}
-    </Component>
+    <motion.div
+      ref={ref}
+      initial="hidden"
+      animate={isInView ? 'visible' : 'hidden'}
+      variants={{
+        hidden: {},
+        visible: {
+          transition: { staggerChildren: 0.1 },
+        },
+      }}
+      className={styles.portableText}
+    >
+      <Component>
+        {React.Children.map(children, (child, index) => (
+          <motion.span
+            key={index}
+            variants={textVariants}
+            custom={index}
+            className="block"
+          >
+            {child}
+          </motion.span>
+        ))}
+      </Component>
+    </motion.div>
   )
 }
 
 const serializers = {
   types: {
-    youtube: ({ value }: PortableTextTypeComponentProps<YouTubeNode>) => {
+    youtube: function Youtube({ value }: PortableTextTypeComponentProps<YouTubeNode>) {
       const [isPlaying, setIsPlaying] = useState(false)
 
       if (!value?.url) return null

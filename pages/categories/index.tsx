@@ -4,9 +4,9 @@ import Layout from 'components/BlogLayout'
 import { apiVersion, dataset, projectId } from 'lib/sanity.api'
 import { categoriesQuery } from 'lib/sanity.queries'
 import type { GetStaticProps } from 'next'
-import { createClient } from 'next-sanity'
-import Link from 'next/link'
 import Head from 'next/head'
+import Link from 'next/link'
+import { createClient } from 'next-sanity'
 
 interface Category {
   _id: string

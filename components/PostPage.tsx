@@ -6,14 +6,15 @@ import PostBody from 'components/PostBody'
 import PostHeader from 'components/PostHeader'
 import PostTitle from 'components/PostTitle'
 import SectionSeparator from 'components/SectionSeparator'
+import { motion } from 'framer-motion'
 import { urlForImage } from 'lib/sanity.image'
 import type { Post, Settings } from 'lib/sanity.queries'
 import ErrorPage from 'next/error'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
+import { useRouter } from 'next/router'
 import { useState } from 'react'
+
 import AuthGate from './AuthGate'
 
 export default function PostPage(props: {

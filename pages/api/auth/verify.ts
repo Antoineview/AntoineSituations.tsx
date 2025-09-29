@@ -1,13 +1,13 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import { getIronSession } from 'iron-session'
-import type { IronSessionData } from 'iron-session'
 import { neon } from '@neondatabase/serverless'
 import {
-  verifyAuthenticationResponse,
-  VerifiedAuthenticationResponse,
   AuthenticationResponseJSON,
+  VerifiedAuthenticationResponse,
+  verifyAuthenticationResponse,
 } from '@simplewebauthn/server'
 import { isoBase64URL } from '@simplewebauthn/server/helpers'
+import type { IronSessionData } from 'iron-session'
+import { getIronSession } from 'iron-session'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 interface CustomSessionData extends IronSessionData {
   challengeData?: {

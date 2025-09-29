@@ -1,8 +1,8 @@
-import { NextApiRequest, NextApiResponse } from 'next'
-import crypto from 'crypto'
-import { getIronSession } from 'iron-session'
-import type { IronSessionData } from 'iron-session'
 import { isoBase64URL } from '@simplewebauthn/server/helpers'
+import crypto from 'crypto'
+import type { IronSessionData } from 'iron-session'
+import { getIronSession } from 'iron-session'
+import { NextApiRequest, NextApiResponse } from 'next'
 
 interface CustomSessionData extends IronSessionData {
   challengeData?: {

@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import PostPreview from 'components/PostPreview'
+import { AnimatePresence,motion } from 'framer-motion'
 import type { Post } from 'lib/sanity.queries'
-import { motion, AnimatePresence } from 'framer-motion'
+import React, { useCallback,useEffect, useMemo, useRef, useState } from 'react'
 
 const groupPostsBySemester = (posts: Post[]) => {
   return posts.reduce(

@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import { Button, Stack, Text, Card } from '@sanity/ui'
 import { CopyIcon } from '@sanity/icons'
+import { Button, Card,Stack, Text } from '@sanity/ui'
+import { useState } from 'react'
 import { useFormValue } from 'sanity'
 
 interface InvitationGeneratorProps {
