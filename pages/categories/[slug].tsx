@@ -4,14 +4,14 @@ import Layout from 'components/BlogLayout'
 import MoreStories from 'components/MoreStories'
 import { apiVersion, dataset, projectId } from 'lib/sanity.api'
 import type { Post } from 'lib/sanity.queries'
-import { categoriesQuery,postsByCategoryQuery } from 'lib/sanity.queries'
+import { categoriesQuery, postsByCategoryQuery } from 'lib/sanity.queries'
 import type {
   GetStaticPaths,
   GetStaticProps,
   InferGetStaticPropsType,
 } from 'next'
 import Head from 'next/head'
-import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { createClient } from 'next-sanity'
 
 interface Category {
@@ -26,6 +26,8 @@ export default function CategoryPage({
   data: { posts, category },
   preview,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
+  const router = useRouter()
+
   return (
     <Layout preview={preview}>
       <Head>
@@ -36,12 +38,12 @@ export default function CategoryPage({
           <BlogHeader title={category.title} lilparagraph="" bigparapraph="" />
         </div>
         <div className="mb-8">
-          <Link
-            href="/"
-            className="text-lg font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+          <button
+            onClick={() => router.back()}
+            className="text-lg font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer"
           >
-            ← Retour à l&aposaccueil
-          </Link>
+            ← Back
+          </button>
         </div>
         {posts.length > 0 && <MoreStories posts={posts} hideTitle />}
       </Container>

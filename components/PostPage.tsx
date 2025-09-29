@@ -178,12 +178,12 @@ export default function PostPage(props: {
           animate="visible"
           custom={0}
         >
-          <Link
-            href="/"
-            className="text-lg font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200"
+          <button
+            onClick={() => router.back()}
+            className="text-lg font-medium text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 cursor-pointer"
           >
-            ← Return Home
-          </Link>
+            ← Back
+          </button>
         </motion.div>
         {router.isFallback || (preview && !post) ? (
           <PostTitle>chargement...</PostTitle>

@@ -1,9 +1,18 @@
-import { AnimatePresence,motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import type { Category } from 'lib/sanity.queries'
 import Link from 'next/link'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
+import { useAnimation } from './AnimationContext'
 
 export default function Categories({ categories }: { categories: Category[] }) {
+  const { shouldAnimate, markAnimated } = useAnimation()
+
+  useEffect(() => {
+    if (shouldAnimate) {
+      markAnimated()
+    }
+  }, [shouldAnimate, markAnimated])
+
   // Cache the sorted categories
   const sortedCategories = useMemo(
     () => [...categories].sort((a, b) => a.title.localeCompare(b.title)),
@@ -48,7 +57,7 @@ export default function Categories({ categories }: { categories: Category[] }) {
   return (
     <section className="morecardcontainer">
       <motion.h1
-        initial={{ opacity: 0, y: 20 }}
+        initial={shouldAnimate ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: [0.6, -0.05, 0.01, 0.99] }}
         className="mb-8 text-6xl font-bold leading-tight tracking-tighter md:text-7xl morecardh1"
@@ -58,7 +67,7 @@ export default function Categories({ categories }: { categories: Category[] }) {
       <motion.div
         className="mb-6 grid grid-cols-1 gap-y-4 md:grid-cols-2 md:gap-x-5 md:gap-y-5 lg:gap-x-3"
         variants={containerVariants}
-        initial="hidden"
+        initial={shouldAnimate ? 'hidden' : 'visible'}
         animate="visible"
       >
         <AnimatePresence mode="popLayout">
@@ -67,8 +76,8 @@ export default function Categories({ categories }: { categories: Category[] }) {
               key={category._id}
               custom={index}
               variants={itemVariants}
-              initial="hidden"
-              whileInView="visible"
+              initial={shouldAnimate ? 'hidden' : 'visible'}
+              whileInView={shouldAnimate ? 'visible' : undefined}
               viewport={{ once: false, margin: '-100px' }}
               exit="exit"
               layout

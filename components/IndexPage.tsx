@@ -5,8 +5,10 @@ import Categories from 'components/Categories'
 import HeroPost from 'components/HeroPost'
 import MoreStories from 'components/MoreStories'
 import SectionSeparator from 'components/SectionSeparator'
-import type { Category,Post, Settings } from 'lib/sanity.queries'
+import type { Category, Post, Settings } from 'lib/sanity.queries'
 import Head from 'next/head'
+import { useAnimation } from './AnimationContext'
+import { useEffect } from 'react'
 
 export default function IndexPage(props: {
   preview?: boolean
@@ -19,6 +21,13 @@ export default function IndexPage(props: {
   const [heroPost, ...morePosts] = posts
   const { title = 'titre' } = settings
   const { lilparagraph = 'description' } = settings
+  const { shouldAnimate, markAnimated } = useAnimation()
+
+  useEffect(() => {
+    if (shouldAnimate) {
+      markAnimated()
+    }
+  }, [shouldAnimate, markAnimated])
 
   return (
     <>

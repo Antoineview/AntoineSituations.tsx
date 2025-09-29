@@ -4,6 +4,8 @@ import VideoPlayer from 'components/VideoPlayer'
 import { motion } from 'framer-motion'
 import type { Post } from 'lib/sanity.queries'
 import Link from 'next/link'
+import { useAnimation } from './AnimationContext'
+import { useEffect } from 'react'
 
 export default function HeroPost(
   props: Pick<
@@ -12,6 +14,13 @@ export default function HeroPost(
   >,
 ) {
   const { title, coverImage, date, excerpt, slug, videoUrl } = props
+  const { shouldAnimate, markAnimated } = useAnimation()
+
+  useEffect(() => {
+    if (shouldAnimate) {
+      markAnimated()
+    }
+  }, [shouldAnimate, markAnimated])
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -42,7 +51,7 @@ export default function HeroPost(
     <motion.section
       className="herocard"
       variants={containerVariants}
-      initial="hidden"
+      initial={shouldAnimate ? 'hidden' : 'visible'}
       animate="visible"
     >
       <motion.h1

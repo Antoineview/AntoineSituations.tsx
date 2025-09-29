@@ -1,7 +1,8 @@
 import PostPreview from 'components/PostPreview'
-import { AnimatePresence,motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'framer-motion'
 import type { Post } from 'lib/sanity.queries'
-import React, { useCallback,useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useAnimation } from './AnimationContext'
 
 const groupPostsBySemester = (posts: Post[]) => {
   return posts.reduce(
@@ -42,11 +43,18 @@ export default function MoreStories({
   posts: Post[]
   hideTitle?: boolean
 }) {
+  const { shouldAnimate, markAnimated } = useAnimation()
   const [visiblePosts, setVisiblePosts] = useState(2)
   const [isLoading, setIsLoading] = useState(false)
   const hasMorePosts = posts.length > visiblePosts
   const observerRef = useRef<IntersectionObserver | null>(null)
   const loadMoreRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (shouldAnimate) {
+      markAnimated()
+    }
+  }, [shouldAnimate, markAnimated])
 
   // Cache the grouped posts
   const groupedPosts = useMemo(() => groupPostsBySemester(posts), [posts])
@@ -133,7 +141,7 @@ export default function MoreStories({
     <section className="morecardcontainer">
       {!hideTitle && (
         <motion.h1
-          initial={{ opacity: 0, y: 20 }}
+          initial={shouldAnimate ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
           className="mb-6 sm:mb-8 text-6xl sm:text-7xl md:text-7xl font-bold leading-tight tracking-tighter morecardh1"
@@ -146,7 +154,7 @@ export default function MoreStories({
           key={semesterYear}
           className="mb-8 sm:mb-12"
           variants={containerVariants}
-          initial="hidden"
+          initial={shouldAnimate ? 'hidden' : 'visible'}
           animate="visible"
         >
           <motion.h2
@@ -165,8 +173,8 @@ export default function MoreStories({
                   key={post._id}
                   custom={index}
                   variants={itemVariants}
-                  initial="hidden"
-                  whileInView="visible"
+                  initial={shouldAnimate ? 'hidden' : 'visible'}
+                  whileInView={shouldAnimate ? 'visible' : undefined}
                   viewport={{ once: false, margin: '-50px' }}
                   exit="exit"
                   layout
