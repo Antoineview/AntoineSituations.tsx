@@ -1,7 +1,6 @@
-
 import IndexPage from 'components/IndexPage'
 import PreviewIndexPage from 'components/PreviewIndexPage'
-import { apiVersion, dataset, projectId } from 'lib/sanity.api'
+import { apiVersion, dataset, projectId, readToken } from 'lib/sanity.api'
 import {
   categoriesQuery,
   type Category,
@@ -27,12 +26,13 @@ export const getStaticProps: GetStaticProps<
 > = async ({ preview = false, previewData = {} }) => {
   /* check if the project id has been defined by fetching the vercel envs */
   if (projectId) {
-    const token = previewData?.token || null
+    const token = previewData?.token || readToken || null
     const client = createClient({
       projectId,
       dataset,
       apiVersion,
-      useCdn: !preview,
+      useCdn: false,
+      token: token || undefined,
     })
     const postsPromise = client.fetch<Post[]>(indexQuery)
     const settingsPromise = client.fetch<Settings>(settingsQuery)

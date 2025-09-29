@@ -2,7 +2,7 @@ import Container from 'components/BlogContainer'
 import BlogHeader from 'components/BlogHeader'
 import Layout from 'components/BlogLayout'
 import MoreStories from 'components/MoreStories'
-import { apiVersion, dataset, projectId } from 'lib/sanity.api'
+import { apiVersion, dataset, projectId, readToken } from 'lib/sanity.api'
 import type { Post } from 'lib/sanity.queries'
 import { categoriesQuery, postsByCategoryQuery } from 'lib/sanity.queries'
 import type {
@@ -58,6 +58,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
       dataset,
       apiVersion,
       useCdn: false,
+      token: readToken || undefined,
     })
     const categories = await client.fetch<Category[]>(categoriesQuery)
 
@@ -81,7 +82,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
       projectId,
       dataset,
       apiVersion,
-      useCdn: true,
+      useCdn: false,
+      token: readToken || undefined,
     })
 
     const category = await client.fetch<Category>(

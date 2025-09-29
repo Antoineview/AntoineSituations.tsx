@@ -1,7 +1,7 @@
 import Container from 'components/BlogContainer'
 import BlogHeader from 'components/BlogHeader'
 import Layout from 'components/BlogLayout'
-import { apiVersion, dataset, projectId } from 'lib/sanity.api'
+import { apiVersion, dataset, projectId, readToken } from 'lib/sanity.api'
 import { categoriesQuery } from 'lib/sanity.queries'
 import type { GetStaticProps } from 'next'
 import Head from 'next/head'
@@ -61,7 +61,8 @@ export const getStaticProps: GetStaticProps = async () => {
       projectId,
       dataset,
       apiVersion,
-      useCdn: true,
+      useCdn: false,
+      token: readToken || undefined,
     })
     const categories = await client.fetch<Category[]>(categoriesQuery)
 

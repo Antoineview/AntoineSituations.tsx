@@ -23,7 +23,7 @@
 // @TODO move the heavy duty body parsing logic into `next-sanity/webhook`
 
 import { isValidSignature, SIGNATURE_HEADER_NAME } from '@sanity/webhook'
-import { apiVersion, dataset, projectId } from 'lib/sanity.api'
+import { apiVersion, dataset, projectId, readToken } from 'lib/sanity.api'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { createClient } from 'next-sanity'
 import { groq } from 'next-sanity'
@@ -100,7 +100,13 @@ export default async function revalidate(
   await new Promise((resolve) => setTimeout(resolve, 1000))
 
   log(`Querying post slug for _id '${id}', type '${_type}' ..`)
-  const client = createClient({ projectId, dataset, apiVersion, useCdn: true })
+  const client = createClient({
+    projectId,
+    dataset,
+    apiVersion,
+    useCdn: false,
+    token: readToken || undefined,
+  })
   const slug = await client.fetch(getQueryForType(_type), { id })
   const slugs = (Array.isArray(slug) ? slug : [slug]).map(
     (_slug) => `/posts/${_slug}`,

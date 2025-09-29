@@ -1,4 +1,4 @@
-import { apiVersion, dataset, projectId } from 'lib/sanity.api'
+import { apiVersion, dataset, projectId, readToken } from 'lib/sanity.api'
 import { postBySlugQuery } from 'lib/sanity.queries'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { createClient } from 'next-sanity'
@@ -23,6 +23,7 @@ export default async function handler(
       dataset,
       apiVersion,
       useCdn: false,
+      token: readToken || undefined,
     })
 
     const post = await client.fetch(postBySlugQuery, { slug })

@@ -1,5 +1,5 @@
 import PostPage from 'components/PostPage'
-import { apiVersion, dataset, projectId } from 'lib/sanity.api'
+import { apiVersion, dataset, projectId, readToken } from 'lib/sanity.api'
 import {
   type Post,
   postQuery,
@@ -25,6 +25,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
       dataset,
       apiVersion,
       useCdn: false,
+      token: readToken || undefined,
     })
     paths = await client.fetch(postSlugsQuery)
   }
@@ -45,12 +46,12 @@ export const getStaticProps: GetStaticProps<
   { slug: string },
   { token?: string }
 > = async ({ params, preview = false, previewData = {} }) => {
-  const token = previewData?.token || null
+  const token = previewData?.token || readToken || null
   const client = createClient({
     projectId,
     dataset,
     apiVersion,
-    useCdn: !preview,
+    useCdn: false,
     token: token || undefined,
   })
   const dataPromise = client.fetch<{ post: Post; morePosts: Post[] }>(

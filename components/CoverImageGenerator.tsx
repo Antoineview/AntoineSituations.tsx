@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
-import { apiVersion,dataset, projectId } from 'lib/sanity.api'
+import { apiVersion, dataset, projectId } from 'lib/sanity.api'
 import { createClient } from 'next-sanity'
-import { useCallback,useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 interface CoverImageGeneratorProps {
   onImageGenerated?: (
@@ -45,7 +45,6 @@ const CoverImageGenerator = ({
     ctx.putImageData(imageData, 0, 0)
   }
 
-
   const getOptimalFontSize = (
     ctx: CanvasRenderingContext2D,
     text: string,
@@ -69,44 +68,47 @@ const CoverImageGenerator = ({
     return fontSize
   }
 
-  const uploadImageToSanity = useCallback(async (imageDataUrl: string) => {
-    try {
-      const client = createClient({
-        projectId,
-        dataset,
-        apiVersion,
-        useCdn: false,
-      })
+  const uploadImageToSanity = useCallback(
+    async (imageDataUrl: string) => {
+      try {
+        const client = createClient({
+          projectId,
+          dataset,
+          apiVersion,
+          useCdn: false,
+        })
 
-      // Convert base64 to blob
-      const response = await fetch(imageDataUrl)
-      const blob = await response.blob()
+        // Convert base64 to blob
+        const response = await fetch(imageDataUrl)
+        const blob = await response.blob()
 
-      // Create a file object
-      const file = new File([blob], `${postId || 'generated'}-cover.png`, {
-        type: 'image/png',
-      })
+        // Create a file object
+        const file = new File([blob], `${postId || 'generated'}-cover.png`, {
+          type: 'image/png',
+        })
 
-      // Upload to Sanity
-      const result = await client.assets.upload('image', file, {
-        filename: `${postId || 'generated'}-cover.png`,
-      })
+        // Upload to Sanity
+        const result = await client.assets.upload('image', file, {
+          filename: `${postId || 'generated'}-cover.png`,
+        })
 
-      // Create a proper Sanity image reference
-      const imageReference = {
-        _type: 'image',
-        asset: {
-          _type: 'reference',
-          _ref: result._id,
-        },
+        // Create a proper Sanity image reference
+        const imageReference = {
+          _type: 'image',
+          asset: {
+            _type: 'reference',
+            _ref: result._id,
+          },
+        }
+
+        return imageReference
+      } catch (error) {
+        console.error('Error uploading image to Sanity:', error)
+        return null
       }
-
-      return imageReference
-    } catch (error) {
-      console.error('Error uploading image to Sanity:', error)
-      return null
-    }
-  }, [postId])
+    },
+    [postId],
+  )
 
   const generateImage = useCallback(async () => {
     const canvas = canvasRef.current
