@@ -62,7 +62,7 @@ export default function HeroPost(
       </motion.h1>
       <div className="heropostimage mb-4 sm:mb-1">
         {videoUrl ? (
-          <VideoPlayer url={videoUrl} title={title} />
+          <VideoPlayer url={videoUrl} title={title} priority />
         ) : (
           <CoverImage slug={slug} title={title} image={coverImage} priority />
         )}

@@ -17,7 +17,6 @@ export function AnimationProvider({ children }: { children: React.ReactNode }) {
     if (typeof window !== 'undefined') {
       const isBackNavigation = sessionStorage.getItem('isBackNavigation')
       if (isBackNavigation === 'true') {
-        sessionStorage.removeItem('isBackNavigation')
         return false
       }
       // Check if we've already animated in this session
@@ -33,7 +32,8 @@ export function AnimationProvider({ children }: { children: React.ReactNode }) {
       // Mark if we're potentially doing back navigation
       if (url === '/' || url.startsWith('/categories/')) {
         const scrollPos = sessionStorage.getItem(`scroll_${url}`)
-        if (scrollPos && parseInt(scrollPos) > 0) {
+        // Only mark as back navigation if there's a significant scroll position
+        if (scrollPos && parseInt(scrollPos) > 100) {
           sessionStorage.setItem('isBackNavigation', 'true')
         }
       }
@@ -46,7 +46,10 @@ export function AnimationProvider({ children }: { children: React.ReactNode }) {
       if (url === '/') {
         if (isBack) {
           setShouldAnimate(false)
-          sessionStorage.removeItem('isBackNavigation')
+          // Clean up after a short delay to ensure scroll restoration completes
+          setTimeout(() => {
+            sessionStorage.removeItem('isBackNavigation')
+          }, 100)
         } else {
           // Fresh navigation to home
           const hasAnimated = sessionStorage.getItem('hasAnimatedHome')
@@ -55,12 +58,16 @@ export function AnimationProvider({ children }: { children: React.ReactNode }) {
       } else if (url.startsWith('/categories/')) {
         if (isBack) {
           setShouldAnimate(false)
-          sessionStorage.removeItem('isBackNavigation')
+          setTimeout(() => {
+            sessionStorage.removeItem('isBackNavigation')
+          }, 100)
         } else {
           setShouldAnimate(false)
         }
       } else {
         setShouldAnimate(false)
+        // Clean up back navigation flag for other routes
+        sessionStorage.removeItem('isBackNavigation')
       }
     }
 

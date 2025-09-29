@@ -4,7 +4,7 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { AnimationProvider } from '../components/AnimationContext'
 import { ThemeProvider } from '../components/ThemeContext'
@@ -12,6 +12,9 @@ import LoadingScreen from '../components/LoadingScreen'
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter()
+  const scrollTimeoutRef = useRef<NodeJS.Timeout[]>([])
+  const observerRef = useRef<MutationObserver | null>(null)
+  const isRestoringRef = useRef(false)
 
   useEffect(() => {
     // Disable browser's automatic scroll restoration
@@ -20,6 +23,15 @@ function MyApp({ Component, pageProps }) {
     }
 
     const handleRouteChangeStart = () => {
+      // Cleanup any ongoing scroll restoration
+      isRestoringRef.current = false
+      if (observerRef.current) {
+        observerRef.current.disconnect()
+        observerRef.current = null
+      }
+      scrollTimeoutRef.current.forEach((t) => clearTimeout(t))
+      scrollTimeoutRef.current = []
+
       // Save current scroll position
       const currentPos = window.scrollY
       sessionStorage.setItem(`scroll_${router.asPath}`, currentPos.toString())
@@ -33,69 +45,88 @@ function MyApp({ Component, pageProps }) {
 
       if (savedPosition && parseInt(savedPosition) > 0) {
         const targetPosition = parseInt(savedPosition)
-        let attempts = 0
-        const maxAttempts = 50
+        isRestoringRef.current = true
+        let restoredSuccessfully = false
 
         // Use MutationObserver to wait for DOM changes
-        const observer = new MutationObserver(() => {
+        observerRef.current = new MutationObserver(() => {
+          if (!isRestoringRef.current) return
+
           const currentMax =
             document.documentElement.scrollHeight - window.innerHeight
-          const canScroll = currentMax >= targetPosition
+          const canScroll = currentMax >= targetPosition * 0.95 // Allow 5% tolerance
 
-          if (canScroll) {
-            window.scrollTo(0, targetPosition)
-            console.log(
-              '✅ Scrolled to',
-              targetPosition,
-              'Current:',
-              window.scrollY,
-            )
+          if (canScroll && !restoredSuccessfully) {
+            const actualTarget = Math.min(targetPosition, currentMax)
+            window.scrollTo(0, actualTarget)
+
+            // Check if scroll was successful
+            requestAnimationFrame(() => {
+              if (Math.abs(window.scrollY - actualTarget) < 10) {
+                restoredSuccessfully = true
+                console.log('✅ Scroll restored to', window.scrollY)
+
+                // Cleanup after successful restoration
+                setTimeout(() => {
+                  if (observerRef.current) {
+                    observerRef.current.disconnect()
+                    observerRef.current = null
+                  }
+                  isRestoringRef.current = false
+                }, 100)
+              }
+            })
           }
         })
 
         // Observe body for changes
-        observer.observe(document.body, {
+        observerRef.current.observe(document.body, {
           childList: true,
           subtree: true,
-          attributes: true,
         })
 
-        // Aggressively restore scroll position
+        // Immediate restoration attempts
         const restore = () => {
-          attempts++
+          if (!isRestoringRef.current || restoredSuccessfully) return
+
           const currentMax =
             document.documentElement.scrollHeight - window.innerHeight
           const actualTarget = Math.min(targetPosition, currentMax)
 
-          window.scrollTo(0, actualTarget)
-          console.log(
-            `🔄 Attempt ${attempts}: Target=${actualTarget}, Current=${window.scrollY}, Max=${currentMax}`,
-          )
-
-          if (attempts >= maxAttempts) {
-            observer.disconnect()
-            console.log('⚠️ Max attempts reached')
+          // Only scroll if we're not already at the right position
+          if (Math.abs(window.scrollY - actualTarget) > 5) {
+            window.scrollTo(0, actualTarget)
           }
         }
 
-        // Try immediately and repeatedly
-        restore()
-        requestAnimationFrame(restore)
+        // Try immediately
+        requestAnimationFrame(() => {
+          restore()
+          requestAnimationFrame(restore)
+        })
 
-        const intervals = [
-          1, 10, 50, 100, 150, 200, 300, 400, 500, 700, 1000, 1500, 2000,
-        ]
-        const timeouts = intervals.map((delay) => setTimeout(restore, delay))
+        // Progressive restoration with increasing delays
+        const delays = [50, 100, 200, 400, 800, 1200]
+        scrollTimeoutRef.current = delays.map((delay) =>
+          setTimeout(() => {
+            restore()
+          }, delay),
+        )
 
-        // Cleanup after 3 seconds
-        setTimeout(() => {
-          observer.disconnect()
-          timeouts.forEach((t) => clearTimeout(t))
-          console.log(
-            '🏁 Scroll restoration complete. Final position:',
-            window.scrollY,
-          )
-        }, 3000)
+        // Final cleanup after 2 seconds
+        scrollTimeoutRef.current.push(
+          setTimeout(() => {
+            if (observerRef.current) {
+              observerRef.current.disconnect()
+              observerRef.current = null
+            }
+            isRestoringRef.current = false
+            console.log(
+              '🏁 Scroll restoration complete. Final:',
+              window.scrollY,
+            )
+          }, 2000),
+        )
       } else {
         // New page, scroll to top
         window.scrollTo(0, 0)
@@ -107,6 +138,11 @@ function MyApp({ Component, pageProps }) {
     router.events.on('routeChangeComplete', handleRouteChangeComplete)
 
     return () => {
+      // Cleanup on unmount
+      if (observerRef.current) {
+        observerRef.current.disconnect()
+      }
+      scrollTimeoutRef.current.forEach((t) => clearTimeout(t))
       router.events.off('routeChangeStart', handleRouteChangeStart)
       router.events.off('routeChangeComplete', handleRouteChangeComplete)
     }

@@ -1,7 +1,7 @@
 import PostPreview from 'components/PostPreview'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Post } from 'lib/sanity.queries'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useAnimation } from './AnimationContext'
 
 const groupPostsBySemester = (posts: Post[]) => {
@@ -23,19 +23,6 @@ const groupPostsBySemester = (posts: Post[]) => {
   )
 }
 
-// Debounce function to limit how often a function can be called
-const debounce = (func: Function, wait: number) => {
-  let timeout: NodeJS.Timeout
-  return function executedFunction(...args: any[]) {
-    const later = () => {
-      clearTimeout(timeout)
-      func(...args)
-    }
-    clearTimeout(timeout)
-    timeout = setTimeout(later, wait)
-  }
-}
-
 export default function MoreStories({
   posts,
   hideTitle,
@@ -44,11 +31,6 @@ export default function MoreStories({
   hideTitle?: boolean
 }) {
   const { shouldAnimate, markAnimated } = useAnimation()
-  const [visiblePosts, setVisiblePosts] = useState(2)
-  const [isLoading, setIsLoading] = useState(false)
-  const hasMorePosts = posts.length > visiblePosts
-  const observerRef = useRef<IntersectionObserver | null>(null)
-  const loadMoreRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (shouldAnimate) {
@@ -59,55 +41,15 @@ export default function MoreStories({
   // Cache the grouped posts
   const groupedPosts = useMemo(() => groupPostsBySemester(posts), [posts])
 
-  // Cache the visible semesters calculation
-  const visibleSemesters = useMemo(
-    () => Object.keys(groupedPosts).slice(0, Math.ceil(visiblePosts / 2)),
-    [groupedPosts, visiblePosts],
-  )
-
-  const loadMore = useCallback(() => {
-    if (hasMorePosts && !isLoading) {
-      setIsLoading(true)
-      setVisiblePosts((prev) => prev + 2)
-      // Reset loading state after animation completes
-      setTimeout(() => setIsLoading(false), 500)
-    }
-  }, [hasMorePosts, isLoading])
-
-  // Debounced load more function
-  const debouncedLoadMore = useMemo(() => debounce(loadMore, 100), [loadMore])
-
-  useEffect(() => {
-    const options = {
-      root: null,
-      rootMargin: '200px 0px', // Increased margin for earlier loading
-      threshold: 0.1,
-    }
-
-    observerRef.current = new IntersectionObserver((entries) => {
-      const [entry] = entries
-      if (entry.isIntersecting) {
-        debouncedLoadMore()
-      }
-    }, options)
-
-    if (loadMoreRef.current) {
-      observerRef.current.observe(loadMoreRef.current)
-    }
-
-    return () => {
-      if (observerRef.current) {
-        observerRef.current.disconnect()
-      }
-    }
-  }, [debouncedLoadMore])
+  // Get all semesters
+  const allSemesters = useMemo(() => Object.keys(groupedPosts), [groupedPosts])
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1, // Reduced stagger time for faster loading
+        staggerChildren: 0.1,
       },
     },
   }
@@ -121,9 +63,9 @@ export default function MoreStories({
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.5, // Reduced duration for faster animations
-        delay: index * 0.05, // Reduced delay between items
-        ease: [0.4, 0, 0.2, 1], // Smoother easing curve
+        duration: 0.5,
+        delay: index * 0.05,
+        ease: [0.4, 0, 0.2, 1],
       },
     }),
     exit: (index: number) => ({
@@ -149,7 +91,7 @@ export default function MoreStories({
           tout.
         </motion.h1>
       )}
-      {visibleSemesters.map((semesterYear) => (
+      {allSemesters.map((semesterYear) => (
         <motion.div
           key={semesterYear}
           className="mb-8 sm:mb-12"
@@ -192,20 +134,6 @@ export default function MoreStories({
           </motion.div>
         </motion.div>
       ))}
-      {hasMorePosts && (
-        <div ref={loadMoreRef} className="h-10">
-          {isLoading && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="flex justify-center"
-            >
-              <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
-            </motion.div>
-          )}
-        </div>
-      )}
     </section>
   )
 }
