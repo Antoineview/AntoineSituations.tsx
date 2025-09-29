@@ -13,7 +13,7 @@ export async function getSecret(
 ): Promise<string | null> {
   const secret = await client.fetch<string | null>(
     // Use a TTL of 1 hour when reading the secret, while using a 30min expiry if `createIfNotExists` is defined to avoid a race condition where
-    // a preview pane could get a Secret and use it just as it expires. Twice the TTL gives a wide margin to ensure that when the secret is read
+    // the secret could expire right after being fetched. Twice the TTL gives a wide margin to ensure that when the secret is read
     // it's recent enough to be valid no matter if it's used in an iframe URL, or a "Open Preview" URL.
     query(createIfNotExists ? 60 * 30 : 60 * 60),
     { id },
