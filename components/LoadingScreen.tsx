@@ -5,7 +5,6 @@ export default function LoadingScreen() {
   const [isComplete, setIsComplete] = useState(false)
   const [isClicked, setIsClicked] = useState(false)
   const loaderRef = useRef<HTMLDivElement>(null)
-  const titleRef = useRef<HTMLHeadingElement>(null)
   const keyholeRef = useRef<HTMLDivElement>(null)
   const textRef = useRef<HTMLParagraphElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
@@ -22,7 +21,7 @@ export default function LoadingScreen() {
       })
 
       // Zoom into keyhole effect
-      tl.to([titleRef.current, textRef.current], {
+      tl.to(textRef.current, {
         opacity: 0,
         duration: 0.3,
         ease: 'power2.in',
@@ -56,38 +55,27 @@ export default function LoadingScreen() {
       const tl = gsap.timeline()
 
       // Initial state - everything hidden
-      gsap.set([titleRef.current, keyholeRef.current, textRef.current], {
+      gsap.set([keyholeRef.current, textRef.current], {
         opacity: 0,
         y: 30,
       })
 
       // Animate in sequence
-      tl.to(titleRef.current, {
+      tl.to(keyholeRef.current, {
         opacity: 1,
         y: 0,
-        duration: 1,
+        duration: 0.8,
         ease: 'power3.out',
-      })
-        .to(
-          keyholeRef.current,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-            ease: 'power2.out',
-          },
-          '-=0.5',
-        )
-        .to(
-          textRef.current,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            ease: 'power2.out',
-          },
-          '-=0.4',
-        )
+      }).to(
+        textRef.current,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power2.out',
+        },
+        '-=0.4',
+      )
 
       // Subtle breathing animation for keyhole
       gsap.to(keyholeRef.current, {
@@ -111,17 +99,8 @@ export default function LoadingScreen() {
         className="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-gray-900"
       >
         <div className="text-center px-6">
-          {/* Title with Crozet-Regular font */}
-          <h1
-            ref={titleRef}
-            className="font-['Crozet-Regular'] text-[clamp(3rem,12vw,6rem)] tracking-tighter text-black dark:text-white mb-16"
-            style={{ fontWeight: 'normal' }}
-          >
-            AntoineView
-          </h1>
-
           {/* Keyhole Container */}
-          <div className="flex justify-center mb-10">
+          <div className="flex justify-center mb-8">
             <div
               ref={keyholeRef}
               onClick={handleKeyholeClick}
