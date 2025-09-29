@@ -13,7 +13,9 @@ import type {
   InferGetStaticPropsType,
 } from 'next'
 import { createClient } from 'next-sanity'
+import { lazy, Suspense } from 'react'
 
+const PreviewPostPage = lazy(() => import('components/PreviewPostPage'))
 
 export const getStaticPaths: GetStaticPaths = async () => {
   let paths = []
@@ -59,11 +61,12 @@ export const getStaticProps: GetStaticProps<
 
   return {
     props: {
+      preview,
       token,
       data: (await dataPromise) || { post: {} as any, morePosts: [] },
       settings: (await settingsPromise) || {},
     },
-    // If webhooks isn't setup then attempt to re-generate in 1-minute intervals
+    // If webhooks isn't setup then attempt to re-generate in 1 minute intervals
     revalidate: process.env.SANITY_REVALIDATE_SECRET ? undefined : 60,
   }
 }
@@ -71,7 +74,17 @@ export const getStaticProps: GetStaticProps<
 export default function PostRoute(
   props: InferGetStaticPropsType<typeof getStaticProps>,
 ) {
-  const { data, settings } = props
+  const { preview, token, data, settings } = props
+
+  if (preview) {
+    return (
+      <Suspense
+        fallback={<PostPage preview loading data={data} settings={settings} />}
+      >
+        <PreviewPostPage token={token} slug={data?.post?.slug} />
+      </Suspense>
+    )
+  }
 
   return <PostPage data={data} settings={settings} />
 }
