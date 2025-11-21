@@ -59,22 +59,25 @@ export default function MoreStories({
     hidden: {
       opacity: 0,
       y: 20,
+      filter: 'blur(10px)',
     },
     visible: (index: number) => ({
       opacity: 1,
       y: 0,
+      filter: 'blur(0px)',
       transition: {
-        duration: 0.3,
-        delay: index * 0.02,
+        duration: 0.5,
+        delay: index * 0.08,
         ease: [0.4, 0, 0.2, 1] as any,
       },
     }),
     exit: (index: number) => ({
       opacity: 0,
       y: -20,
+      filter: 'blur(10px)',
       transition: {
         duration: 0.3,
-        delay: index * 0.02,
+        delay: index * 0.08,
         ease: [0.4, 0, 0.2, 1] as any,
       },
     }),
@@ -116,9 +119,9 @@ export default function MoreStories({
                   key={post._id}
                   custom={index}
                   variants={itemVariants}
-                  initial={shouldAnimate ? 'hidden' : 'visible'}
-                  whileInView={shouldAnimate ? 'visible' : undefined}
-                  viewport={{ once: false, margin: '200px' }}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "0px", amount: 0.5 }}
                   exit="exit"
                   layout
                 >
