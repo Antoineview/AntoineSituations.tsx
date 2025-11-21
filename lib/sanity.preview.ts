@@ -6,3 +6,8 @@ import { useLiveQuery } from 'next-sanity/preview'
 // const [data] = useLiveQuery(initialData, query, params)
 
 export { useLiveQuery }
+
+export function usePreview(token: string | null, query: string, params?: any) {
+    const [data] = useLiveQuery(null, query, params)
+    return data
+}

@@ -7,8 +7,9 @@ import MoreStories from 'components/MoreStories'
 import SectionSeparator from 'components/SectionSeparator'
 import type { Category, Post, Settings } from 'lib/sanity.queries'
 import Head from 'next/head'
-import { useAnimation } from './AnimationContext'
 import { useEffect } from 'react'
+
+import { useAnimation } from './AnimationContext'
 
 export default function IndexPage(props: {
   preview?: boolean

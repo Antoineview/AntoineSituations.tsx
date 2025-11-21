@@ -1,5 +1,5 @@
 import { PlayIcon } from '@sanity/icons'
-import { defineField,defineType } from 'sanity'
+import { defineField, defineType } from 'sanity'
 
 import { YouTubePreview } from './youtube/YouTubePreview'
 

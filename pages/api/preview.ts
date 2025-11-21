@@ -55,7 +55,7 @@ export default async function preview(
       )
     }
     const client = _client.withConfig({ useCdn: false, token })
-    const secret = await getSecret(client, previewSecretId)
+    const secret = await getSecret(client as any, previewSecretId)
     if (req.query.secret !== secret) {
       return res.status(401).json({ message: 'Invalid secret' })
     }

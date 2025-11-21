@@ -1,5 +1,5 @@
 import { CopyIcon } from '@sanity/icons'
-import { Button, Card,Stack, Text } from '@sanity/ui'
+import { Button, Card, Stack, Text } from '@sanity/ui'
 import { useState } from 'react'
 import { useFormValue } from 'sanity'
 

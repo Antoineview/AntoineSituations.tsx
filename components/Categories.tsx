@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import type { Category } from 'lib/sanity.queries'
 import Link from 'next/link'
 import { useEffect, useMemo } from 'react'
+
 import { useAnimation } from './AnimationContext'
 
 export default function Categories({ categories }: { categories: Category[] }) {

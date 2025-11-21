@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from 'react'
 import { motion } from 'framer-motion'
+import { useEffect, useRef,useState } from 'react'
 
 interface VideoPlayerProps {
   url: string

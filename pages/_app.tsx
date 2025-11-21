@@ -7,8 +7,8 @@ import { useRouter } from 'next/router'
 import { useEffect, useRef } from 'react'
 
 import { AnimationProvider } from '../components/AnimationContext'
-import { ThemeProvider } from '../components/ThemeContext'
 import LoadingScreen from '../components/LoadingScreen'
+import { ThemeProvider } from '../components/ThemeContext'
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter()

@@ -6,7 +6,10 @@ import type { Image as SanityImage } from 'sanity'
 import type { PreviewProps } from 'sanity'
 
 export function YouTubePreview(props: PreviewProps) {
-  const { title: url, coverImage } = props as unknown as { title?: string; coverImage?: SanityImage }
+  const { title: url, coverImage } = props as unknown as {
+    title?: string
+    coverImage?: SanityImage
+  }
 
   return (
     <Flex padding={3} align="center" justify="center">

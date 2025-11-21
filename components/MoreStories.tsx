@@ -2,6 +2,7 @@ import PostPreview from 'components/PostPreview'
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Post } from 'lib/sanity.queries'
 import React, { useEffect, useMemo } from 'react'
+
 import { useAnimation } from './AnimationContext'
 
 const groupPostsBySemester = (posts: Post[]) => {

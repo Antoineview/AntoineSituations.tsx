@@ -86,7 +86,9 @@ const AnimatedText = ({
 
 const serializers = {
   types: {
-    youtube: function Youtube({ value }: PortableTextTypeComponentProps<YouTubeNode>) {
+    youtube: function Youtube({
+      value,
+    }: PortableTextTypeComponentProps<YouTubeNode>) {
       const [isPlaying, setIsPlaying] = useState(false)
 
       if (!value?.url) return null

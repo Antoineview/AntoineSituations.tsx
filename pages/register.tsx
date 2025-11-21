@@ -4,7 +4,7 @@ import Layout from 'components/BlogLayout'
 import RegisterPasskey from 'components/RegisterPasskey'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/router'
-import { useEffect,useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function RegisterPage() {
   const router = useRouter()

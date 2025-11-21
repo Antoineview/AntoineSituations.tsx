@@ -4,8 +4,9 @@ import VideoPlayer from 'components/VideoPlayer'
 import { motion } from 'framer-motion'
 import type { Post } from 'lib/sanity.queries'
 import Link from 'next/link'
-import { useAnimation } from './AnimationContext'
 import { useEffect } from 'react'
+
+import { useAnimation } from './AnimationContext'
 
 export default function HeroPost(
   props: Pick<
