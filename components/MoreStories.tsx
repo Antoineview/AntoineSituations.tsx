@@ -66,7 +66,7 @@ export default function MoreStories({
       transition: {
         duration: 0.5,
         delay: index * 0.05,
-        ease: [0.4, 0, 0.2, 1],
+        ease: [0.4, 0, 0.2, 1] as any,
       },
     }),
     exit: (index: number) => ({
@@ -75,7 +75,7 @@ export default function MoreStories({
       transition: {
         duration: 0.3,
         delay: index * 0.02,
-        ease: [0.4, 0, 0.2, 1],
+        ease: [0.4, 0, 0.2, 1] as any,
       },
     }),
   }
@@ -86,7 +86,7 @@ export default function MoreStories({
         <motion.h1
           initial={shouldAnimate ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+          transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] as any }}
           className="mb-6 sm:mb-8 text-6xl sm:text-7xl md:text-7xl font-bold leading-tight tracking-tighter morecardh1"
         >
           tout.

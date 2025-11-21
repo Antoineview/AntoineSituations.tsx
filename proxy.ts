@@ -13,7 +13,7 @@ const sessionOptions = {
   },
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const session = await getIronSession<IronSessionData>(
     request,
     NextResponse.next(),

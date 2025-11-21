@@ -11,7 +11,7 @@ import {
 } from 'lib/sanity.queries'
 import type { GetStaticProps, InferGetStaticPropsType } from 'next'
 import { createClient } from 'next-sanity'
-import { Suspense } from 'react'
+
 
 export const getStaticProps: GetStaticProps<
   {
@@ -72,21 +72,7 @@ export default function IndexRoute({
   categories,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   if (preview) {
-    return (
-      <Suspense
-        fallback={
-          <IndexPage
-            preview
-            loading
-            posts={posts}
-            settings={settings}
-            categories={categories || []}
-          />
-        }
-      >
-        <PreviewIndexPage token={token} />
-      </Suspense>
-    )
+    return <PreviewIndexPage posts={posts} settings={settings} categories={categories} />
   }
 
   return (

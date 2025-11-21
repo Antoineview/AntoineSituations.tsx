@@ -58,7 +58,7 @@ export default function PostPage(props: {
       transition: {
         duration: 0.8,
         delay: index * 0.1,
-        ease: [0.6, -0.05, 0.01, 0.99],
+        ease: [0.6, -0.05, 0.01, 0.99] as any,
       },
     }),
   }
@@ -73,7 +73,7 @@ export default function PostPage(props: {
       y: 0,
       transition: {
         duration: 0.6,
-        ease: [0.6, -0.05, 0.01, 0.99],
+        ease: [0.6, -0.05, 0.01, 0.99] as any,
       },
     },
   }

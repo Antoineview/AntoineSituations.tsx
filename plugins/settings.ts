@@ -3,7 +3,7 @@
  */
 
 import { type DocumentDefinition, definePlugin } from 'sanity'
-import { type StructureResolver } from 'sanity/desk'
+import { type StructureResolver } from 'sanity/structure'
 
 export const settingsPlugin = definePlugin<{ type: string }>(({ type }) => {
   return {

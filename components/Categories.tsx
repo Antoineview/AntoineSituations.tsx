@@ -41,7 +41,7 @@ export default function Categories({ categories }: { categories: Category[] }) {
       transition: {
         duration: 0.7,
         delay: index * 0.1,
-        ease: [0.6, -0.05, 0.01, 0.99],
+        ease: [0.6, -0.05, 0.01, 0.99] as any,
       },
     }),
     exit: (index: number) => ({
@@ -50,7 +50,7 @@ export default function Categories({ categories }: { categories: Category[] }) {
       transition: {
         duration: 0.5,
         delay: index * 0.05,
-        ease: [0.6, -0.05, 0.01, 0.99],
+        ease: [0.6, -0.05, 0.01, 0.99] as any,
       },
     }),
   }
@@ -60,7 +60,7 @@ export default function Categories({ categories }: { categories: Category[] }) {
       <motion.h1
         initial={shouldAnimate ? { opacity: 0, y: 20 } : { opacity: 1, y: 0 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: [0.6, -0.05, 0.01, 0.99] }}
+        transition={{ duration: 0.7, ease: [0.6, -0.05, 0.01, 0.99] as any }}
         className="mb-8 text-6xl font-bold leading-tight tracking-tighter md:text-7xl morecardh1"
       >
         catégories.

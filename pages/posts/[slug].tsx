@@ -13,9 +13,7 @@ import type {
   InferGetStaticPropsType,
 } from 'next'
 import { createClient } from 'next-sanity'
-import { lazy, Suspense } from 'react'
-
-const PreviewPostPage = lazy(() => import('components/PreviewPostPage'))
+import PreviewPostPage from 'components/PreviewPostPage'
 
 export const getStaticPaths: GetStaticPaths = async () => {
   let paths = []
@@ -78,13 +76,7 @@ export default function PostRoute(
   const { preview, token, data, settings } = props
 
   if (preview) {
-    return (
-      <Suspense
-        fallback={<PostPage preview loading data={data} settings={settings} />}
-      >
-        <PreviewPostPage token={token} slug={data?.post?.slug} />
-      </Suspense>
-    )
+    return <PreviewPostPage data={data} settings={settings} />
   }
 
   return <PostPage data={data} settings={settings} />

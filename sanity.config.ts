@@ -6,7 +6,7 @@ import { apiVersion, dataset, previewSecretId, projectId } from 'lib/sanity.api'
 import { productionUrl } from 'plugins/productionUrl'
 import { settingsPlugin, settingsStructure } from 'plugins/settings'
 import { defineConfig } from 'sanity'
-import { deskTool } from 'sanity/desk'
+import { structureTool } from 'sanity/structure'
 import { unsplashImageAsset } from 'sanity-plugin-asset-source-unsplash'
 import { colorInput } from '@sanity/color-input'
 import authorType from 'schemas/author'
@@ -36,7 +36,7 @@ export default defineConfig({
     ],
   },
   plugins: [
-    deskTool({
+    structureTool({
       structure: settingsStructure(settingsType),
     }),
     // Configures the global "new document" button, and document actions, to suit the Settings document singleton
