@@ -50,7 +50,7 @@ export default function MoreStories({
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.05,
       },
     },
   }
@@ -64,8 +64,8 @@ export default function MoreStories({
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.5,
-        delay: index * 0.05,
+        duration: 0.3,
+        delay: index * 0.02,
         ease: [0.4, 0, 0.2, 1] as any,
       },
     }),
@@ -118,7 +118,7 @@ export default function MoreStories({
                   variants={itemVariants}
                   initial={shouldAnimate ? 'hidden' : 'visible'}
                   whileInView={shouldAnimate ? 'visible' : undefined}
-                  viewport={{ once: false, margin: '-50px' }}
+                  viewport={{ once: false, margin: '200px' }}
                   exit="exit"
                   layout
                 >

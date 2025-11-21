@@ -30,73 +30,77 @@ const CoverImage = (props: CoverImageProps) => {
 
   const imageContent = source?.asset?._ref ? (
     <motion.div
-      initial={
-        priority
-          ? { filter: 'blur(0px)', opacity: 1 }
-          : { filter: 'blur(20px)', opacity: 0 }
-      }
+      initial={{ filter: 'blur(10px)', opacity: 1 }}
       animate={{
-        filter: isImageLoaded || priority ? 'blur(0px)' : 'blur(20px)',
-        opacity: isImageLoaded || priority ? 1 : 0.5,
+        filter: isImageLoaded || priority ? 'blur(0px)' : 'blur(10px)',
+        opacity: 1,
       }}
       transition={{
-        duration: priority ? 0 : 0.7,
+        duration: priority ? 0 : 0.4,
         ease: [0.25, 0.1, 0.25, 1],
       }}
     >
       <Image
         className="h-auto w-full object-cover"
         style={{ borderRadius: '12px' }}
-        width={2000}
-        height={1000}
+        width={1200}
+        height={600}
         alt={`Cover Image for ${title}`}
         src={urlForImage(source)
-          .height(1000)
-          .width(2000)
-          .auto('format')
-          .quality(75)
+          .height(600)
+          .width(1200)
           .url()}
-        sizes="100vw"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
         priority={priority}
         loading={priority ? 'eager' : 'lazy'}
+        placeholder="blur"
+        blurDataURL={urlForImage(source)
+          .width(20)
+          .height(10)
+          .blur(10)
+          .url()}
         onLoad={handleImageLoad}
       />
     </motion.div>
   ) : generatedImageUrl ? (
     <motion.div
-      initial={
-        priority
-          ? { filter: 'blur(0px)', opacity: 1 }
-          : { filter: 'blur(20px)', opacity: 0 }
-      }
+      initial={{ filter: 'blur(10px)', opacity: 1 }}
       animate={{
-        filter: isImageLoaded || priority ? 'blur(0px)' : 'blur(20px)',
-        opacity: isImageLoaded || priority ? 1 : 0.5,
+        filter: isImageLoaded || priority ? 'blur(0px)' : 'blur(10px)',
+        opacity: 1,
       }}
       transition={{
-        duration: priority ? 0 : 0.7,
+        duration: priority ? 0 : 0.4,
         ease: [0.25, 0.1, 0.25, 1],
       }}
     >
       <Image
         className="h-auto w-full object-cover"
         style={{ borderRadius: '12px' }}
-        width={2000}
-        height={1000}
+        width={1200}
+        height={600}
         alt={`Generated Cover Image for ${title}`}
         src={
           typeof generatedImageUrl === 'string'
             ? generatedImageUrl
             : urlForImage(generatedImageUrl)
-              .height(1000)
-              .width(2000)
-              .auto('format')
-              .quality(75)
+              .height(600)
+              .width(1200)
               .url()
         }
-        sizes="100vw"
+        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
         priority={priority}
         loading={priority ? 'eager' : 'lazy'}
+        placeholder={typeof generatedImageUrl !== 'string' ? 'blur' : 'empty'}
+        blurDataURL={
+          typeof generatedImageUrl !== 'string'
+            ? urlForImage(generatedImageUrl)
+              .width(20)
+              .height(10)
+              .blur(10)
+              .url()
+            : undefined
+        }
         onLoad={handleImageLoad}
       />
     </motion.div>
