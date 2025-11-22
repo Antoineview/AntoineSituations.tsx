@@ -123,13 +123,7 @@ export default function LoadingScreen() {
             </div>
           </div>
 
-          {/* Loading text with Poppins-Text */}
-          <p
-            ref={textRef}
-            className="font-['Poppins-Text'] text-black dark:text-white text-sm tracking-wide opacity-70"
-          >
-            Click to enter...
-          </p>
+
         </div>
       </div>
     </div>
