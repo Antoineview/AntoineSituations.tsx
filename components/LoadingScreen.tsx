@@ -27,6 +27,10 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
   }, [])
 
   useEffect(() => {
+    // Responsive scale multiplier for mobile devices
+    const isMobile = window.innerWidth < 768
+    const scaleMultiplier = isMobile ? 1.5 : 1
+
     const ctx = gsap.context(() => {
       // Intro Animation
       gsap.set(textRef.current, { opacity: 0, y: 20 })
@@ -39,7 +43,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
       // 1. Open the hole slightly to reveal content
       tl.to(keyholePathRef.current, {
-        scale: 0.5,
+        scale: 0.5 * scaleMultiplier,
         duration: 1.5,
         ease: "elastic.out(1, 0.5)",
       })
@@ -53,7 +57,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
       // 3. Idle breathing animation
       gsap.to(keyholePathRef.current, {
-        scale: 0.55,
+        scale: 0.55 * scaleMultiplier,
         duration: 2,
         repeat: -1,
         yoyo: true,

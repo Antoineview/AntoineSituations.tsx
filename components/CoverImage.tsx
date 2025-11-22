@@ -44,10 +44,10 @@ const CoverImage = (props: CoverImageProps) => {
         className="h-auto w-full object-cover"
         style={{ borderRadius: '12px' }}
         width={1200}
-        height={600}
+        height={800}
         alt={`Cover Image for ${title}`}
         src={urlForImage(source)
-          .height(600)
+          .height(800)
           .width(1200)
           .url()}
         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 1200px"
@@ -78,13 +78,13 @@ const CoverImage = (props: CoverImageProps) => {
         className="h-auto w-full object-cover"
         style={{ borderRadius: '12px' }}
         width={1200}
-        height={600}
+        height={800}
         alt={`Generated Cover Image for ${title}`}
         src={
           typeof generatedImageUrl === 'string'
             ? generatedImageUrl
             : urlForImage(generatedImageUrl)
-              .height(600)
+              .height(800)
               .width(1200)
               .url()
         }
