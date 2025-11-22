@@ -1,11 +1,11 @@
 import { CopyIcon } from '@sanity/icons'
 import { Button, Card, Stack, Text } from '@sanity/ui'
 import { useState } from 'react'
-import { useFormValue } from 'sanity'
+import { set, useFormValue } from 'sanity'
 
 interface InvitationGeneratorProps {
   value?: string
-  onChange: (value: string) => void
+  onChange: (value: any) => void
 }
 
 export default function InvitationGenerator({
@@ -63,7 +63,7 @@ export default function InvitationGenerator({
       // Sanity expects the raw value for the field, not the full link
       const code = invitationLink.split('code=')[1]
       if (code) {
-        onChange(code)
+        onChange(set(code))
         console.log('Updated Sanity field with code:', code)
       } else {
         console.error(
