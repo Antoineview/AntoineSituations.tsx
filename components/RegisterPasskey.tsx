@@ -57,7 +57,7 @@ export default function RegisterPasskey({
       const attestationResponse =
         credential.response as AuthenticatorAttestationResponse
 
-      const validateResponse = await fetch('/api/auth/validate-invitation', {
+      const validateResponse = await fetch('/api/auth/validate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

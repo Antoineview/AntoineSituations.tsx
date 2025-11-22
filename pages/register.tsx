@@ -25,7 +25,7 @@ export default function RegisterPage() {
 
   const validateInvitation = async (invitationCode: string) => {
     try {
-      const response = await fetch('/api/auth/validate-invitation', {
+      const response = await fetch('/api/auth/validate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
