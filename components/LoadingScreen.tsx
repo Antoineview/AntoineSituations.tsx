@@ -29,7 +29,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
   useEffect(() => {
     // Responsive scale multiplier for mobile devices
     const isMobile = window.innerWidth < 768
-    const scaleMultiplier = isMobile ? 1.5 : 1
+    const scaleMultiplier = isMobile ? 2 : 1
 
     const ctx = gsap.context(() => {
       // Intro Animation
