@@ -39,7 +39,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
       // 1. Open the hole slightly to reveal content
       tl.to(keyholePathRef.current, {
-        scale: 0.7,
+        scale: 0.5,
         duration: 1.5,
         ease: "elastic.out(1, 0.5)",
       })
@@ -53,7 +53,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
 
       // 3. Idle breathing animation
       gsap.to(keyholePathRef.current, {
-        scale: 0.75,
+        scale: 0.55,
         duration: 2,
         repeat: -1,
         yoyo: true,
@@ -90,7 +90,7 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       .to(keyholePathRef.current, {
         scale: 50, 
         duration: 1.5,
-        ease: "power4.inOut",
+        ease: "power3.inOut",
       })
       
     }, containerRef)
@@ -112,6 +112,10 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
         className="w-full h-full"
         viewBox="0 0 100 100" 
         preserveAspectRatio="xMidYMid slice"
+        style={{
+          willChange: 'transform',
+          backfaceVisibility: 'hidden',
+        }}
       >
         <defs>
           <mask id="keyhole-mask">
@@ -137,13 +141,13 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
           </mask>
         </defs>
 
-        {/* The Actual White Overlay using the mask */}
+        {/* The Actual Overlay using the mask */}
         <rect 
           x="0" 
           y="0" 
           width="100" 
           height="100" 
-          fill="white" 
+          className="fill-white dark:fill-gray-900"
           mask="url(#keyhole-mask)" 
         />
       </svg>
