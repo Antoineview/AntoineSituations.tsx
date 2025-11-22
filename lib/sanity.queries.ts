@@ -39,7 +39,7 @@ export const postsByCategoryQuery = groq`
 export const postQuery = groq`
 {
   "post": *[_type == "post" && slug.current == $slug] | order(_updatedAt desc) [0] {
-    content,
+    "content": select(requiresAuth == true => null, content),
     ${postFields}
   },
   
@@ -53,8 +53,36 @@ export const postSlugsQuery = groq`
 *[_type == "post" && defined(slug.current)][].slug.current
 `
 
+export const pageQuery = groq`
+  *[_type == "page" && slug.current == $slug][0] {
+    ...,
+    pageBuilder[]{
+      ...,
+      _type == "photoBlock" => {
+        ...,
+        image {
+          ...,
+          asset->
+        }
+      },
+      _type == "youtube" => {
+        ...,
+        coverImage {
+          ...,
+          asset->
+        }
+      }
+    }
+  }
+`
+
+export const pageSlugsQuery = groq`
+*[_type == "page" && defined(slug.current)][].slug.current
+`
+
 export const postBySlugQuery = groq`
 *[_type == "post" && slug.current == $slug][0] {
+  content,
   ${postFields}
 }
 `

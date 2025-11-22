@@ -10,8 +10,7 @@ import {
   settingsQuery,
 } from 'lib/sanity.queries'
 import type { GetStaticProps, InferGetStaticPropsType } from 'next'
-import { createClient } from 'next-sanity'
-
+import { getClient } from 'lib/sanity.client'
 
 export const getStaticProps: GetStaticProps<
   {
@@ -27,13 +26,7 @@ export const getStaticProps: GetStaticProps<
   /* check if the project id has been defined by fetching the vercel envs */
   if (projectId) {
     const token = previewData?.token || readToken || null
-    const client = createClient({
-      projectId,
-      dataset,
-      apiVersion,
-      useCdn: false,
-      token: token || undefined,
-    })
+    const client = getClient(preview ? { token } : undefined)
     const postsPromise = client.fetch<Post[]>(indexQuery)
     const settingsPromise = client.fetch<Settings>(settingsQuery)
     const categoriesPromise = client.fetch<Category[]>(categoriesQuery)

@@ -9,6 +9,7 @@ import { useEffect, useRef } from 'react'
 import { AnimationProvider } from '../components/AnimationContext'
 import LoadingScreen from '../components/LoadingScreen'
 import { ThemeProvider } from '../components/ThemeContext'
+import { VisualEditing } from '@sanity/visual-editing/next-pages-router'
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter()
@@ -213,6 +214,7 @@ function MyApp({ Component, pageProps }) {
           <title>AntoineView</title>
         </Head>
         <Component {...pageProps} />
+        {pageProps.preview && <VisualEditing />}
         <Analytics />
         <SpeedInsights />
       </AnimationProvider>

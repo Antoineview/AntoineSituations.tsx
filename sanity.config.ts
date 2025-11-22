@@ -15,6 +15,13 @@ import postType from 'schemas/post'
 import settingsType from 'schemas/settings'
 import { youtube } from 'schemas/youtube'
 import invitationType from 'schemas/invitation'
+import infoBlock from 'schemas/infoBlock'
+import divider from 'schemas/divider'
+import photoBlock from 'schemas/photoBlock'
+import page from 'schemas/page'
+import newPost from 'schemas/newPost'
+import pageBuilder from 'schemas/pageBuilder'
+import { presentationTool } from 'sanity/presentation'
 
 const title = process.env.NEXT_PUBLIC_SANITY_PROJECT_TITLE || 'antoine.tsx'
 
@@ -33,11 +40,24 @@ export default defineConfig({
       categoryType,
       youtube,
       invitationType,
+      infoBlock,
+      divider,
+      photoBlock,
+      page,
+      newPost,
+      pageBuilder,
     ],
   },
   plugins: [
     structureTool({
       structure: settingsStructure(settingsType),
+    }),
+    presentationTool({
+      previewUrl: {
+        draftMode: {
+          enable: '/api/draft',
+        },
+      },
     }),
     // Configures the global "new document" button, and document actions, to suit the Settings document singleton
     settingsPlugin({ type: settingsType.name }),

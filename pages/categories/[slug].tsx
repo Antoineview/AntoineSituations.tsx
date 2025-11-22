@@ -12,7 +12,7 @@ import type {
 } from 'next'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { createClient } from 'next-sanity'
+import { getClient } from 'lib/sanity.client'
 
 interface Category {
   _id: string
@@ -53,13 +53,7 @@ export default function CategoryPage({
 
 export const getStaticPaths: GetStaticPaths = async () => {
   if (projectId) {
-    const client = createClient({
-      projectId,
-      dataset,
-      apiVersion,
-      useCdn: false,
-      token: readToken || undefined,
-    })
+    const client = getClient()
     const categories = await client.fetch<Category[]>(categoriesQuery)
 
     return {
@@ -78,13 +72,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (projectId) {
-    const client = createClient({
-      projectId,
-      dataset,
-      apiVersion,
-      useCdn: false,
-      token: readToken || undefined,
-    })
+    const client = getClient()
 
     const category = await client.fetch<Category>(
       `*[_type == "category" && slug.current == $slug][0]`,

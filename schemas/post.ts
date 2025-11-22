@@ -4,6 +4,9 @@ import CoverImageInput from './post/CoverImageInput'
 
 import authorType from './author'
 import { youtube } from './youtube'
+import infoBlock from './infoBlock'
+import divider from './divider'
+import photoBlock from './photoBlock'
 
 /**
  * This file is the schema definition for a post.
@@ -49,6 +52,15 @@ export default defineType({
         }),
         defineArrayMember({
           type: 'youtube',
+        }),
+        defineArrayMember({
+          type: 'infoBlock',
+        }),
+        defineArrayMember({
+          type: 'divider',
+        }),
+        defineArrayMember({
+          type: 'photoBlock',
         }),
       ],
     },

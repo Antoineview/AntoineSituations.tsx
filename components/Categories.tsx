@@ -77,9 +77,9 @@ export default function Categories({ categories }: { categories: Category[] }) {
               key={category._id}
               custom={index}
               variants={itemVariants}
-              initial={shouldAnimate ? 'hidden' : 'visible'}
-              whileInView={shouldAnimate ? 'visible' : undefined}
-              viewport={{ once: false, margin: '-100px' }}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "0px", amount: 0.5 }}
               exit="exit"
               layout
             >

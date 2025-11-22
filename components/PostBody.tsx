@@ -17,6 +17,9 @@ import { useState } from 'react'
 import { useRef } from 'react'
 import React, { ReactNode } from 'react'
 
+import Divider from './blocks/Divider'
+import PhotoBlock from './blocks/PhotoBlock'
+
 import styles from './PostBody.module.css'
 
 // Dynamically import ReactPlayer with no SSR
@@ -136,6 +139,8 @@ const serializers = {
         </div>
       )
     },
+    divider: Divider,
+    photoBlock: PhotoBlock,
   },
 }
 

@@ -12,19 +12,13 @@ import type {
   GetStaticProps,
   InferGetStaticPropsType,
 } from 'next'
-import { createClient } from 'next-sanity'
+import { getClient } from 'lib/sanity.client'
 import PreviewPostPage from 'components/PreviewPostPage'
 
 export const getStaticPaths: GetStaticPaths = async () => {
   let paths = []
   if (projectId) {
-    const client = createClient({
-      projectId,
-      dataset,
-      apiVersion,
-      useCdn: false,
-      token: readToken || undefined,
-    })
+    const client = getClient()
     paths = await client.fetch(postSlugsQuery)
   }
 
@@ -45,13 +39,7 @@ export const getStaticProps: GetStaticProps<
   { token?: string }
 > = async ({ params, preview = false, previewData = {} }) => {
   const token = previewData?.token || readToken || null
-  const client = createClient({
-    projectId,
-    dataset,
-    apiVersion,
-    useCdn: false,
-    token: token || undefined,
-  })
+  const client = getClient(preview ? { token } : undefined)
   const dataPromise = client.fetch<{ post: Post; morePosts: Post[] }>(
     postQuery,
     { slug: params.slug },

@@ -27,10 +27,29 @@ export default function PostPage(props: {
   const { post = {} as any, morePosts = [] } = data || {}
   const { title = 'antoine.tsx' } = settings || {}
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [postContent, setPostContent] = useState(post?.content)
 
   const router = useRouter()
 
   const slug = post?.slug
+
+  // Fetch content after authentication for locked posts
+  const handleAuthenticated = async () => {
+    setIsAuthenticated(true)
+    
+    // If content is missing (locked post), fetch it from API
+    if (!postContent && post?.slug) {
+      try {
+        const response = await fetch(`/api/posts/${post.slug}`)
+        if (response.ok) {
+          const fullPost = await response.json()
+          setPostContent(fullPost.content)
+        }
+      } catch (error) {
+        console.error('Failed to fetch post content:', error)
+      }
+    }
+  }
 
   if (!router.isFallback && !slug && !preview) {
     return <ErrorPage statusCode={404} />
@@ -153,7 +172,7 @@ export default function PostPage(props: {
           whileInView="visible"
           viewport={{ once: false, margin: '-100px' }}
         >
-          <PostBody content={post.content} />
+          <PostBody content={postContent} />
         </motion.div>
       </motion.article>
       <motion.div variants={itemVariants} custom={2}>
@@ -188,7 +207,7 @@ export default function PostPage(props: {
         {router.isFallback || (preview && !post) ? (
           <PostTitle>chargement...</PostTitle>
         ) : post.requiresAuth && !isAuthenticated ? (
-          <AuthGate onAuthenticated={() => setIsAuthenticated(true)}>
+          <AuthGate onAuthenticated={handleAuthenticated}>
             {content}
           </AuthGate>
         ) : (

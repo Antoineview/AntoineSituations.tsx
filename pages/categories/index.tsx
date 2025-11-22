@@ -6,7 +6,7 @@ import { categoriesQuery } from 'lib/sanity.queries'
 import type { GetStaticProps } from 'next'
 import Head from 'next/head'
 import Link from 'next/link'
-import { createClient } from 'next-sanity'
+import { getClient } from 'lib/sanity.client'
 
 interface Category {
   _id: string
@@ -57,13 +57,7 @@ export default function CategoriesPage({
 
 export const getStaticProps: GetStaticProps = async () => {
   if (projectId) {
-    const client = createClient({
-      projectId,
-      dataset,
-      apiVersion,
-      useCdn: false,
-      token: readToken || undefined,
-    })
+    const client = getClient()
     const categories = await client.fetch<Category[]>(categoriesQuery)
 
     return {
