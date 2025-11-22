@@ -152,7 +152,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider>
       <AnimationProvider>
-        {!router.pathname.startsWith('/studio') && <LoadingScreen />}
+        {!router.pathname.startsWith('/studio') && !router.pathname.startsWith('/register') &&  <LoadingScreen onComplete={() => {}} />}
         <Head>
           <meta charSet="utf-8" />
           <meta
