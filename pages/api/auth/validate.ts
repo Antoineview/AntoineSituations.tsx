@@ -17,11 +17,14 @@ export default async function handler(
       return res.status(400).json({ message: 'Invitation code is required' })
     }
 
+    console.log('Validate API: Received code:', code)
+
     const client = createClient({
       projectId,
       dataset,
       apiVersion,
       useCdn: false,
+      token: process.env.SANITY_API_TOKEN,
     })
 
     // Find the invitation with the matching code
@@ -29,6 +32,8 @@ export default async function handler(
       `*[_type == "invitation" && code == $code][0]`,
       { code },
     )
+
+    console.log('Validate API: Invitation found:', invitation)
 
     if (!invitation) {
       return res.status(404).json({ message: 'Invalid invitation code' })
