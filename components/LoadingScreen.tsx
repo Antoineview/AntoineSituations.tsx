@@ -107,13 +107,20 @@ export default function LoadingScreen({ onComplete }: LoadingScreenProps) {
       ref={containerRef} 
       className="fixed inset-0 z-50 cursor-pointer"
       onClick={handleClick}
+      style={{
+        minHeight: '-webkit-fill-available',
+        paddingTop: 'env(safe-area-inset-top)',
+        paddingBottom: 'env(safe-area-inset-bottom)',
+        paddingLeft: 'env(safe-area-inset-left)',
+        paddingRight: 'env(safe-area-inset-right)',
+      }}
     >
       {/* The SVG acts as the overlay. 
          - text-white sets the 'fill' for the overlay rect. 
          - 'mask' attribute applies our custom transparency.
       */}
       <svg 
-        className="w-full h-full"
+        className="w-full h-full absolute inset-0"
         viewBox="0 0 100 100" 
         preserveAspectRatio="xMidYMid slice"
         style={{
