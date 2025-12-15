@@ -31,7 +31,7 @@
     "gsap": "^3.13.0",
     "ioredis": "^5.8.0",
     "iron-session": "^8.0.4",
-    "next": "^16.0.3",
+    "next": "16.0.10",
     "next-sanity": "^11.6.8",
     "next-session": "^4.0.5",
     "react": "^19.2.0",
